@@ -355,19 +355,21 @@ useEffect(() => {
     Оновити
   </button>
 </div>
-{/* Кнопка Показати/Приховати */}
-<button
-  onClick={() => setShowTopFields(prev => !prev)}
-  style={{
-    ...buttonStyle,
-    marginBottom: "0.5rem",
-    backgroundColor: "#444"
-  }}
->
-  {showTopFields ? "Приховати поля" : "Показати поля"}
-</button>
+{/* Кнопка згортання/розгортання */}
+<div style={{ marginBottom: "1rem" }}>
+  <button
+    onClick={() => setShowTopFields(prev => !prev)}
+    style={{
+      ...buttonStyle,
+      backgroundColor: "#444",
+      width: "100%"
+    }}
+  >
+    {showTopFields ? "Приховати поля" : "Показати поля"}
+  </button>
+</div>
 
-{/* Умовний блок з 4 полями */}
+{/* Верхні поля (умовно) */}
 {showTopFields && (
   <>
     {/* Сектор */}
