@@ -90,6 +90,20 @@ export default function Home() {
     }));
   };
   useEffect(updateTime, []);
+  // ——— Відновлення значень з localStorage при завантаженні сторінки ———
+useEffect(() => {
+  const savedFields = ["sector", "subdivision", "position", "location"];
+  const restored = {};
+
+  savedFields.forEach((field) => {
+    const val = localStorage.getItem(`report_${field}`);
+    if (val !== null) restored[field] = val;
+  });
+
+  if (Object.keys(restored).length > 0) {
+    setForm(f => ({ ...f, ...restored }));
+  }
+}, []);
   // ——— Відновлення полів із localStorage ———
 useEffect(() => {
   const savedFields = ["sector", "subdivision", "position", "location"];
@@ -119,7 +133,13 @@ useEffect(() => {
 
   setErrors(f => ({ ...f, [name]: false }));
 };
-  const toggleLock = field => setLocks(l => ({ ...l, [field]: !l[field] }));
+  const toggleLock = field => {
+  setLocks(prev => {
+    const updated = { ...prev, [field]: !prev[field] };
+    localStorage.setItem("report_locks", JSON.stringify(updated));
+    return updated;
+  });
+};
   const isEmpty = field => !form[field]?.trim();
 
   // ——— Цели ———
