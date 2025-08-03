@@ -91,18 +91,15 @@ const updateTime = () => {
 };
 useEffect(updateTime, []);
 
-// ——— Відновлення стану блокування (locks) з localStorage ———
+// ——— Відновлення полів із localStorage ———
 useEffect(() => {
-  const saved = localStorage.getItem("report_locks");
-  if (saved) {
-    try {
-      const parsed = JSON.parse(saved);
-      setLocks(prev => ({ ...prev, ...parsed }));
-    } catch (err) {
-      console.error("Помилка при читанні locks з localStorage:", err);
-    }
-  }
-}, []);
+  const savedFields = ["sector", "subdivision", "position", "location"];
+  const restored = {};
+
+  savedFields.forEach((field) => {
+    const val = localStorage.getItem(`report_${field}`);
+    if (val !== null) restored[field] = val;
+  });
 
   if (Object.keys(restored).length > 0) {
     setForm(f => ({ ...f, ...restored }));
