@@ -202,7 +202,8 @@ export default function Home() {
 
   // ——— Копировать/WhatsApp ———
   const copyToClipboard = () => {
-  const txt = [
+  const txt = (
+  [
     `П: ${form.sector} , ${form.subdivision} , ${form.position}`,
     form.selectedGoals.length ? `Ціль: ${form.selectedGoals.join(", ")}` : null,
     form.side ? `Сторона: ${form.side}` : null,
@@ -218,8 +219,9 @@ export default function Home() {
     form.detectionMethods.length ? `Вияв: ${form.detectionMethods.join(", ")}` : null,
     form.result ? `ПП: ${form.result}` : null,
     form.description ? `Опис: ${form.description}` : null
-  ].filter(Boolean).join("\n");
-+
+  ].filter(Boolean).join("\n")
+);
+
   navigator.clipboard.writeText(txt);
   alert("Скопійовано!");
   return txt;
