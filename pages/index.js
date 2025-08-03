@@ -660,20 +660,18 @@ ${copyToClipboard()}
             borderRadius:"6px",whiteSpace:"pre-wrap",fontFamily:"monospace"
           }}>
 {`
-П: ${form.sector} / Підрозділ: ${form.subdivision} / Позиція: ${form.position}
-Населений пункт: ${form.location}
-Ціль: ${form.selectedGoals.join(", ")}
-Сторона: ${form.side || ""}
-Номер цілі: ${form.noIssue ? "Без видачі" : form.targetNumber}
-Назва: ${form.name || ""}
+П: ${form.sector} ${form.subdivision} ${form.position}
+Ціль: ${form.selectedGoals.join(", ")} ${form.side || ""} ${form.noIssue ? "Без видачі" : form.targetNumber} 
+Висота: ${form.height ? form.height + " м" : ""}
+Відстань: ${form.distance ? form.distance + " м" : ""}
 Кількість: ${form.quantity} од.
 Азимут: ${form.azimuth ? form.azimuth + "°" : ""}
 Курс: ${form.course ? form.course + "°" : ""}
-Відстань: ${form.distance ? form.distance + " м" : ""}
-Висота: ${form.height ? form.height + " м" : ""}
-Результат: ${form.result || ""}
-Опис: ${form.description}
+НП: ${form.location}
 Час: ${form.time}
+
+ПП: ${form.result || ""}
+Опис: ${form.description}
 `}
           </div>
         </div>
