@@ -242,15 +242,15 @@ ${copyToClipboard()}
     cursor: locked ? "not-allowed" : "text",
   });
   const buttonStyle = {
-    padding: "0.5rem 1rem",
-    fontSize: "1rem",
-    border: "none",
-    borderRadius: "6px",
-    cursor: "pointer",
-    whiteSpace: "nowrap",
-    backgroundColor: "#666",
-    color: "#fff",
-  };
+  padding: "0.5rem 1rem",
+  fontSize: "1rem",
+  border: "none",
+  borderRadius: "6px",
+  cursor: "pointer",
+  whiteSpace: "nowrap",
+  backgroundColor: "#666",
+  color: "#fff",
+};
   const blockMargin = { marginBottom: "0.3rem" };
   const errorStyle = {
     color: "#ff6666",
@@ -263,16 +263,17 @@ ${copyToClipboard()}
     marginBottom: "0.2rem",
     fontWeight: 600,
   };
-  const buttonStyle = {
-  padding: "0.5rem 1rem",
-  fontSize: "1rem",
-  border: "none",
-  borderRadius: "6px",
-  cursor: "pointer",
-  whiteSpace: "nowrap",
-  backgroundColor: "#666",
-  color: "#fff",
-};
+  function toggleDetection(method) {
+  setForm((prev) => {
+    const alreadySelected = prev.detectionMethods.includes(method);
+    return {
+      ...prev,
+      detectionMethods: alreadySelected
+        ? prev.detectionMethods.filter((m) => m !== method)
+        : [...prev.detectionMethods, method],
+    };
+  });
+}
   return (
     <div style={{
       fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
