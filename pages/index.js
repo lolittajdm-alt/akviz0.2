@@ -219,7 +219,7 @@ export default function Home() {
     form.detectionMethods.length ? `Вияв: ${form.detectionMethods.join(", ")}` : null,
     form.result ? `ПП: ${form.result}` : null,
     form.description ? `Опис: ${form.description}` : null
-  ].filter(Boolean).join("\n");
+  ].filter(Boolean).join("\n"));
 
   navigator.clipboard.writeText(txt);
   alert("Скопійовано!");
