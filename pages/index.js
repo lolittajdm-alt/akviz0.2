@@ -202,33 +202,28 @@ export default function Home() {
 
   // ——— Копировать/WhatsApp ———
   const copyToClipboard = () => {
-    const txt = `
-Сектор: ${form.sector}
-Підрозділ: ${form.subdivision}
-Позиція: ${form.position}
-Населений пункт: ${form.location}
-Ціль: ${form.selectedGoals.join(", ")}
-Сторона: ${form.side || ""}
-Номер цілі: ${form.noIssue ? "Без видачі" : form.targetNumber}
-Назва: ${form.name || ""}
-Кількість: ${form.quantity} од.
-Азимут: ${form.azimuth ? form.azimuth + "°" : ""}
-Курс: ${form.course ? form.course + "°" : ""}
-Відстань: ${form.distance ? form.distance + " м" : ""}
-Висота: ${form.height ? form.height + " м" : ""}
-Результат: ${form.result || ""}
-Опис: ${form.description}
-Час: ${form.time}
-`.trim();
-    navigator.clipboard.writeText(txt);
-    alert("Скопійовано!");
-  };
-  const openWhatsApp = () => {
-    const txt = encodeURIComponent(`
-${copyToClipboard()}
-    `);
-    window.open(`https://wa.me/?text=${txt}`, "_blank");
-  };
+  const txt = [
+    `П: ${form.sector} , ${form.subdivision} , ${form.position}`,
+    form.selectedGoals.length ? `Ціль: ${form.selectedGoals.join(", ")}` : null,
+    form.side ? `Сторона: ${form.side}` : null,
+    !form.noIssue && form.targetNumber ? `Номер цілі: ${form.targetNumber}` : form.noIssue ? `Номер цілі: Без видачі` : null,
+    form.name ? `Назва: ${form.name}` : null,
+    form.quantity ? `Кількість: ${form.quantity} од.` : null,
+    form.azimuth ? `А: ${form.azimuth}°` : null,
+    form.course ? `К: ${form.course}°` : null,
+    form.distance ? `Відстань: ${form.distance} м` : null,
+    form.height ? `Висота: ${form.height} м` : null,
+    form.location ? `НП: ${form.location}` : null,
+    form.time ? `Час: ${form.time}` : null,
+    form.detectionMethods.length ? `Вияв: ${form.detectionMethods.join(", ")}` : null,
+    form.result ? `ПП: ${form.result}` : null,
+    form.description ? `Опис: ${form.description}` : null
+  ].filter(Boolean).join("\n");
+
+  navigator.clipboard.writeText(txt);
+  alert("Скопійовано!");
+  return txt;
+};
 
   // ——— Стили ———
   const inputStyle = locked => ({
