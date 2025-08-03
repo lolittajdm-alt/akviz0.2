@@ -23,7 +23,10 @@ export default function Home() {
     description: "",
   });
   // ——— Состояние: показывать или скрывать верхние поля ———
-  const [showTopFields, setShowTopFields] = useState(true);
+  const [showTopFields, setShowTopFields] = useState(() => {
+  const saved = localStorage.getItem("show_top_fields");
+  return saved === null ? true : saved === "true";
+});
 
   // ——— Блокировки ———
   const [locks, setLocks] = useState({
@@ -92,6 +95,9 @@ const updateTime = () => {
   }));
 };
 useEffect(updateTime, []);
+  useEffect(() => {
+  localStorage.setItem("show_top_fields", String(showTopFields));
+}, [showTopFields]);
 
 // ——— Відновлення полів із localStorage ———
 useEffect(() => {
