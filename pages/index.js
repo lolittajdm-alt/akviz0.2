@@ -82,23 +82,27 @@ export default function Home() {
   };
 
   // ——— Таймер ———
-  const updateTime = () => {
-    const now = new Date();
-    setForm(f => ({
-      ...f,
-      time: `${String(now.getHours()).padStart(2,"0")}:${String(now.getMinutes()).padStart(2,"0")}`
-    }));
-  };
-  useEffect(updateTime, []);
-  // ——— Відновлення значень з localStorage при завантаженні сторінки ———
+  // ——— Таймер ———
+const updateTime = () => {
+  const now = new Date();
+  setForm(f => ({
+    ...f,
+    time: `${String(now.getHours()).padStart(2,"0")}:${String(now.getMinutes()).padStart(2,"0")}`
+  }));
+};
+useEffect(updateTime, []);
+  // ——— Відновлення стану блокування (locks) ———
 useEffect(() => {
-  const savedFields = ["sector", "subdivision", "position", "location"];
-  const restored = {};
-
-  savedFields.forEach((field) => {
-    const val = localStorage.getItem(`report_${field}`);
-    if (val !== null) restored[field] = val;
-  });
+  const saved = localStorage.getItem("report_locks");
+  if (saved) {
+    try {
+      const parsed = JSON.parse(saved);
+      setLocks(l => ({ ...l, ...parsed }));
+    } catch (err) {
+      console.error("Помилка при читанні з localStorage:", err);
+    }
+  }
+}, []);
 
   if (Object.keys(restored).length > 0) {
     setForm(f => ({ ...f, ...restored }));
@@ -139,6 +143,7 @@ useEffect(() => {
     localStorage.setItem("report_locks", JSON.stringify(updated));
     return updated;
   });
+};
 };
   const isEmpty = field => !form[field]?.trim();
 
