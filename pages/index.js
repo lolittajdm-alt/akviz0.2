@@ -13,7 +13,7 @@ export default function Home() {
     targetNumber: "",
     noIssue: false,
     name: null, // 'Shahed-136', 'Гербера', 'Невстановлений'
-    quantity: 1,
+    quantity: 555,
     azimuth: "",
     course: "",
     distance: "",
