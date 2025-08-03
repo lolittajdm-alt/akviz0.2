@@ -82,7 +82,6 @@ export default function Home() {
   };
 
   // ——— Таймер ———
-  // ——— Таймер ———
 const updateTime = () => {
   const now = new Date();
   setForm(f => ({
