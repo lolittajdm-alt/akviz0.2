@@ -325,11 +325,15 @@ useEffect(() => {
   });
 }
   return (
-    <div style={{
-      fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
-      background: "linear-gradient(135deg, #2c5364,#203a43,#0f2027)",
-      color: "#fff", minHeight: "100vh", padding: "2rem"
-    }}>
+    <div
+  style={{
+    minHeight: "100vh",
+    padding: "1rem",
+    backgroundColor: "#111", // Темніше
+    color: "#fff",           // Білий текст
+    fontFamily: "sans-serif"
+  }}
+>
       <div style={{ maxWidth: 600, margin: "0 auto" }}>
         <h1 style={{ textAlign: "left", fontSize: "1.5rem", marginBottom: "1rem" }}>
   АкВіз 2.0
