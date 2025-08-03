@@ -90,14 +90,35 @@ export default function Home() {
     }));
   };
   useEffect(updateTime, []);
+  // ——— Відновлення полів із localStorage ———
+useEffect(() => {
+  const savedFields = ["sector", "subdivision", "position", "location"];
+  const restored = {};
+
+  savedFields.forEach((field) => {
+    const val = localStorage.getItem(`report_${field}`);
+    if (val !== null) restored[field] = val;
+  });
+
+  if (Object.keys(restored).length > 0) {
+    setForm(f => ({ ...f, ...restored }));
+  }
+}, []);
 
   // ——— Общие хендлеры ———
   const handleChange = e => {
-    const { name, value } = e.target;
-    if (locks[name]) return;
-    setForm(f => ({ ...f, [name]: value }));
-    setErrors(f => ({ ...f, [name]: false }));
-  };
+  const { name, value } = e.target;
+  if (locks[name]) return;
+
+  setForm(f => ({ ...f, [name]: value }));
+
+  // Зберігати у localStorage для перших чотирьох полів
+  if (["sector", "subdivision", "position", "location"].includes(name)) {
+    localStorage.setItem(`report_${name}`, value);
+  }
+
+  setErrors(f => ({ ...f, [name]: false }));
+};
   const toggleLock = field => setLocks(l => ({ ...l, [field]: !l[field] }));
   const isEmpty = field => !form[field]?.trim();
 
