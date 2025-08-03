@@ -242,27 +242,23 @@ useEffect(() => {
 
   // ——— Копировать/WhatsApp ———
   const copyToClipboard = () => {
-    const txt = `
-Сектор: ${form.sector}
-Підрозділ: ${form.subdivision}
-Позиція: ${form.position}
-Населений пункт: ${form.location}
-Ціль: ${form.selectedGoals.join(", ")}
-Сторона: ${form.side || ""}
-Номер цілі: ${form.noIssue ? "Без видачі" : form.targetNumber}
-Назва: ${form.name || ""}
-Кількість: ${form.quantity} од.
-Азимут: ${form.azimuth ? form.azimuth + "°" : ""}
-Курс: ${form.course ? form.course + "°" : ""}
-Відстань: ${form.distance ? form.distance + " м" : ""}
+  const text = `
+П: ${form.sector},${form.subdivision},${form.position}
+Ціль: ${form.selectedGoals.join(", ")},${form.side || ""},${form.noIssue ? "Без видачі" : form.targetNumber}
 Висота: ${form.height ? form.height + " м" : ""}
-Результат: ${form.result || ""}
-Опис: ${form.description}
-Час: ${form.time}
+Відстань: ${form.distance ? form.distance + " м" : ""}
+Кількість: ${form.quantity} од.
+А: ${form.azimuth ? form.azimuth + "°" : ""}
+К: ${form.course ? form.course + "°" : ""}
+НП: ${form.location}
+Ч: ${form.time}
+Вияв: ${form.detectionMethods.length ? form.detectionMethods.join(", ") : ""}
+ПП: ${form.result || ""}
 `.trim();
-    navigator.clipboard.writeText(txt);
-    alert("Скопійовано!");
-  };
+
+  navigator.clipboard.writeText(text);
+  alert("Скопійовано!");
+};
   const openWhatsApp = () => {
     const txt = encodeURIComponent(`
 ${copyToClipboard()}
