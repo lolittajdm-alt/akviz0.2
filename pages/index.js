@@ -260,11 +260,22 @@ useEffect(() => {
   alert("Скопійовано!");
 };
   const openWhatsApp = () => {
-    const txt = encodeURIComponent(`
-${copyToClipboard()}
-    `);
-    window.open(`https://wa.me/?text=${txt}`, "_blank");
-  };
+  const text = `
+П: ${form.sector},${form.subdivision},${form.position}
+Ціль: ${form.selectedGoals.join(", ")},${form.side || ""},${form.noIssue ? "Без видачі" : form.targetNumber}
+Висота: ${form.height ? form.height + " м" : ""}
+Відстань: ${form.distance ? form.distance + " м" : ""}
+Кількість: ${form.quantity} од.
+А: ${form.azimuth ? form.azimuth + "°" : ""}
+К: ${form.course ? form.course + "°" : ""}
+НП: ${form.location}
+Ч: ${form.time}
+Вияв: ${form.detectionMethods.length ? form.detectionMethods.join(", ") : ""}
+ПП: ${form.result || ""}
+`.trim();
+
+  window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank");
+};
 
   // ——— Стили ———
   const inputStyle = locked => ({
