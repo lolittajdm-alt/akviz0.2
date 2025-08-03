@@ -23,10 +23,16 @@ export default function Home() {
     description: "",
   });
   // ——— Состояние: показывать или скрывать верхние поля ———
-  const [showTopFields, setShowTopFields] = useState(() => {
-  const saved = localStorage.getItem("show_top_fields");
-  return saved === null ? true : saved === "true";
-});
+  const [showTopFields, setShowTopFields] = useState(true);
+
+useEffect(() => {
+  if (typeof window !== "undefined") {
+    const saved = localStorage.getItem("show_top_fields");
+    if (saved !== null) {
+      setShowTopFields(saved === "true");
+    }
+  }
+}, []);
 
   // ——— Блокировки ———
   const [locks, setLocks] = useState({
