@@ -263,6 +263,17 @@ ${copyToClipboard()}
     marginBottom: "0.2rem",
     fontWeight: 600,
   };
+  function toggleDetection(method) {
+  setForm((prev) => {
+    const alreadySelected = prev.detectionMethods.includes(method);
+    return {
+      ...prev,
+      detectionMethods: alreadySelected
+        ? prev.detectionMethods.filter((m) => m !== method)
+        : [...prev.detectionMethods, method],
+    };
+  });
+}
 
   return (
     <div style={{
