@@ -274,7 +274,10 @@ useEffect(() => {
 ПП: ${form.result || ""}
 `.trim();
 
-  window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank");
+  const encoded = encodeURIComponent(text);
+
+  // Використає системний WhatsApp (звичайний або бізнес)
+  window.location.href = `whatsapp://send?text=${encoded}`;
 };
 
   // ——— Стили ———
