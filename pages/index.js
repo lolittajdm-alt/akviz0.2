@@ -500,6 +500,41 @@ ${copyToClipboard()}
         </div>
 
         {/* Висота */}
+<div style={{ marginBottom: "1rem" }}>
+  <label
+    style={{
+      display: "block",
+      marginBottom: "0.5rem",
+      fontSize: "1.1rem",
+      color: errors.height ? "red" : "inherit"
+    }}
+  >
+    Висота
+  </label>
+
+  <input
+    type="text"
+    name="height"
+    value={form.height}
+    onChange={handleChange}
+    style={{
+      width: "100%",
+      padding: "0.5rem",
+      fontSize: "1rem",
+      backgroundColor: "transparent",
+      border: "none",
+      borderBottom: errors.height ? "2px solid red" : "1px solid #999",
+      outline: "none",
+      color: "#000"
+    }}
+  />
+
+  {errors.height && (
+    <div style={{ color: "red", fontSize: "0.9rem", marginTop: "0.2rem" }}>
+      Введіть числове значення (м)
+    </div>
+  )}
+</div>
         {/* Вияв */}
 <div style={{ marginBottom: "1rem" }}>
   <label style={{ display: "block", marginBottom: "0.5rem", fontSize: "1.1rem" }}>
