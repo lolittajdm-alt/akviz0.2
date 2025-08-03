@@ -489,40 +489,47 @@ ${copyToClipboard()}
         </div>
 
         {/* Висота */}
-        {/* Методи виявлення */}
-<div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
-  {["Акустично", "Радіолокаційно", "Візуально"].map((method) => (
+        {/* Вияв */}
+<div style={{ marginBottom: "1rem" }}>
+  <label style={{ display: "block", marginBottom: "0.5rem", fontSize: "1.1rem" }}>
+    Вияв
+  </label>
+
+  <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
+    {["Акустично", "Радіолокаційно", "Візуально"].map((method) => (
+      <button
+        key={method}
+        onClick={() => toggleDetection(method)}
+        style={{
+          padding: "0.5rem 1rem",
+          borderRadius: "6px",
+          border: "1px solid #999",
+          backgroundColor: form.detectionMethods.includes(method) ? "#222" : "transparent",
+          color: form.detectionMethods.includes(method) ? "#fff" : "#000",
+          whiteSpace: "nowrap",
+          flex: "1 1 auto"
+        }}
+      >
+        {method}
+      </button>
+    ))}
+
+    {/* 4-та кнопка окремо на всю ширину, але зі стилем як у решти */}
     <button
-      key={method}
-      onClick={() => toggleDetection(method)}
+      onClick={() => toggleDetection("Із застосуванням приладів спостереження")}
       style={{
         padding: "0.5rem 1rem",
         borderRadius: "6px",
         border: "1px solid #999",
-        backgroundColor: form.detectionMethods.includes(method) ? "#222" : "transparent",
-        color: form.detectionMethods.includes(method) ? "#fff" : "#000",
+        backgroundColor: form.detectionMethods.includes("Із застосуванням приладів спостереження") ? "#222" : "transparent",
+        color: form.detectionMethods.includes("Із застосуванням приладів спостереження") ? "#fff" : "#000",
         whiteSpace: "nowrap",
-        flex: "1 1 auto"
+        width: "100%"
       }}
     >
-      {method}
+      Із застосуванням приладів спостереження
     </button>
-  ))}
-
-  {/* 4-та кнопка окремо на всю ширину */}
-  <button
-    onClick={() => toggleDetection("Із застосуванням приладів спостереження")}
-    style={{
-      padding: "0.5rem 1rem",
-      borderRadius: "6px",
-      border: "1px solid #999",
-      backgroundColor: form.detectionMethods.includes("Із застосуванням приладів спостереження") ? "#222" : "transparent",
-      color: form.detectionMethods.includes("Із застосуванням приладів спостереження") ? "#fff" : "#000",
-      width: "100%"
-    }}
-  >
-    Із застосуванням приладів спостереження
-  </button>
+  </div>
 </div>
 
         {/* Час */}
