@@ -202,12 +202,15 @@ export default function Home() {
 
   // ——— Копировать/WhatsApp ———
   const copyToClipboard = () => {
-  const txt = (
-    [
-    `П: ${form.sector} , ${form.subdivision} , ${form.position}`,
+  const txt = [
+    `П: ${form.sector}, ${form.subdivision}, ${form.position}`,
     form.selectedGoals.length ? `Ціль: ${form.selectedGoals.join(", ")}` : null,
     form.side ? `Сторона: ${form.side}` : null,
-    !form.noIssue && form.targetNumber ? `Номер цілі: ${form.targetNumber}` : form.noIssue ? `Номер цілі: Без видачі` : null,
+    !form.noIssue && form.targetNumber
+      ? `Номер цілі: ${form.targetNumber}`
+      : form.noIssue
+      ? `Номер цілі: Без видачі`
+      : null,
     form.name ? `Назва: ${form.name}` : null,
     form.quantity ? `Кількість: ${form.quantity} од.` : null,
     form.azimuth ? `А: ${form.azimuth}°` : null,
@@ -218,8 +221,10 @@ export default function Home() {
     form.time ? `Час: ${form.time}` : null,
     form.detectionMethods.length ? `Вияв: ${form.detectionMethods.join(", ")}` : null,
     form.result ? `ПП: ${form.result}` : null,
-    form.description ? `Опис: ${form.description}` : null
-  ].filter(Boolean).join("\n"));
+    form.description ? `Опис: ${form.description}` : null,
+  ]
+    .filter(Boolean)
+    .join("\n");
 
   navigator.clipboard.writeText(txt);
   alert("Скопійовано!");
