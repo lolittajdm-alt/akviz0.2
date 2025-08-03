@@ -653,23 +653,28 @@ ${copyToClipboard()}
         </div>
 
         {/* Звіт */}
-        {[
-  `П: ${form.sector} , ${form.subdivision} , ${form.position}`,
-  form.selectedGoals.length ? `Ціль: ${form.selectedGoals.join(", ")}` : null,
-  form.side ? `Сторона: ${form.side}` : null,
-  !form.noIssue && form.targetNumber ? `Номер цілі: ${form.targetNumber}` : form.noIssue ? `Номер цілі: Без видачі` : null,
-  form.name ? `Назва: ${form.name}` : null,
-  form.quantity ? `Кількість: ${form.quantity} од.` : null,
-  form.azimuth ? `А: ${form.azimuth}°` : null,
-  form.course ? `К: ${form.course}°` : null,
-  form.distance ? `Відстань: ${form.distance} м` : null,
-  form.height ? `Висота: ${form.height} м` : null,
-  form.location ? `НП: ${form.location}` : null,
-  form.time ? `Час: ${form.time}` : null,
-  form.detectionMethods.length ? `Вияв: ${form.detectionMethods.join(", ")}` : null,
-  form.result ? `ПП: ${form.result}` : null,
-  form.description ? `Опис: ${form.description}` : null
-].filter(Boolean).join("\n")}
+        <div style={{
+  backgroundColor: "transparent", color: "#fff", padding: "1rem",
+  borderRadius: "6px", whiteSpace: "pre-wrap", fontFamily: "monospace"
+}}>
+  {[
+    `П: ${form.sector} , ${form.subdivision} , ${form.position}`,
+    form.selectedGoals.length ? `Ціль: ${form.selectedGoals.join(", ")}` : null,
+    form.side ? `Сторона: ${form.side}` : null,
+    !form.noIssue && form.targetNumber ? `Номер цілі: ${form.targetNumber}` : form.noIssue ? `Номер цілі: Без видачі` : null,
+    form.name ? `Назва: ${form.name}` : null,
+    form.quantity ? `Кількість: ${form.quantity} од.` : null,
+    form.azimuth ? `А: ${form.azimuth}°` : null,
+    form.course ? `К: ${form.course}°` : null,
+    form.distance ? `Відстань: ${form.distance} м` : null,
+    form.height ? `Висота: ${form.height} м` : null,
+    form.location ? `НП: ${form.location}` : null,
+    form.time ? `Час: ${form.time}` : null,
+    form.detectionMethods.length ? `Вияв: ${form.detectionMethods.join(", ")}` : null,
+    form.result ? `ПП: ${form.result}` : null,
+    form.description ? `Опис: ${form.description}` : null
+  ].filter(Boolean).join("\n")}
+</div>
 {`
 П: ${form.sector} , ${form.subdivision} , ${form.position}
 Ціль: ${form.selectedGoals.join(", ")}, ${form.side || ""} , ${form.noIssue ? "Без видачі" : form.targetNumber} 
