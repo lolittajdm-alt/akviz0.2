@@ -263,18 +263,16 @@ ${copyToClipboard()}
     marginBottom: "0.2rem",
     fontWeight: 600,
   };
-  function toggleDetection(method) {
-  setForm((prev) => {
-    const alreadySelected = prev.detectionMethods.includes(method);
-    return {
-      ...prev,
-      detectionMethods: alreadySelected
-        ? prev.detectionMethods.filter((m) => m !== method)
-        : [...prev.detectionMethods, method],
-    };
-  });
-}
-
+  const buttonStyle = {
+  padding: "0.5rem 1rem",
+  fontSize: "1rem",
+  border: "none",
+  borderRadius: "6px",
+  cursor: "pointer",
+  whiteSpace: "nowrap",
+  backgroundColor: "#666",
+  color: "#fff",
+};
   return (
     <div style={{
       fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
