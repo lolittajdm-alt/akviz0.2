@@ -390,115 +390,217 @@ export default function Home() {
           </div>
         </div>        {/* ... продовження Азимут, Курс, Відстань, Висота, Вияв — пропущено тут для стислості ... */}
 
-        {/* Опис */}
-        <div style={blockMargin}>
-          <div style={labelStyle}>Опис</div>
-          <div style={{ display: "flex", gap: "0.3rem" }}>
-            <button
-              onClick={() => setForm(f => ({ ...f, description: "Змінила звук" }))}
-              style={{ ...buttonStyle, flex: 1, backgroundColor: form.description === "Змінила звук" ? "#4caf50" : "#666" }}
-            >Змінила звук</button>
-            <button
-              onClick={() => setForm(f => ({ ...f, description: "Змінила курс" }))}
-              style={{ ...buttonStyle, flex: 1, backgroundColor: form.description === "Змінила курс" ? "#4caf50" : "#666" }}
-            >Змінила курс</button>
-          </div>
-        </div>
-
-        {/* Інша інформація */}
+                {/* Азимут */}
         <div style={{ ...blockMargin, display: "flex", flexDirection: "column" }}>
-          <div style={labelStyle}>Інша інформація про ціль або застосування</div>
-          <textarea
-            name="description"
-            value={form.description}
-            onChange={handleChange}
-            placeholder="Інша інформація про ціль або застосування"
+          <div style={labelStyle}>Азимут°*</div>
+          <input
+            type="text"
+            value={form.azimuth ? `${form.azimuth}°` : ""}
+            onChange={onAzimuthChange}
+            placeholder="0 – 359"
+            maxLength={4}
             style={{
-              width: "100%", padding: "0.5rem", borderRadius: "6px", border: "none",
-              backgroundColor: "transparent", color: "#fff", fontSize: "1rem", boxSizing: "border-box",
-              minHeight: "4rem", resize: "vertical", outline: "none"
+              width: "100%", padding: "0.5rem", borderRadius: "6px",
+              backgroundColor: "transparent", color: "#fff", fontSize: "1rem",
+              boxSizing: "border-box", outline: "none",
+              border: form.azimuth.trim() === "" || !validateAzimuth(form.azimuth)
+                ? "1px solid #ff6666" : "none"
             }}
           />
+          {(form.azimuth.trim() === "" || !validateAzimuth(form.azimuth)) && (
+            <div style={errorStyle}>Поле має бути заповненим та мати значення між 0°–359°</div>
+          )}
         </div>
 
-        {/* Звіт */}
-        <div style={{ ...blockMargin, marginTop: "2rem" }}>
-          <h2 style={{ ...labelStyle, marginBottom: "0.5rem" }}>Звіт</h2>
-          <div style={{
-            backgroundColor: "transparent", color: "#fff", padding: "1rem",
-            borderRadius: "6px", whiteSpace: "pre-wrap", fontFamily: "monospace"
-          }}>
-{`
-Сектор: ${form.sector}
-Підрозділ: ${form.subdivision}
-Позиція: ${form.position}
-Населений пункт: ${form.location}
-Ціль: ${form.selectedGoals.join(", ")}
-Сторона: ${form.side || ""}
-Номер цілі: ${form.noIssue ? "Без видачі" : form.targetNumber}
-Назва: ${form.name || ""}
-Кількість: ${form.quantity} од.
-Азимут: ${form.azimuth ? form.azimuth + "°" : ""}
-Курс: ${form.course ? form.course + "°" : ""}
-Відстань: ${form.distance ? form.distance + " м" : ""}
-Висота: ${form.height ? form.height + " м" : ""}
-Результат: ${form.result || ""}
-Опис: ${form.description}
-Час: ${form.time}
-`}
-          </div>
+        {/* Курс */}
+        <div style={{ ...blockMargin, display: "flex", flexDirection: "column" }}>
+          <div style={labelStyle}>Курс°*</div>
+          <input
+            type="text"
+            value={form.course ? `${form.course}°` : ""}
+            onChange={onCourseChange}
+            placeholder="0 – 359"
+            maxLength={4}
+            style={{
+              width: "100%", padding: "0.5rem", borderRadius: "6px",
+              backgroundColor: "transparent", color: "#fff", fontSize: "1rem",
+              boxSizing: "border-box", outline: "none",
+              border: form.course.trim() === "" || !validateCourse(form.course)
+                ? "1px solid #ff6666" : "none"
+            }}
+          />
+          {(form.course.trim() === "" || !validateCourse(form.course)) && (
+            <div style={errorStyle}>Поле має бути заповненим та мати значення між 0°–359°</div>
+          )}
         </div>
 
-        {/* Кнопки */}
-        <div style={{ display: "flex", gap: "1rem", marginBottom: "1rem" }}>
-          <button
-            onClick={copyToClipboard}
-            style={{ ...buttonStyle, flex: 1, backgroundColor: "#1e90ff" }}
-          >Копіювати</button>
-          <button
-            onClick={openWhatsApp}
-            style={{ ...buttonStyle, flex: 1, backgroundColor: "#25d366" }}
-          >Відкрити WhatsApp</button>
-        </div>
-      </div>
-
-      {/* Модалка вибору зброї */}
-      {showWeaponModal && (
-        <div style={{
-          position: "fixed", top: 0, left: 0, width: "100vw", height: "100vh",
-          backgroundColor: "rgba(0,0,0,0.6)", display: "flex",
-          alignItems: "center", justifyContent: "center"
-        }}>
-          <div style={{
-            backgroundColor: "#222", padding: "1rem", borderRadius: "8px",
-            maxWidth: "90%", width: 320
-          }}>
-            <h2 style={{ color: "#fff", marginBottom: "0.5rem" }}>Вибір зброї</h2>
-            <div style={{ display: "flex", flexDirection: "column", gap: "0.4rem" }}>
-              {Object.keys(ammoCalibers).map(w => (
+        {/* Відстань */}
+        <div style={{ ...blockMargin, display: "flex", flexDirection: "column" }}>
+          <div style={labelStyle}>Відстань, м*</div>
+          <input
+            type="text"
+            value={form.distance}
+            onChange={onDistanceChange}
+            placeholder="Відстань до цілі"
+            style={{
+              width: "100%", padding: "0.5rem", borderRadius: "6px",
+              backgroundColor: "transparent", color: "#fff", fontSize: "1rem",
+              boxSizing: "border-box", outline: "none",
+              border: form.distance.trim() === "" || !validateDistance(form.distance)
+                ? "1px solid #ff6666" : "none"
+            }}
+          />
+          {(form.distance.trim() === "" || !validateDistance(form.distance)) && (
+            <div style={errorStyle}>Поле має бути заповненим та мати значення більше 0</div>
+          )}
+          <div style={{ display: "flex", gap: "0.3rem", marginTop: "0.3rem" }}>
+            {[{ label: "+100", delta: 100 }, { label: "+1000", delta: 1000 },
+              { label: "-100", delta: -100 }, { label: "-1000", delta: -1000 }]
+              .map(({ label, delta }) => (
                 <button
-                  key={w}
-                  onClick={() => {
-                    setAmmoList(l => l.includes(w) ? l : [...l, w]);
-                    setShowWeaponModal(false);
-                  }}
-                  style={{
-                    ...buttonStyle,
-                    backgroundColor: ammoList.includes(w) ? "#4caf50" : "#666"
-                  }}
-                >{w}</button>
+                  key={label}
+                  onClick={() => changeDistance(delta)}
+                  style={{ ...buttonStyle, flex: 1 }}
+                >{label}</button>
               ))}
-            </div>
-            <button
-              onClick={() => setShowWeaponModal(false)}
-              style={{
-                marginTop: "0.8rem", ...buttonStyle,
-                backgroundColor: "#1e90ff", width: "100%"
-              }}
-            >Закрити</button>
           </div>
         </div>
-      )}
-    </div>
-  );
-}
+
+        {/* Висота */}
+        <div style={{ ...blockMargin, display: "flex", flexDirection: "column" }}>
+          <div style={labelStyle}>Висота, м*</div>
+          <input
+            type="text"
+            value={form.height}
+            onChange={onHeightChange}
+            placeholder="Висота над рівнем моря"
+            style={{
+              width: "100%", padding: "0.5rem", borderRadius: "6px",
+              backgroundColor: "transparent", color: "#fff", fontSize: "1rem",
+              boxSizing: "border-box", outline: "none",
+              border: form.height.trim() === "" || !validateHeight(form.height)
+                ? "1px solid #ff6666" : "none"
+            }}
+          />
+          {(form.height.trim() === "" || !validateHeight(form.height)) && (
+            <div style={errorStyle}>Поле має бути заповненим та містити тільки число</div>
+          )}
+        </div>
+        <div style={{ display: "flex", gap: "0.3rem", marginBottom: "0.3rem" }}>
+          {[{ label: "+100 м", delta: 100 }, { label: "+500 м", delta: 500 },
+            { label: "-100 м", delta: -100 }, { label: "-500 м", delta: -500 }]
+            .map(({ label, delta }) => (
+              <button
+                key={label}
+                onClick={() => changeHeight(delta)}
+                style={{ ...buttonStyle, flex: 1 }}
+              >{label}</button>
+            ))}
+        </div>
+
+        {/* Вияв */}
+        <div style={blockMargin}>
+          <div style={labelStyle}>Вияв</div>
+          <div style={{ display: "flex", gap: "0.3rem", flexWrap: "nowrap" }}>
+            {["Акустично", "Радіолокаційно", "Візуально"].map(m => (
+              <button
+                key={m}
+                onClick={() => {
+                  setForm(f => ({
+                    ...f,
+                    detectionMethods: f.detectionMethods.includes(m)
+                      ? f.detectionMethods.filter(x => x !== m)
+                      : [...f.detectionMethods, m]
+                  }));
+                }}
+                style={{
+                  ...buttonStyle, flex: 1,
+                  backgroundColor: form.detectionMethods.includes(m) ? "#4caf50" : "#666"
+                }}
+              >{m}</button>
+            ))}
+            <button
+              disabled={!form.detectionMethods.includes("Візуально")}
+              onClick={() => {
+                const key = "Із застосуванням приладів спостереження";
+                setForm(f => ({
+                  ...f,
+                  detectionMethods: f.detectionMethods.includes(key)
+                    ? f.detectionMethods.filter(x => x !== key)
+                    : [...f.detectionMethods, key]
+                }));
+              }}
+              style={{
+                ...buttonStyle, flex: 1,
+                backgroundColor: form.detectionMethods.includes("Із застосуванням приладів спостереження") ? "#4caf50" : "#666",
+                cursor: form.detectionMethods.includes("Візуально") ? "pointer" : "not-allowed"
+              }}
+            >
+              Із застосуванням приладів спостереження
+            </button>
+          </div>
+        </div>
+
+        {/* Час */}
+        <div style={{ ...blockMargin, display: "flex", flexDirection: "column" }}>
+          <div style={{ ...labelStyle, marginBottom: "0.3rem" }}>Час</div>
+          <input
+            type="text"
+            value={form.time}
+            readOnly
+            style={{
+              ...inputStyle(), width: "100%", boxSizing: "border-box", marginBottom: "0.5rem"
+            }}
+          />
+          <div style={{ display: "flex", gap: "0.3rem" }}>
+            <button onClick={setTimeNow} style={{ ...buttonStyle, flex: 1, backgroundColor: "#4caf50" }}>Щойно</button>
+            <button onClick={() => changeTimeByMinutes(1)} style={{ ...buttonStyle, flex: 1, backgroundColor: "#4caf50" }}>+1 хв</button>
+            <button onClick={() => changeTimeByMinutes(-1)} style={{ ...buttonStyle, flex: 1, backgroundColor: "#a94442" }}>-1 хв</button>
+          </div>
+        </div>
+
+        {/* Результат */}
+        <div style={blockMargin}>
+          <div style={labelStyle}>Результат</div>
+          <div style={{ display: "flex", gap: "0.3rem" }}>
+            {["Виявлено", "Обстріляно", "Уражено"].map(r => (
+              <button
+                key={r}
+                onClick={() => setForm(f => ({ ...f, result: r }))}
+                style={{
+                  ...buttonStyle, flex: 1,
+                  backgroundColor: form.result === r ? "#4caf50" : "#666"
+                }}
+              >{r}</button>
+            ))}
+          </div>
+        </div>
+
+        {/* Розхід БК */}
+        <div style={blockMargin}>
+          <div style={labelStyle}>Розхід БК</div>
+          <button
+            onClick={() => setShowWeaponModal(true)}
+            style={{ ...buttonStyle, width: "100%", backgroundColor: "#444" }}
+          >Вибрати наявні типи зброї</button>
+          {ammoList.map(w => (
+            <div
+              key={w}
+              style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginTop: "0.4rem" }}
+            >
+              <div style={{ flex: 2 }}>{w} – {ammoCalibers[w]}</div>
+              <input
+                type="number"
+                min={0}
+                placeholder="шт."
+                value={ammoQuantities[w] ?? ""}
+                onChange={e => setAmmoQuantities(q => ({ ...q, [w]: Number(e.target.value) }))}
+                style={{
+                  flex: 1, padding: "0.3rem", borderRadius: "4px", border: "none",
+                  backgroundColor: "transparent", color: "#fff", fontSize: "0.9rem",
+                  textAlign: "center", outline: "none"
+                }}
+              />
+            </div>
+          ))}
+        </div>
