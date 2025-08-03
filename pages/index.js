@@ -317,9 +317,9 @@ ${copyToClipboard()}
       color: "#fff", minHeight: "100vh", padding: "2rem"
     }}>
       <div style={{ maxWidth: 600, margin: "0 auto" }}>
-        <h1 style={{ textAlign:"center", fontSize:"3rem", marginBottom:"1rem" }}>
-          ««Доповідь»»
-        </h1>
+        <h1 style={{ textAlign: "left", fontSize: "1.5rem", marginBottom: "1rem" }}>
+  АкВіз 2.0
+</h1>
 
         {/* Сектор/Підрозділ/Позиція/Нас. пункт */}
         {[
