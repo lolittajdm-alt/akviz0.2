@@ -530,9 +530,7 @@ ${copyToClipboard()}
 
         {/* Вияв */}
 <div style={{ marginBottom: "1rem" }}>
-  <label style={{ display: "block", marginBottom: "0.5rem", fontSize: "1.1rem" }}>
-    Вияв
-  </label>
+  <div style={labelStyle}>Вияв</div>
 
   <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
     {["Акустично", "Радіолокаційно", "Візуально"].map((method) => (
@@ -540,15 +538,9 @@ ${copyToClipboard()}
         key={method}
         onClick={() => toggleDetection(method)}
         style={{
-          padding: "0.5rem 1rem",
-          borderRadius: "6px",
-          border: "none",
-          backgroundColor: form.detectionMethods.includes(method) ? "#1a8f00" : "#e0e0e0",
-          color: form.detectionMethods.includes(method) ? "#fff" : "#000",
-          whiteSpace: "nowrap",
+          ...buttonStyle,
           flex: "1 1 auto",
-          fontWeight: "bold",
-          cursor: "pointer"
+          backgroundColor: form.detectionMethods.includes(method) ? "#4caf50" : buttonStyle.backgroundColor
         }}
       >
         {method}
@@ -559,15 +551,9 @@ ${copyToClipboard()}
     <button
       onClick={() => toggleDetection("Із застосуванням приладів спостереження")}
       style={{
-        padding: "0.5rem 1rem",
-        borderRadius: "6px",
-        border: "none",
-        backgroundColor: form.detectionMethods.includes("Із застосуванням приладів спостереження") ? "#1a8f00" : "#e0e0e0",
-        color: form.detectionMethods.includes("Із застосуванням приладів спостереження") ? "#fff" : "#000",
-        whiteSpace: "nowrap",
+        ...buttonStyle,
         width: "100%",
-        fontWeight: "bold",
-        cursor: "pointer"
+        backgroundColor: form.detectionMethods.includes("Із застосуванням приладів спостереження") ? "#4caf50" : buttonStyle.backgroundColor
       }}
     >
       Із застосуванням приладів спостереження
