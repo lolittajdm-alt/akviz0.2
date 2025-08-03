@@ -489,74 +489,41 @@ ${copyToClipboard()}
         </div>
 
         {/* Висота */}
-        <div style={{ ...blockMargin, display:"flex", flexDirection:"column" }}>
-          <div style={labelStyle}>Висота, м*</div>
-          <input
-            type="text"
-            value={form.height}
-            onChange={onHeightChange}
-            placeholder="Висота над рівнем моря"
-            style={{
-              width:"100%",padding:"0.5rem",borderRadius:"6px",
-              backgroundColor:"#222",color:"#fff",fontSize:"1rem",
-              boxSizing:"border-box",
-              border: form.height.trim()===""||!validateHeight(form.height)?"1px solid #ff6666":"none"
-            }}
-          />
-          {(form.height.trim()===""||!validateHeight(form.height))&&(
-            <div style={errorStyle}>Поле має бути заповненим та містити тільки число</div>
-          )}
-        </div>
-        <div style={{ display:"flex", gap:"0.3rem", marginBottom:"0.3rem" }}>
-          {[{label:"+100 м",delta:100},{label:"+500 м",delta:500},{label:"-100 м",delta:-100},{label:"-500 м",delta:-500}]
-            .map(({label,delta})=>(
-            <button
-              key={label}
-              onClick={()=>changeHeight(delta)}
-              style={{...buttonStyle,flex:1}}
-            >{label}</button>
-          ))}
-        </div>
+        {/* Методи виявлення */}
+<div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
+  {["Акустично", "Радіолокаційно", "Візуально"].map((method) => (
+    <button
+      key={method}
+      onClick={() => toggleDetection(method)}
+      style={{
+        padding: "0.5rem 1rem",
+        borderRadius: "6px",
+        border: "1px solid #999",
+        backgroundColor: form.detectionMethods.includes(method) ? "#222" : "transparent",
+        color: form.detectionMethods.includes(method) ? "#fff" : "#000",
+        whiteSpace: "nowrap",
+        flex: "1 1 auto"
+      }}
+    >
+      {method}
+    </button>
+  ))}
 
-        {/* Вияв */}
-        <div style={blockMargin}>
-          <div style={labelStyle}>Вияв</div>
-          <div style={{ display:"flex", gap:"0.3rem", flexWrap:"nowrap" }}>
-            {["Акустично","Радіолокаційно","Візуально"].map(m=>(
-              <button
-                key={m}
-                onClick={()=>{ setForm(f=>({
-                  ...f,
-                  detectionMethods: f.detectionMethods.includes(m)
-                    ? f.detectionMethods.filter(x=>x!==m)
-                    : [...f.detectionMethods,m]
-                }));}}
-                style={{
-                  ...buttonStyle,flex:1,
-                  backgroundColor: form.detectionMethods.includes(m)?"#4caf50":"#666"
-                }}
-              >{m}</button>
-            ))}
-            <button
-              disabled={!form.detectionMethods.includes("Візуально")}
-              onClick={()=>{ const key="Із застосуванням приладів спостереження";
-                setForm(f=>({
-                  ...f,
-                  detectionMethods: f.detectionMethods.includes(key)
-                    ? f.detectionMethods.filter(x=>x!==key)
-                    : [...f.detectionMethods,key]
-                }));
-              }}
-              style={{
-                ...buttonStyle,flex:1,
-                backgroundColor: form.detectionMethods.includes("Із застосуванням приладів спостереження")?"#4caf50":"#666",
-                cursor: form.detectionMethods.includes("Візуально")?"pointer":"not-allowed"
-              }}
-            >
-              Із застосуванням приладів спостереження
-            </button>
-          </div>
-        </div>
+  {/* 4-та кнопка окремо на всю ширину */}
+  <button
+    onClick={() => toggleDetection("Із застосуванням приладів спостереження")}
+    style={{
+      padding: "0.5rem 1rem",
+      borderRadius: "6px",
+      border: "1px solid #999",
+      backgroundColor: form.detectionMethods.includes("Із застосуванням приладів спостереження") ? "#222" : "transparent",
+      color: form.detectionMethods.includes("Із застосуванням приладів спостереження") ? "#fff" : "#000",
+      width: "100%"
+    }}
+  >
+    Із застосуванням приладів спостереження
+  </button>
+</div>
 
         {/* Час */}
         <div style={{ ...blockMargin, display:"flex", flexDirection:"column" }}>
