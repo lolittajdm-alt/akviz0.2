@@ -219,8 +219,6 @@ export default function Home() {
     form.result ? `ПП: ${form.result}` : null,
     form.description ? `Опис: ${form.description}` : null
   ].filter(Boolean).join("\n");
-
-+
   navigator.clipboard.writeText(txt);
   alert("Скопійовано!");
   return txt;
