@@ -354,26 +354,38 @@ ${copyToClipboard()}
         ))}
 
         {/* Ціль */}
-        <div style={blockMargin}>
-          <div style={labelStyle}>Ціль</div>
-          <div style={{ display:"flex", flexWrap:"wrap", gap:"0.3rem" }}>
-            {goalsList.map(g=>(
-              <button
-                key={g}
-                onClick={()=>toggleGoal(g)}
-                style={{
-                  ...buttonStyle,
-                  backgroundColor: form.selectedGoals.includes(g)?"#4caf50":"#666"
-                }}
-              >
-                {g}
-              </button>
-            ))}
-            <button onClick={resetGoals} style={{...buttonStyle, backgroundColor:"#4caf50"}}>
-              Оновити
-            </button>
-          </div>
-        </div>
+<div style={blockMargin}>
+  <div style={labelStyle}>Ціль</div>
+  <div style={{
+    display: "flex",
+    flexWrap: "wrap",
+    gap: "0.3rem"
+  }}>
+    {goalsList.map(g => (
+      <button
+        key={g}
+        onClick={() => toggleGoal(g)}
+        style={{
+          ...buttonStyle,
+          flex: "1 1 calc(50% - 0.3rem)",
+          backgroundColor: form.selectedGoals.includes(g) ? "#4caf50" : buttonStyle.backgroundColor
+        }}
+      >
+        {g}
+      </button>
+    ))}
+    <button
+      onClick={resetGoals}
+      style={{
+        ...buttonStyle,
+        width: "100%",
+        backgroundColor: "#4caf50"
+      }}
+    >
+      Оновити
+    </button>
+  </div>
+</div>
 
         {/* Сторона */}
         <div style={blockMargin}>
