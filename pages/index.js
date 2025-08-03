@@ -90,15 +90,16 @@ const updateTime = () => {
   }));
 };
 useEffect(updateTime, []);
-  // ——— Відновлення стану блокування (locks) ———
+
+// ——— Відновлення стану блокування (locks) з localStorage ———
 useEffect(() => {
   const saved = localStorage.getItem("report_locks");
   if (saved) {
     try {
       const parsed = JSON.parse(saved);
-      setLocks(l => ({ ...l, ...parsed }));
+      setLocks(prev => ({ ...prev, ...parsed }));
     } catch (err) {
-      console.error("Помилка при читанні з localStorage:", err);
+      console.error("Помилка при читанні locks з localStorage:", err);
     }
   }
 }, []);
@@ -142,7 +143,6 @@ useEffect(() => {
     localStorage.setItem("report_locks", JSON.stringify(updated));
     return updated;
   });
-};
 };
   const isEmpty = field => !form[field]?.trim();
 
