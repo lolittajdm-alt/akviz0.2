@@ -669,7 +669,7 @@ ${copyToClipboard()}
 К: ${form.course ? form.course + "°" : ""}
 НП: ${form.location}
 Час: ${form.time}
-
+Результат: ${form.result || ""}
 ПП: ${form.result || ""}
 Опис: ${form.description}
 `}
