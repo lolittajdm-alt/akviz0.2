@@ -355,7 +355,7 @@ useEffect(() => {
     Оновити
   </button>
 </div>
-{/* Кнопка Показати/Приховати поля */}
+{/* Кнопка Показати/Приховати */}
 <button
   onClick={() => setShowTopFields(prev => !prev)}
   style={{
@@ -366,7 +366,9 @@ useEffect(() => {
 >
   {showTopFields ? "Приховати поля" : "Показати поля"}
 </button>
-        {showTopFields && (
+
+{/* Умовний блок з 4 полями */}
+{showTopFields && (
   <>
     {/* Сектор */}
     <div style={blockMargin}>
