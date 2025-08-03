@@ -515,11 +515,12 @@ ${copyToClipboard()}
           padding: "0.5rem 1rem",
           borderRadius: "6px",
           border: "none",
-          backgroundColor: form.detectionMethods.includes(method) ? "#1a8f00" : "#ddd",
+          backgroundColor: form.detectionMethods.includes(method) ? "#1a8f00" : "#e0e0e0",
           color: form.detectionMethods.includes(method) ? "#fff" : "#000",
           whiteSpace: "nowrap",
           flex: "1 1 auto",
-          fontWeight: "bold"
+          fontWeight: "bold",
+          cursor: "pointer"
         }}
       >
         {method}
@@ -533,11 +534,12 @@ ${copyToClipboard()}
         padding: "0.5rem 1rem",
         borderRadius: "6px",
         border: "none",
-        backgroundColor: form.detectionMethods.includes("Із застосуванням приладів спостереження") ? "#1a8f00" : "#ddd",
+        backgroundColor: form.detectionMethods.includes("Із застосуванням приладів спостереження") ? "#1a8f00" : "#e0e0e0",
         color: form.detectionMethods.includes("Із застосуванням приладів спостереження") ? "#fff" : "#000",
         whiteSpace: "nowrap",
         width: "100%",
-        fontWeight: "bold"
+        fontWeight: "bold",
+        cursor: "pointer"
       }}
     >
       Із застосуванням приладів спостереження
