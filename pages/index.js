@@ -335,9 +335,18 @@ useEffect(() => {
   }}
 >
       <div style={{ maxWidth: 600, margin: "0 auto" }}>
-        <h1 style={{ textAlign: "left", fontSize: "1.5rem", marginBottom: "1rem" }}>
-  АкВіз 2.0
-</h1>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}>
+  <h1 style={{ fontSize: "1.5rem", margin: 0 }}>АкВіз 2.0</h1>
+  <button
+    onClick={() => window.location.reload()}
+    style={{
+      ...buttonStyle,
+      backgroundColor: "#444"  // Темний, як інші
+    }}
+  >
+    Оновити
+  </button>
+</div>
 
         {/* Сектор/Підрозділ/Позиція/Нас. пункт */}
         {[
