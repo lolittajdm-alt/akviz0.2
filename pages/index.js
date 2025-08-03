@@ -383,17 +383,18 @@ ${copyToClipboard()}
         {/* Назва */}
 <div style={blockMargin}>
   <div style={labelStyle}>Назва</div>
-  <div style={{ display: "flex", gap: "0.3rem" }}>
-    {namesList.map(n => (
+
+  <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
+    {namesList.map((n) => (
       <button
         key={n}
         onClick={() => selectName(n)}
         disabled={!form.selectedGoals.includes("БПЛА")}
         style={{
           ...buttonStyle,
-          flex: 1,
-          backgroundColor: form.name === n ? "#4caf50" : "#666",
-          opacity: form.selectedGoals.includes("БПЛА") ? 1 : 0.5
+          flex: "1 1 auto",
+          opacity: form.selectedGoals.includes("БПЛА") ? 1 : 0.5,
+          backgroundColor: form.name === n ? "#4caf50" : buttonStyle.backgroundColor,
         }}
       >
         {n}
@@ -401,7 +402,6 @@ ${copyToClipboard()}
     ))}
   </div>
 </div>
-
         {/* Кількість */}
         <div style={blockMargin}>
           <div style={{ ...labelStyle, marginBottom:"0.3rem" }}>
