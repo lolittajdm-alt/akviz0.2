@@ -660,13 +660,13 @@ ${copyToClipboard()}
             borderRadius:"6px",whiteSpace:"pre-wrap",fontFamily:"monospace"
           }}>
 {`
-П: ${form.sector} ${form.subdivision} ${form.position}
-Ціль: ${form.selectedGoals.join(", ")} ${form.side || ""} ${form.noIssue ? "Без видачі" : form.targetNumber} 
+П: ${form.sector} , ${form.subdivision} , ${form.position}
+Ціль: ${form.selectedGoals.join(", ")}, ${form.side || ""} , ${form.noIssue ? "Без видачі" : form.targetNumber} 
 Висота: ${form.height ? form.height + " м" : ""}
-Відстань: ${form.distance ? form.distance + " м" : ""}
+Відстань: ${form.distance ? form.distance + " м" : ""}+ м
 Кількість: ${form.quantity} од.
-Азимут: ${form.azimuth ? form.azimuth + "°" : ""}
-Курс: ${form.course ? form.course + "°" : ""}
+А: ${form.azimuth ? form.azimuth + "°" : ""}
+К: ${form.course ? form.course + "°" : ""}
 НП: ${form.location}
 Час: ${form.time}
 
