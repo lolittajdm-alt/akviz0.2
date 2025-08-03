@@ -222,10 +222,7 @@ export default function Home() {
   };
   const openWhatsApp = () => {
     const txt = encodeURIComponent(`
-Сектор: ${form.sector}
-Підрозділ: ${form.subdivision}
-Позиція: ${form.position}
-Населений пункт: ${form.location}
+П: ${form.sector} / {form.subdivision} / {form.position}
 Ціль: ${form.selectedGoals.join(", ")}
 Сторона: ${form.side || ""}
 Номер цілі: ${form.noIssue ? "Без видачі" : form.targetNumber}
@@ -233,6 +230,7 @@ export default function Home() {
 Кількість: ${form.quantity} од.
 Азимут: ${form.azimuth ? form.azimuth + "°" : ""}
 Курс: ${form.course ? form.course + "°" : ""}
+Населений пункт: ${form.location}
 Відстань: ${form.distance ? form.distance + " м" : ""}
 Висота: ${form.height ? form.height + " м" : ""}
 Результат: ${form.result || ""}
