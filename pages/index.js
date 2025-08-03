@@ -700,11 +700,11 @@ ${copyToClipboard()}
 
         {/* Звіт */}
         <div style={{...blockMargin,marginTop:"2rem"}}>
-          <h2 style={{...labelStyle,marginBottom:"0.5rem"}}>Звіт</h2>
-          <div style={{
-            backgroundColor:"transparent",color:"#fff",padding:"1rem",
-            borderRadius:"6px",whiteSpace:"pre-wrap",fontFamily:"monospace"
-          }}>
+  <h2 style={{...labelStyle,marginBottom:"0.5rem"}}>Звіт</h2>
+  <div style={{
+    backgroundColor:"transparent",color:"#fff",padding:"1rem",
+    borderRadius:"6px",whiteSpace:"pre-wrap",fontFamily:"monospace"
+  }}>
 {`
 П: ${form.sector},${form.subdivision},${form.position}
 Ціль: ${form.selectedGoals.join(", ")},${form.side || ""},${form.noIssue ? "Без видачі" : form.targetNumber}
@@ -713,12 +713,13 @@ ${copyToClipboard()}
 Кількість: ${form.quantity} од.
 А: ${form.azimuth ? form.azimuth + "°" : ""}
 К: ${form.course ? form.course + "°" : ""}
+Вияв: ${form.detectionMethods.length ? form.detectionMethods.join(", ") : ""}
 НП: ${form.location}
 Ч: ${form.time}
 ПП: ${form.result || ""}
 `}
-          </div>
-        </div>
+  </div>
+</div>
 
         {/* Дії */}
         <div style={{display:"flex",gap:"1rem",marginBottom:"1rem"}}>
