@@ -263,6 +263,17 @@ ${copyToClipboard()}
     marginBottom: "0.2rem",
     fontWeight: 600,
   };
+  function toggleDetection(method) {
+  setForm((prev) => {
+    const alreadySelected = prev.detectionMethods.includes(method);
+    return {
+      ...prev,
+      detectionMethods: alreadySelected
+        ? prev.detectionMethods.filter((m) => m !== method)
+        : [...prev.detectionMethods, method],
+    };
+  });
+}
 
   return (
     <div style={{
@@ -503,28 +514,30 @@ ${copyToClipboard()}
         style={{
           padding: "0.5rem 1rem",
           borderRadius: "6px",
-          border: "1px solid #999",
-          backgroundColor: form.detectionMethods.includes(method) ? "#222" : "transparent",
+          border: "none",
+          backgroundColor: form.detectionMethods.includes(method) ? "#1a8f00" : "#ddd",
           color: form.detectionMethods.includes(method) ? "#fff" : "#000",
           whiteSpace: "nowrap",
-          flex: "1 1 auto"
+          flex: "1 1 auto",
+          fontWeight: "bold"
         }}
       >
         {method}
       </button>
     ))}
 
-    {/* 4-та кнопка окремо на всю ширину, але зі стилем як у решти */}
+    {/* 4-та кнопка на всю ширину */}
     <button
       onClick={() => toggleDetection("Із застосуванням приладів спостереження")}
       style={{
         padding: "0.5rem 1rem",
         borderRadius: "6px",
-        border: "1px solid #999",
-        backgroundColor: form.detectionMethods.includes("Із застосуванням приладів спостереження") ? "#222" : "transparent",
+        border: "none",
+        backgroundColor: form.detectionMethods.includes("Із застосуванням приладів спостереження") ? "#1a8f00" : "#ddd",
         color: form.detectionMethods.includes("Із застосуванням приладів спостереження") ? "#fff" : "#000",
         whiteSpace: "nowrap",
-        width: "100%"
+        width: "100%",
+        fontWeight: "bold"
       }}
     >
       Із застосуванням приладів спостереження
