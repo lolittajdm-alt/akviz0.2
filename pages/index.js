@@ -713,9 +713,9 @@ ${copyToClipboard()}
 Кількість: ${form.quantity} од.
 А: ${form.azimuth ? form.azimuth + "°" : ""}
 К: ${form.course ? form.course + "°" : ""}
-Вияв: ${form.detectionMethods.length ? form.detectionMethods.join(", ") : ""}
 НП: ${form.location}
 Ч: ${form.time}
+Вияв: ${form.detectionMethods.length ? form.detectionMethods.join(", ") : ""}
 ПП: ${form.result || ""}
 `}
   </div>
