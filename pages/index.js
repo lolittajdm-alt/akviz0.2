@@ -263,17 +263,6 @@ ${copyToClipboard()}
     marginBottom: "0.2rem",
     fontWeight: 600,
   };
-  function toggleDetection(method) {
-  setForm((prev) => {
-    const alreadySelected = prev.detectionMethods.includes(method);
-    return {
-      ...prev,
-      detectionMethods: alreadySelected
-        ? prev.detectionMethods.filter((m) => m !== method)
-        : [...prev.detectionMethods, method],
-    };
-  });
-}
 
   return (
     <div style={{
@@ -500,41 +489,35 @@ ${copyToClipboard()}
         </div>
 
         {/* Висота */}
-<div style={{ marginBottom: "1rem" }}>
-  <label
-    style={{
-      display: "block",
-      marginBottom: "0.5rem",
-      fontSize: "1.1rem",
-      color: errors.height ? "red" : "inherit"
-    }}
-  >
-    Висота
-  </label>
+        <div style={{ ...blockMargin, display:"flex", flexDirection:"column" }}>
+          <div style={labelStyle}>Висота, м*</div>
+          <input
+            type="text"
+            value={form.height}
+            onChange={onHeightChange}
+            placeholder="Висота над рівнем моря"
+            style={{
+              width:"100%",padding:"0.5rem",borderRadius:"6px",
+              backgroundColor:"#222",color:"#fff",fontSize:"1rem",
+              boxSizing:"border-box",
+              border: form.height.trim()===""||!validateHeight(form.height)?"1px solid #ff6666":"none"
+            }}
+          />
+          {(form.height.trim()===""||!validateHeight(form.height))&&(
+            <div style={errorStyle}>Поле має бути заповненим та містити тільки число</div>
+          )}
+        </div>
+        <div style={{ display:"flex", gap:"0.3rem", marginBottom:"0.3rem" }}>
+          {[{label:"+100 м",delta:100},{label:"+500 м",delta:500},{label:"-100 м",delta:-100},{label:"-500 м",delta:-500}]
+            .map(({label,delta})=>(
+            <button
+              key={label}
+              onClick={()=>changeHeight(delta)}
+              style={{...buttonStyle,flex:1}}
+            >{label}</button>
+          ))}
+        </div>
 
-  <input
-    type="text"
-    name="height"
-    value={form.height}
-    onChange={handleChange}
-    style={{
-      width: "100%",
-      padding: "0.5rem",
-      fontSize: "1rem",
-      backgroundColor: "transparent",
-      border: "none",
-      borderBottom: errors.height ? "2px solid red" : "1px solid #999",
-      outline: "none",
-      color: "#000"
-    }}
-  />
-
-  {errors.height && (
-    <div style={{ color: "red", fontSize: "0.9rem", marginTop: "0.2rem" }}>
-      Введіть числове значення (м)
-    </div>
-  )}
-</div>
         {/* Вияв */}
 <div style={{ marginBottom: "1rem" }}>
   <label style={{ display: "block", marginBottom: "0.5rem", fontSize: "1.1rem" }}>
