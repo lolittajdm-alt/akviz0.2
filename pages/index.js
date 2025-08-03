@@ -33,6 +33,36 @@ useEffect(() => {
     }
   }
 }, []);
+  // ——— Автоматичне визначення азимуту за сенсором ———
+useEffect(() => {
+  if (typeof window !== "undefined" && window.DeviceOrientationEvent) {
+    const handleOrientation = (event) => {
+      const alpha = event.alpha;
+      if (alpha !== null && !isNaN(alpha)) {
+        const azimuth = Math.round(alpha);
+        setForm((prev) => ({ ...prev, azimuth: String(azimuth) }));
+      }
+    };
+
+    if (
+      typeof DeviceOrientationEvent.requestPermission === "function"
+    ) {
+      DeviceOrientationEvent.requestPermission()
+        .then((response) => {
+          if (response === "granted") {
+            window.addEventListener("deviceorientation", handleOrientation);
+          }
+        })
+        .catch(console.error);
+    } else {
+      window.addEventListener("deviceorientation", handleOrientation);
+    }
+
+    return () => {
+      window.removeEventListener("deviceorientation", handleOrientation);
+    };
+  }
+}, []);
 
   // ——— Блокировки ———
   const [locks, setLocks] = useState({
@@ -597,25 +627,87 @@ useEffect(() => {
         </div>
 
         {/* Азимут */}
-        <div style={{ ...blockMargin, display:"flex", flexDirection:"column" }}>
-          <div style={labelStyle}>Азимут°*</div>
-          <input
-            type="text"
-            value={form.azimuth?`${form.azimuth}°`:""}
-            onChange={onAzimuthChange}
-            placeholder="0 – 359"
-            maxLength={4}
-            style={{
-              width:"100%",padding:"0.5rem",borderRadius:"6px",
-              backgroundColor:"#222",color:"#fff",fontSize:"1rem",
-              boxSizing:"border-box",
-              border: form.azimuth.trim()===""||!validateAzimuth(form.azimuth)?"1px solid #ff6666":"none"
-            }}
-          />
-          {(form.azimuth.trim()===""||!validateAzimuth(form.azimuth))&&(
-            <div style={errorStyle}>Поле має бути заповненим та мати значення між 0°–359°</div>
-          )}
-        </div>
+<div style={{ ...blockMargin, display: "flex", flexDirection: "column" }}>
+  <div style={labelStyle}>Азимут°*</div>
+
+  <div style={{ display: "flex", gap: "0.5rem" }}>
+    <input
+      type="text"
+      value={form.azimuth ? `${form.azimuth}°` : ""}
+      onChange={onAzimuthChange}
+      placeholder="0 – 359"
+      maxLength={4}
+      style={{
+        flex: 1,
+        padding: "0.5rem",
+        borderRadius: "6px",
+        backgroundColor: "#222",
+        color: "#fff",
+        fontSize: "1rem",
+        boxSizing: "border-box",
+        border:
+          form.azimuth.trim() === "" || !validateAzimuth(form.azimuth)
+            ? "1px solid #ff6666"
+            : "none",
+      }}
+    />
+
+    <button
+      onClick={() => {
+        if (
+          typeof DeviceOrientationEvent !== "undefined" &&
+          typeof DeviceOrientationEvent.requestPermission === "function"
+        ) {
+          DeviceOrientationEvent.requestPermission().then((res) => {
+            if (res === "granted") {
+              window.addEventListener(
+                "deviceorientation",
+                (e) => {
+                  if (e.alpha !== null) {
+                    const a = Math.round(e.alpha);
+                    setForm((f) => ({ ...f, azimuth: String(a) }));
+                  }
+                },
+                { once: true }
+              );
+            } else {
+              alert("Доступ до сенсорів не надано");
+            }
+          });
+        } else {
+          // Без запиту доступу (наприклад, Android)
+          window.addEventListener(
+            "deviceorientation",
+            (e) => {
+              if (e.alpha !== null) {
+                const a = Math.round(e.alpha);
+                setForm((f) => ({ ...f, azimuth: String(a) }));
+              }
+            },
+            { once: true }
+          );
+        }
+      }}
+      style={{
+        padding: "0.5rem 1rem",
+        border: "none",
+        borderRadius: "6px",
+        backgroundColor: "#4caf50",
+        color: "#fff",
+        cursor: "pointer",
+        whiteSpace: "nowrap",
+      }}
+    >
+      Авто
+    </button>
+  </div>
+
+  {(form.azimuth.trim() === "" || !validateAzimuth(form.azimuth)) && (
+    <div style={errorStyle}>
+      Поле має бути заповненим та мати значення між 0°–359°
+    </div>
+  )}
+</div>
 
         {/* Курс */}
         <div style={{ ...blockMargin, display:"flex", flexDirection:"column" }}>
