@@ -667,8 +667,8 @@ ${copyToClipboard()}
 Кількість: ${form.quantity} од.
 А: ${form.azimuth ? form.azimuth + "°" : ""}
 К: ${form.course ? form.course + "°" : ""}
-Населений пункт: ${form.location}
-Час: ${form.time}
+НП: ${form.location}
+Ч: ${form.time}
 ПП: ${form.description}
 `}
           </div>
