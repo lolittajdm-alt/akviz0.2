@@ -221,7 +221,7 @@ export default function Home() {
     form.description ? `Опис: ${form.description}` : null
   ].filter(Boolean).join("\n")
 );
-+
+
   navigator.clipboard.writeText(txt);
   alert("Скопійовано!");
   return txt;
