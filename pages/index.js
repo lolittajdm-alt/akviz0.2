@@ -660,9 +660,7 @@ ${copyToClipboard()}
             borderRadius:"6px",whiteSpace:"pre-wrap",fontFamily:"monospace"
           }}>
 {`
-Сектор: ${form.sector}
-Підрозділ: ${form.subdivision}
-Позиція: ${form.position}
+П: ${form.sector} / Підрозділ: ${form.subdivision} / Позиція: ${form.position}
 Населений пункт: ${form.location}
 Ціль: ${form.selectedGoals.join(", ")}
 Сторона: ${form.side || ""}
