@@ -287,42 +287,18 @@ useEffect(() => {
 
   // ——— Копировать/WhatsApp ———
   const copyToClipboard = () => {
-  const text = `
-П: ${form.sector},${form.subdivision},${form.position}
-Ціль: ${form.selectedGoals.join(", ")},${form.side || ""},${form.noIssue ? "Без видачі" : form.targetNumber}
-Висота: ${form.height ? form.height + " м" : ""}
-Відстань: ${form.distance ? form.distance + " м" : ""}
-Кількість: ${form.quantity} од.
-А: ${form.azimuth ? form.azimuth + "°" : ""}
-К: ${form.course ? form.course + "°" : ""}
-НП: ${form.location}
-Ч: ${form.time}
-Вияв: ${form.detectionMethods.length ? form.detectionMethods.join(", ") : ""}
-ПП: ${form.result || ""}
-Опис: ${[form.additionalInfo, form.description].filter(Boolean).join(". ")}
-`.trim();
-
+  if (!validateBeforeSend()) return;
+  const text = generateReportText();
   navigator.clipboard.writeText(text);
   alert("Скопійовано!");
 };
-  const openWhatsApp = () => {
-  const text = `
-П: ${form.sector},${form.subdivision},${form.position}
-Ціль: ${form.selectedGoals.join(", ")},${form.side || ""},${form.noIssue ? "Без видачі" : form.targetNumber}
-Висота: ${form.height ? form.height + " м" : ""}
-Відстань: ${form.distance ? form.distance + " м" : ""}
-Кількість: ${form.quantity} од.
-А: ${form.azimuth ? form.azimuth + "°" : ""}
-К: ${form.course ? form.course + "°" : ""}
-НП: ${form.location}
-Ч: ${form.time}
-Вияв: ${form.detectionMethods.length ? form.detectionMethods.join(", ") : ""}
-ПП: ${form.result || ""}
-Опис: ${form.description || ""}
-`.trim();
 
+const openWhatsApp = () => {
+  if (!validateBeforeSend()) return;
+  const text = generateReportText();
   const encoded = encodeURIComponent(text);
-
+  window.location.href = `whatsapp://send?text=${encoded}`;
+};
   // Використає системний WhatsApp (звичайний або бізнес)
   window.location.href = `whatsapp://send?text=${encoded}`;
 };
@@ -371,6 +347,32 @@ useEffect(() => {
     };
   });
 }
+  const generateReportText = () => {
+  return [
+    form.sector || form.subdivision || form.position
+      ? `П: ${[form.sector, form.subdivision, form.position].filter(Boolean).join(", ")}`
+      : null,
+    form.selectedGoals.length || form.side || form.targetNumber || form.noIssue
+      ? `Ціль: ${[
+          ...form.selectedGoals,
+          form.side,
+          form.noIssue ? "Без видачі" : form.targetNumber
+        ].filter(Boolean).join(", ")}`
+      : null,
+    form.height ? `Висота: ${form.height} м` : null,
+    form.distance ? `Відстань: ${form.distance} м` : null,
+    form.quantity ? `Кількість: ${form.quantity} од.` : null,
+    form.azimuth ? `А: ${form.azimuth}°` : null,
+    form.course ? `К: ${form.course}°` : null,
+    form.location ? `НП: ${form.location}` : null,
+    form.time ? `Ч: ${form.time}` : null,
+    form.detectionMethods.length ? `Вияв: ${form.detectionMethods.join(", ")}` : null,
+    form.result ? `ПП: ${form.result}` : null,
+    form.description?.trim() ? `Інше: ${form.description.trim()}` : null
+  ]
+    .filter(Boolean)
+    .join("\n");
+};
   return (
     <div
   style={{
@@ -1044,14 +1046,8 @@ useEffect(() => {
 </div>
         {/* Дії */}
         <div style={{display:"flex",gap:"1rem",marginBottom:"1rem"}}>
-          <button
-            onClick={copyToClipboard}
-            style={{...buttonStyle,flex:1,backgroundColor:"#1e90ff"}}
-          >Копіювати</button>
-          <button
-            onClick={openWhatsApp}
-            style={{...buttonStyle,flex:1,backgroundColor:"#25d366"}}
-          >Відкрити WhatsApp</button>
+          <button onClick={copyToClipboard}>Копіювати</button>
+<button onClick={openWhatsApp}>WhatsApp</button>
         </div>
       </div>
 
