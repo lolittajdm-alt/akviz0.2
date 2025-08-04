@@ -502,37 +502,34 @@ useEffect(() => {
   </>
 )}
 
-        {/* Ціль */}
+        {/* ——— Ціль ——— */}
 <div style={blockMargin}>
-  <div style={labelStyle}>Ціль</div>
-  <div style={{
-    display: "flex",
-    flexWrap: "wrap",
-    gap: "0.3rem"
-  }}>
-    {goalsList.map(g => (
-      <button
-        key={g}
-        onClick={() => toggleGoal(g)}
+  <label style={labelStyle}>Тип цілі</label>
+  <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
+    {goalsList.map((goal) => (
+      <label
+        key={goal}
         style={{
-          ...buttonStyle,
-          flex: "1 1 calc(50% - 0.3rem)",
-          backgroundColor: form.selectedGoals.includes(g) ? "#4caf50" : buttonStyle.backgroundColor
+          display: "flex",
+          alignItems: "center",
+          backgroundColor: form.selectedGoals.includes(goal) ? "#2e75ff" : "#333",
+          color: "#fff",
+          padding: "0.4rem 0.8rem",
+          borderRadius: "16px",
+          fontSize: "0.9rem",
+          cursor: "pointer",
+          userSelect: "none",
         }}
       >
-        {g}
-      </button>
+        <input
+          type="checkbox"
+          checked={form.selectedGoals.includes(goal)}
+          onChange={() => toggleGoal(goal)}
+          style={{ marginRight: "0.5rem" }}
+        />
+        {goal}
+      </label>
     ))}
-    <button
-      onClick={resetGoals}
-      style={{
-        ...buttonStyle,
-        width: "100%",
-        backgroundColor: "#4caf50"
-      }}
-    >
-      Оновити
-    </button>
   </div>
 </div>
 
