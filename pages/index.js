@@ -996,53 +996,22 @@ const openWhatsApp = () => {
         </div>
 
         {/* ——— Звіт ——— */}
-<div style={{ marginTop: "1.5rem" }}>
-  <label
-    style={{
-      fontSize: "0.8rem",
-      marginBottom: "0.5rem",
-      display: "block",
-      color: "#fff",
-    }}
-  >
-    Звіт
-  </label>
-  <pre
+<div style={blockMargin}>
+  <label style={labelStyle}>Звіт</label>
+  <div
     style={{
       whiteSpace: "pre-wrap",
-      fontSize: "clamp(0.9rem, 3vw, 1.1rem)",
-      backgroundColor: "#222",
-      padding: "1rem",
-      borderRadius: "10px",
+      background: "#111",
+      padding: "0.8rem",
+      borderRadius: "12px",
+      fontSize: "0.95rem",
       color: "#fff",
+      marginBottom: "1rem",
       minHeight: "6rem",
     }}
   >
-    {[
-      form.sector || form.subdivision || form.position
-        ? `П: ${[form.sector, form.subdivision, form.position].filter(Boolean).join(", ")}`
-        : null,
-      form.selectedGoals.length || form.side || form.targetNumber || form.noIssue
-        ? `Ціль: ${[
-            ...form.selectedGoals,
-            form.side,
-            form.noIssue ? "Без видачі" : form.targetNumber
-          ].filter(Boolean).join(", ")}`
-        : null,
-      form.height ? `Висота: ${form.height} м` : null,
-      form.distance ? `Відстань: ${form.distance} м` : null,
-      form.quantity ? `Кількість: ${form.quantity} од.` : null,
-      form.azimuth ? `А: ${form.azimuth}°` : null,
-      form.course ? `К: ${form.course}°` : null,
-      form.location ? `НП: ${form.location}` : null,
-      form.time ? `Ч: ${form.time}` : null,
-      form.detectionMethods.length ? `Вияв: ${form.detectionMethods.join(", ")}` : null,
-      form.result ? `ПП: ${form.result}` : null,
-      form.description?.trim() ? `Інше: ${form.description.trim()}` : null
-    ]
-      .filter(Boolean)
-      .join("\n")}
-  </pre>
+    {generateReportText()}
+  </div>
 </div>
         {/* Дії */}
         <div style={{display:"flex",gap:"1rem",marginBottom:"1rem"}}>
