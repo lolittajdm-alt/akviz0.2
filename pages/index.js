@@ -912,13 +912,13 @@ useEffect(() => {
           </div>
         </div>
 
-        {/* ——— Опис ——— */}
+        {/* ——— Результат ——— */}
 <div style={{ ...blockMargin, border: "1px solid #555", borderRadius: "12px", padding: "0.8rem" }}>
-  <label style={{ ...labelStyle, fontSize: "1rem", marginBottom: "0.5rem" }}>Опис</label>
+  <label style={{ ...labelStyle, fontSize: "1rem", marginBottom: "0.5rem" }}>Результат</label>
   <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", justifyContent: "space-between" }}>
-    {["Змінила звук", "Змінила курс"].map((desc) => (
+    {["Виявлено", "Обстріляно", "Уражено"].map((r) => (
       <label
-        key={desc}
+        key={r}
         style={{
           flex: "1 1 calc(50% - 0.5rem)",
           display: "flex",
@@ -928,9 +928,9 @@ useEffect(() => {
           fontSize: "0.9rem",
           cursor: "pointer",
           userSelect: "none",
-          background: form.description === desc ? "#2e75ff" : "transparent",
+          background: form.result === r ? "#2e75ff" : "transparent",
           color: "#fff",
-          border: form.description === desc ? "1px solid #2e75ff" : "1px solid #444",
+          border: form.result === r ? "1px solid #2e75ff" : "1px solid #444",
         }}
       >
         <span
@@ -941,16 +941,16 @@ useEffect(() => {
             marginRight: "0.5rem",
             border: "2px solid #ccc",
             borderRadius: "50%",
-            backgroundColor: form.description === desc ? "#2e75ff" : "transparent",
+            backgroundColor: form.result === r ? "#2e75ff" : "transparent",
           }}
         ></span>
         <input
           type="radio"
-          checked={form.description === desc}
-          onChange={() => setForm((f) => ({ ...f, description: desc }))}
+          checked={form.result === r}
+          onChange={() => setForm((f) => ({ ...f, result: r }))}
           style={{ display: "none" }}
         />
-        {desc}
+        {r}
       </label>
     ))}
   </div>
