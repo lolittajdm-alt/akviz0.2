@@ -371,12 +371,14 @@ useEffect(() => {
   return (
     <div
   style={{
-    minHeight: "100vh",
-    padding: "1rem",
-    backgroundColor: "#111", // Темніше
-    color: "#fff",           // Білий текст
-    fontFamily: "sans-serif"
-  }}
+  transform: "scale(0.9)",
+  transformOrigin: "top center",
+  minHeight: "100vh",
+  padding: "1rem",
+  backgroundColor: "#111",
+  color: "#fff",
+  fontFamily: "sans-serif",
+}}
 >
       <div style={{ maxWidth: 600, margin: "0 auto" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}>
