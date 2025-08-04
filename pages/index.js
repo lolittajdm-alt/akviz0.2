@@ -1044,46 +1044,47 @@ useEffect(() => {
       justifyContent: "space-between",
     }}
   >
-    {goalsList.map((goal) => {
-      const selected = form.selectedGoals.includes(goal);
-      return (
-        <label
-          key={goal}
+    {goalsList.map((goal) => (
+      <label
+        key={goal}
+        style={{
+          flex: "1 1 calc(50% - 0.5rem)",
+          display: "flex",
+          alignItems: "center",
+          padding: "0.3rem 0.6rem",
+          borderRadius: "8px",
+          fontSize: "0.9rem",
+          cursor: "pointer",
+          userSelect: "none",
+          background: form.selectedGoals.includes(goal) ? "#2e75ff" : "transparent",
+          color: "#fff",
+          border: form.selectedGoals.includes(goal)
+            ? "1px solid #2e75ff"
+            : "1px solid #444",
+        }}
+      >
+        <span
           style={{
-            flex: "1 1 calc(50% - 0.5rem)",
-            display: "flex",
-            alignItems: "center",
-            padding: "0.3rem 0.6rem",
-            borderRadius: "8px",
-            fontSize: "0.9rem",
-            cursor: "pointer",
-            userSelect: "none",
-            background: selected ? "#2e75ff" : "#333", // 🟦 вибране / 🟫 сіре
-            color: "#fff",
-            border: selected ? "1px solid #2e75ff" : "1px solid #444",
+            display: "inline-block",
+            width: "1rem",
+            height: "1rem",
+            marginRight: "0.5rem",
+            border: "2px solid #ccc",
+            borderRadius: "50%",
+            backgroundColor: form.selectedGoals.includes(goal)
+              ? "#2e75ff"
+              : "transparent",
           }}
-        >
-          <span
-            style={{
-              display: "inline-block",
-              width: "1rem",
-              height: "1rem",
-              marginRight: "0.5rem",
-              border: "2px solid #ccc",
-              borderRadius: "50%",
-              backgroundColor: selected ? "#2e75ff" : "transparent",
-            }}
-          ></span>
-          <input
-            type="checkbox"
-            checked={selected}
-            onChange={() => toggleGoal(goal)}
-            style={{ display: "none" }}
-          />
-          {goal}
-        </label>
-      );
-    })}
+        ></span>
+        <input
+          type="checkbox"
+          checked={form.selectedGoals.includes(goal)}
+          onChange={() => toggleGoal(goal)}
+          style={{ display: "none" }}
+        />
+        {goal}
+      </label>
+    ))}
   </div>
 </div>
           {/* Сторона */}
