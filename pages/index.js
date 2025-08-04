@@ -234,6 +234,11 @@ useEffect(() => {
   }, [form.noIssue, form.targetNumber]);
 
   // ——— Валидации ———
+  const validateAzimuth = v => /^\d{1,3}$/.test(v) && +v <= 359;
+  const validateCourse = v => /^\d{1,3}$/.test(v) && +v <= 359;
+  const validateDistance = v => /^\d+$/.test(v) && +v > 0;
+  const validateHeight = v => /^\d+$/.test(v);
+
   const onAzimuthChange = e => {
     let v = e.target.value.replace(/\D/g,"").slice(0,3);
     setForm(f => ({ ...f, azimuth: v }));
@@ -278,9 +283,6 @@ useEffect(() => {
     setForm(f => ({ ...f, time:`${hh}:${mm}` }));
   };
   const setTimeNow = () => updateTime();
-  
-  // ——— Перевірка заповнення перед копіюванням/відправкою ——
-  
 
   // ——— Копировать/WhatsApp ———
   const copyToClipboard = () => {
@@ -301,8 +303,7 @@ useEffect(() => {
   navigator.clipboard.writeText(text);
   alert("Скопійовано!");
 };
-
-const openWhatsApp = () => {
+  const openWhatsApp = () => {
   const text = `
 П: ${form.sector},${form.subdivision},${form.position}
 Ціль: ${form.selectedGoals.join(", ")},${form.side || ""},${form.noIssue ? "Без видачі" : form.targetNumber}
@@ -318,8 +319,6 @@ const openWhatsApp = () => {
 `.trim();
 
   const encoded = encodeURIComponent(text);
-  window.location.href = `whatsapp://send?text=${encoded}`;
-};
 
   // Використає системний WhatsApp (звичайний або бізнес)
   window.location.href = `whatsapp://send?text=${encoded}`;
