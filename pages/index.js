@@ -573,38 +573,48 @@ useEffect(() => {
   </div>
 </div>
           {/* Сторона */}
-        <div style={blockMargin}>
-  <label style={{ ...labelStyle, fontSize: "1rem" }}>Сторона</label>
-  <div style={{ display: "flex", gap: "0.5rem" }}>
+        <div style={{ ...blockMargin, border: "1px solid #555", borderRadius: "12px", padding: "0.8rem" }}>
+  <label style={{ ...labelStyle, fontSize: "1rem", marginBottom: "0.5rem" }}>Сторона</label>
+  <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", justifyContent: "space-between" }}>
     {["Ворожий", "Свій", "Нейтральний"].map((side) => (
       <label
         key={side}
         style={{
-          flex: 1,
+          flex: "1 1 calc(50% - 0.5rem)",
           display: "flex",
           alignItems: "center",
-          justifyContent: "center",
-          backgroundColor: form.side === side ? "#2e75ff" : "#333",
-          color: "#fff",
-          padding: "0.4rem 0.8rem",
-          borderRadius: "16px",
+          padding: "0.3rem 0.6rem",
+          borderRadius: "8px",
           fontSize: "0.9rem",
           cursor: "pointer",
           userSelect: "none",
+          background: form.side === side ? "#2e75ff" : "transparent",
+          color: "#fff",
+          border: form.side === side ? "1px solid #2e75ff" : "1px solid #444",
         }}
       >
+        <span
+          style={{
+            display: "inline-block",
+            width: "1rem",
+            height: "1rem",
+            marginRight: "0.5rem",
+            border: "2px solid #ccc",
+            borderRadius: "50%",
+            backgroundColor: form.side === side ? "#2e75ff" : "transparent",
+          }}
+        ></span>
         <input
           type="radio"
           checked={form.side === side}
           onChange={() => selectSide(side)}
-          style={{ marginRight: "0.5rem" }}
+          style={{ display: "none" }}
         />
         {side}
       </label>
     ))}
   </div>
 </div>
-
         {/* Номер цілі */}
 <div style={blockMargin}>
   <div style={labelStyle}>Номер цілі</div>
@@ -837,16 +847,9 @@ useEffect(() => {
 </div>
 
         {/* ——— Вияв ——— */}
-<div style={blockMargin}>
-  <label style={{ ...labelStyle, fontSize: "1rem" }}>Вияв</label>
-  <div
-    style={{
-      display: "flex",
-      flexWrap: "wrap",
-      gap: "0.5rem",
-      justifyContent: "space-between",
-    }}
-  >
+<div style={{ ...blockMargin, border: "1px solid #555", borderRadius: "12px", padding: "0.8rem" }}>
+  <label style={{ ...labelStyle, fontSize: "1rem", marginBottom: "0.5rem" }}>Вияв</label>
+  <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", justifyContent: "space-between" }}>
     {[
       "Акустично",
       "Радіолокаційно",
@@ -859,29 +862,38 @@ useEffect(() => {
           flex: "1 1 calc(50% - 0.5rem)",
           display: "flex",
           alignItems: "center",
-          backgroundColor: form.detectionMethods.includes(method)
-            ? "#2e75ff"
-            : "#333",
-          color: "#fff",
-          padding: "0.4rem 0.8rem",
-          borderRadius: "16px",
+          padding: "0.3rem 0.6rem",
+          borderRadius: "8px",
           fontSize: "0.9rem",
           cursor: "pointer",
           userSelect: "none",
+          background: form.detectionMethods.includes(method) ? "#2e75ff" : "transparent",
+          color: "#fff",
+          border: form.detectionMethods.includes(method) ? "1px solid #2e75ff" : "1px solid #444",
         }}
       >
+        <span
+          style={{
+            display: "inline-block",
+            width: "1rem",
+            height: "1rem",
+            marginRight: "0.5rem",
+            border: "2px solid #ccc",
+            borderRadius: "50%",
+            backgroundColor: form.detectionMethods.includes(method) ? "#2e75ff" : "transparent",
+          }}
+        ></span>
         <input
           type="checkbox"
           checked={form.detectionMethods.includes(method)}
           onChange={() => toggleDetection(method)}
-          style={{ marginRight: "0.5rem" }}
+          style={{ display: "none" }}
         />
         {method}
       </label>
     ))}
   </div>
 </div>
-
         {/* Час */}
         <div style={{ ...blockMargin, display:"flex", flexDirection:"column" }}>
           <div style={{ ...labelStyle, marginBottom:"0.3rem" }}>Час</div>
@@ -901,45 +913,53 @@ useEffect(() => {
         </div>
 
         {/* ——— Результат ——— */}
-<div style={blockMargin}>
-  <label style={{ ...labelStyle, fontSize: "1rem" }}>Результат</label>
-  <div
-    style={{
-      display: "flex",
-      flexWrap: "wrap",
-      gap: "0.5rem",
-      justifyContent: "space-between",
-    }}
-  >
-    {["Виявлено", "Обстріляно", "Уражено"].map((r) => (
+<div style={{ ...blockMargin, border: "1px solid #555", borderRadius: "12px", padding: "0.8rem" }}>
+  <label style={{ ...labelStyle, fontSize: "1rem", marginBottom: "0.5rem" }}>Вияв</label>
+  <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", justifyContent: "space-between" }}>
+    {[
+      "Акустично",
+      "Радіолокаційно",
+      "Візуально",
+      "Із застосуванням приладів спостереження",
+    ].map((method) => (
       <label
-        key={r}
+        key={method}
         style={{
-          flex: "1 1 calc(33.33% - 0.5rem)",
+          flex: "1 1 calc(50% - 0.5rem)",
           display: "flex",
           alignItems: "center",
-          backgroundColor: form.result === r ? "#2e75ff" : "#333",
-          color: "#fff",
-          padding: "0.4rem 0.8rem",
-          borderRadius: "16px",
+          padding: "0.3rem 0.6rem",
+          borderRadius: "8px",
           fontSize: "0.9rem",
           cursor: "pointer",
           userSelect: "none",
+          background: form.detectionMethods.includes(method) ? "#2e75ff" : "transparent",
+          color: "#fff",
+          border: form.detectionMethods.includes(method) ? "1px solid #2e75ff" : "1px solid #444",
         }}
       >
+        <span
+          style={{
+            display: "inline-block",
+            width: "1rem",
+            height: "1rem",
+            marginRight: "0.5rem",
+            border: "2px solid #ccc",
+            borderRadius: "50%",
+            backgroundColor: form.detectionMethods.includes(method) ? "#2e75ff" : "transparent",
+          }}
+        ></span>
         <input
-          type="radio"
-          name="result"
-          checked={form.result === r}
-          onChange={() => setForm((f) => ({ ...f, result: r }))}
-          style={{ marginRight: "0.5rem" }}
+          type="checkbox"
+          checked={form.detectionMethods.includes(method)}
+          onChange={() => toggleDetection(method)}
+          style={{ display: "none" }}
         />
-        {r}
+        {method}
       </label>
     ))}
   </div>
 </div>
-
         {/* Розхід БК */}
         <div style={blockMargin}>
           <div style={labelStyle}>Розхід БК</div>
