@@ -942,32 +942,35 @@ useEffect(() => {
           ))}
         </div>
 
-        {/* Опис */}
-<div style={blockMargin}>
-  <div style={labelStyle}>Опис</div>
-  <div style={{ display: "flex", flexDirection: "column", gap: "0.3rem" }}>
-    <button
-      onClick={() => setForm((f) => ({ ...f, description: "Змінила звук" }))}
-      style={{
-        ...buttonStyle,
-        width: "100%",
-        backgroundColor:
-          form.description === "Змінила звук" ? "#4caf50" : "#666",
-      }}
-    >
-      Змінила звук
-    </button>
-    <button
-      onClick={() => setForm((f) => ({ ...f, description: "Змінила курс" }))}
-      style={{
-        ...buttonStyle,
-        width: "100%",
-        backgroundColor:
-          form.description === "Змінила курс" ? "#4caf50" : "#666",
-      }}
-    >
-      Змінила курс
-    </button>
+        <div style={blockMargin}>
+  <label style={{ ...labelStyle, fontSize: "1rem" }}>Опис</label>
+  <div style={{ display: "flex", gap: "0.5rem" }}>
+    {["Змінила звук", "Змінила курс"].map((desc) => (
+      <label
+        key={desc}
+        style={{
+          flex: 1,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          backgroundColor: form.description === desc ? "#2e75ff" : "#333",
+          color: "#fff",
+          padding: "0.4rem 0.8rem",
+          borderRadius: "16px",
+          fontSize: "0.9rem",
+          cursor: "pointer",
+          userSelect: "none",
+        }}
+      >
+        <input
+          type="radio"
+          checked={form.description === desc}
+          onChange={() => setForm((f) => ({ ...f, description: desc }))}
+          style={{ marginRight: "0.5rem" }}
+        />
+        {desc}
+      </label>
+    ))}
   </div>
 </div>
 
