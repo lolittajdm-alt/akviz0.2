@@ -682,6 +682,7 @@ useEffect(() => {
             color: "#fff",
             border: form.name === name ? "1px solid #2e75ff" : "1px solid #444",
           }}
+          onClick={() => selectName(name)}
         >
           <span
             style={{
@@ -694,17 +695,12 @@ useEffect(() => {
               backgroundColor: form.name === name ? "#2e75ff" : "transparent",
             }}
           ></span>
-          <input
-            type="radio"
-            checked={form.name === name}
-            onChange={() => selectName(name)}
-            style={{ display: "none" }}
-          />
           {name}
         </label>
       ))}
     </div>
   </div>
+)}
 
         
         {/* Кількість */}
