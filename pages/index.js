@@ -572,10 +572,26 @@ useEffect(() => {
     ))}
   </div>
 </div>
-          {/* Сторона */}
-        <div style={{ ...blockMargin, border: "1px solid #555", borderRadius: "12px", padding: "0.8rem" }}>
-  <label style={{ ...labelStyle, fontSize: "1rem", marginBottom: "0.5rem" }}>Сторона</label>
-  <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", justifyContent: "space-between" }}>
+          {/* ——— Сторона ——— */}
+<div
+  style={{
+    ...blockMargin,
+    border: "1px solid #555",
+    borderRadius: "12px",
+    padding: "0.8rem",
+  }}
+>
+  <label style={{ ...labelStyle, fontSize: "1rem", marginBottom: "0.5rem" }}>
+    Сторона
+  </label>
+  <div
+    style={{
+      display: "flex",
+      flexWrap: "wrap",
+      gap: "0.5rem",
+      justifyContent: "space-between",
+    }}
+  >
     {["Ворожий", "Свій", "Нейтральний"].map((side) => (
       <label
         key={side}
@@ -588,7 +604,7 @@ useEffect(() => {
           fontSize: "0.9rem",
           cursor: "pointer",
           userSelect: "none",
-          background: form.side === side ? "#2e75ff" : "transparent",
+          background: form.side === side ? "#2e75ff" : "#444",
           color: "#fff",
           border: form.side === side ? "1px solid #2e75ff" : "1px solid #444",
         }}
@@ -1081,7 +1097,7 @@ useEffect(() => {
   }}
 >
   <label style={{ ...labelStyle, fontSize: "1rem", marginBottom: "0.5rem" }}>
-    Опис
+    
   </label>
   <textarea
     name="description"
