@@ -679,7 +679,7 @@ useEffect(() => {
           </div>
           <div style={{ display:"flex", gap:"0.5rem", alignItems:"center" }}>
             <input
-              type="numeric"
+              type="number"
               value={form.quantity}
               min={1}
               onChange={e=>setForm(p=>({...p,quantity: Math.max(1,Number(e.target.value)||1)}))}
@@ -703,7 +703,7 @@ useEffect(() => {
 <div style={{ ...blockMargin, display: "flex", flexDirection: "column" }}>
   <div style={labelStyle}>Азимут°*</div>
   <input
-    type="numeric"
+    type="text"
     value={form.azimuth ? `${form.azimuth}°` : ""}
     onChange={onAzimuthChange}
     placeholder="0° – 359°"
@@ -733,7 +733,7 @@ useEffect(() => {
 <div style={{ ...blockMargin, display: "flex", flexDirection: "column" }}>
   <div style={labelStyle}>Курс°*</div>
   <input
-    type="numeric"
+    type="text"
     value={form.course ? `${form.course}°` : ""}
     onChange={onCourseChange}
     placeholder="0° – 359°"
@@ -763,7 +763,7 @@ useEffect(() => {
         <div style={{ ...blockMargin, display:"flex", flexDirection:"column" }}>
           <div style={labelStyle}>Відстань, м*</div>
           <input
-            type="numeric"
+            type="text"
             value={form.distance}
             onChange={onDistanceChange}
             placeholder="- о - о -"
@@ -793,7 +793,7 @@ useEffect(() => {
         <div style={{ ...blockMargin, display:"flex", flexDirection:"column" }}>
           <div style={labelStyle}>Висота, м*</div>
           <input
-            type="numeric"
+            type="text"
             value={form.height}
             onChange={onHeightChange}
             placeholder="- о - о -"
@@ -869,7 +869,7 @@ useEffect(() => {
         <div style={{ ...blockMargin, display:"flex", flexDirection:"column" }}>
           <div style={{ ...labelStyle, marginBottom:"0.3rem" }}>Час</div>
           <input
-            type="numeric"
+            type="text"
             value={form.time}
             readOnly
             style={{
