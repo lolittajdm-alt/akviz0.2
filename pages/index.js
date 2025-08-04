@@ -1015,6 +1015,49 @@ useEffect(() => {
   </div>
 </div>
 
+{/* ——— Опис ——— */}
+<div style={{ ...blockMargin, border: "1px solid #555", borderRadius: "12px", padding: "0.8rem" }}>
+  <label style={{ ...labelStyle, fontSize: "1rem", marginBottom: "0.5rem" }}>Опис</label>
+  <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", justifyContent: "space-between" }}>
+    {["Змінила звук", "Змінила курс"].map((desc) => (
+      <label
+        key={desc}
+        style={{
+          flex: "1 1 calc(50% - 0.5rem)",
+          display: "flex",
+          alignItems: "center",
+          padding: "0.3rem 0.6rem",
+          borderRadius: "8px",
+          fontSize: "0.9rem",
+          cursor: "pointer",
+          userSelect: "none",
+          background: form.description === desc ? "#2e75ff" : "transparent",
+          color: "#fff",
+          border: form.description === desc ? "1px solid #2e75ff" : "1px solid #444",
+        }}
+      >
+        <span
+          style={{
+            display: "inline-block",
+            width: "1rem",
+            height: "1rem",
+            marginRight: "0.5rem",
+            border: "2px solid #ccc",
+            borderRadius: "50%",
+            backgroundColor: form.description === desc ? "#2e75ff" : "transparent",
+          }}
+        ></span>
+        <input
+          type="radio"
+          checked={form.description === desc}
+          onChange={() => setForm((f) => ({ ...f, description: desc }))}
+          style={{ display: "none" }}
+        />
+        {desc}
+      </label>
+    ))}
+  </div>
+</div>
         {/* Інша інформація */}
         <div style={{...blockMargin,display:"flex",flexDirection:"column"}}>
           <div style={labelStyle}>Інша інформація про ціль або застосування</div>
