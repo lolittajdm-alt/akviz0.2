@@ -728,36 +728,6 @@ useEffect(() => {
 </div>
 
         {/* Відстань */}
-        <div style={{ ...blockMargin, display:"flex", flexDirection:"column" }}>
-          <div style={labelStyle}>Відстань, м*</div>
-          <input
-            type="text"
-            value={form.distance}
-            onChange={onDistanceChange}
-            placeholder="- о - о -"
-            style={{
-              width:"100%",padding:"0.5rem",borderRadius:"6px",
-              backgroundColor:"#222",color:"#fff",fontSize:"1rem",
-              boxSizing:"border-box",
-              border: form.distance.trim()===""||!validateDistance(form.distance)?"1px solid #ff6666":"none"
-            }}
-          />
-          {(form.distance.trim()===""||!validateDistance(form.distance))&&(
-            <div style={errorStyle}>Поле має бути заповненим та мати значення більше 0</div>
-          )}
-          <div style={{ display:"flex", gap:"0.3rem", marginTop:"0.3rem" }}>
-            {[{label:"+100",delta:100},{label:"+1000",delta:1000},{label:"-100",delta:-100},{label:"-1000",delta:-1000}]
-              .map(({label,delta})=>(
-              <button
-                key={label}
-                onClick={()=>changeDistance(delta)}
-                style={{...buttonStyle,flex:1}}
-              >{label}</button>
-            ))}
-          </div>
-        </div>
-
-        {/* Відстань */}
 <div style={{ ...blockMargin, display:"flex", flexDirection:"column" }}>
   <div style={labelStyle}>Відстань, м*</div>
   <input
@@ -787,6 +757,46 @@ useEffect(() => {
           onClick={()=>changeDistance(delta)}
           style={{...buttonStyle,flex:1}}
         >{label}</button>
+      ))}
+    </div>
+  )}
+</div>
+       {/* Висота */}
+<div style={{ ...blockMargin, display:"flex", flexDirection:"column" }}>
+  <div style={labelStyle}>Висота, м*</div>
+  <input
+    type="text"
+    value={form.height}
+    onChange={onHeightChange}
+    placeholder="- о - о -"
+    inputMode="numeric"
+    style={{
+      width:"100%",padding:"0.5rem",borderRadius:"6px",
+      backgroundColor:"#222",color:"#fff",fontSize:"1rem",
+      boxSizing:"border-box",
+      border: form.height.trim()===""||!validateHeight(form.height)
+        ? "1px solid #ff6666"
+        : "none"
+    }}
+  />
+  {(form.height.trim()===""||!validateHeight(form.height))&&(
+    <div style={errorStyle}>
+      Поле має бути заповненим та містити тільки число
+    </div>
+  )}
+
+  {/* Кнопки зміни висоти — тільки якщо поле валідне */}
+  {form.height.trim() !== "" && validateHeight(form.height) && (
+    <div style={{ display:"flex", gap:"0.3rem", marginTop:"0.3rem" }}>
+      {[{label:"+100 м",delta:100},{label:"+500 м",delta:500},{label:"-100 м",delta:-100},{label:"-500 м",delta:-500}]
+        .map(({label,delta})=>(
+        <button
+          key={label}
+          onClick={()=>changeHeight(delta)}
+          style={{...buttonStyle,flex:1}}
+        >
+          {label}
+        </button>
       ))}
     </div>
   )}
