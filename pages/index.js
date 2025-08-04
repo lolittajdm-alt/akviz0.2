@@ -1175,7 +1175,7 @@ useEffect(() => {
       form.time ? `Ч: ${form.time}` : null,
       form.detectionMethods.length ? `Вияв: ${form.detectionMethods.join(", ")}` : null,
       form.result ? `ПП: ${form.result}` : null,
-      form.description?.trim() ? `Інше: ${form.description.trim()}` : null
+      form.description?.trim() ? `Опис: ${form.description.trim()}` : null 
     ]
       .filter(Boolean)
       .join("\n")}
