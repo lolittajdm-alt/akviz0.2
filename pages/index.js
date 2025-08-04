@@ -579,12 +579,11 @@ useEffect(() => {
           <div style={{ display:"flex", gap:"0.5rem", alignItems:"center" }}>
             <input
   type="text"
-  inputMode="numeric"
-  value={form.azimuth ? `${form.azimuth}°` : ""}
-  onChange={onAzimuthChange}
-  placeholder="0° – 359°"
-  maxLength={4}
-  style={{ ... }}
+  value={form.targetNumber}
+  onChange={handleTargetNumberChange}
+  disabled={form.noIssue}
+  placeholder="номер цілі"
+  style={inputStyle(form.noIssue)}
 />
             <button
               onClick={toggleNoIssue}
