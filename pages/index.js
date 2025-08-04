@@ -574,27 +574,34 @@ useEffect(() => {
 </div>
 
         {/* Номер цілі */}
-        <div style={blockMargin}>
-          <div style={labelStyle}>Номер цілі</div>
-          <div style={{ display:"flex", gap:"0.5rem", alignItems:"center" }}>
-            <input
-  type="text"
-  value={form.targetNumber}
-  onChange={handleTargetNumberChange}
-  disabled={form.noIssue}
-  placeholder="номер цілі"
-  style={inputStyle(form.noIssue)}
-/>
-            <button
-              onClick={toggleNoIssue}
-              style={{
-                ...buttonStyle,
-                backgroundColor: form.noIssue?"#a94442":"#4caf50"
-              }}
-            >Без видачі</button>
-          </div>
-          {errors.targetNumber&&<div style={errorStyle}>Вкажіть номер цілі, або «Без видачі»</div>}
-        </div> 
+<div style={blockMargin}>
+  <div style={labelStyle}>Номер цілі</div>
+  <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
+    <input
+      type="text"
+      value={form.targetNumber}
+      onChange={handleTargetNumberChange}
+      disabled={form.noIssue}
+      placeholder="номер цілі"
+      inputMode="numeric"
+      style={inputStyle(form.noIssue)}
+    />
+    <button
+      onClick={toggleNoIssue}
+      style={{
+        ...buttonStyle,
+        backgroundColor: form.noIssue ? "#a94442" : "#4caf50",
+      }}
+    >
+      Без видачі
+    </button>
+  </div>
+  {errors.targetNumber && (
+    <div style={errorStyle}>
+      Вкажіть номер цілі, або «Без видачі»
+    </div>
+  )}
+</div> 
            
            {/* Назва */}
 {form.selectedGoals.includes("БПЛА") && (
