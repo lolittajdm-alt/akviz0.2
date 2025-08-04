@@ -284,8 +284,6 @@ useEffect(() => {
 
   // ——— Копировать/WhatsApp ———
   const copyToClipboard = () => {
-  if (!validateBeforeSend()) return;
-
   const text = `
 П: ${form.sector},${form.subdivision},${form.position}
 Ціль: ${form.selectedGoals.join(", ")},${form.side || ""},${form.noIssue ? "Без видачі" : form.targetNumber}
@@ -305,8 +303,6 @@ useEffect(() => {
 };
 
 const openWhatsApp = () => {
-  if (!validateBeforeSend()) return;
-
   const text = `
 П: ${form.sector},${form.subdivision},${form.position}
 Ціль: ${form.selectedGoals.join(", ")},${form.side || ""},${form.noIssue ? "Без видачі" : form.targetNumber}
