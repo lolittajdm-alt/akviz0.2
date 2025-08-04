@@ -512,8 +512,18 @@ useEffect(() => {
 )}
 
         {/* ——— Ціль ——— */}
-<div style={blockMargin}>
-  <label style={{ ...labelStyle, fontSize: "1rem" }}>Тип цілі</label>
+<div
+  style={{
+    marginBottom: "0.8rem",
+    padding: "0.8rem",
+    border: "1px solid #444",
+    borderRadius: "12px",
+    backgroundColor: "transparent",
+  }}
+>
+  <label style={{ ...labelStyle, fontSize: "1rem", marginBottom: "0.5rem" }}>
+    Тип цілі
+  </label>
   <div
     style={{
       display: "flex",
@@ -526,19 +536,16 @@ useEffect(() => {
       <label
         key={goal}
         style={{
-          flex: "1 1 calc(50% - 0.5rem)",
+          flex: "1 1 calc(33.33% - 0.5rem)",
           display: "flex",
           alignItems: "center",
-          padding: "0.2rem 0.4rem",
+          backgroundColor: "transparent",
+          color: "#fff",
+          padding: "0.4rem 0.6rem",
           borderRadius: "8px",
-          fontSize: "0.9rem",
+          fontSize: "0.85rem",
           cursor: "pointer",
           userSelect: "none",
-          border: form.selectedGoals.includes(goal)
-            ? "2px solid #2e75ff"
-            : "1px solid #555",
-          background: "transparent",
-          color: "#fff",
         }}
       >
         <input
@@ -546,11 +553,18 @@ useEffect(() => {
           checked={form.selectedGoals.includes(goal)}
           onChange={() => toggleGoal(goal)}
           style={{
-            marginRight: "0.5rem",
+            appearance: "none",
+            WebkitAppearance: "none",
+            MozAppearance: "none",
             width: "1rem",
             height: "1rem",
             borderRadius: "50%",
-            accentColor: "#2e75ff",
+            border: "2px solid #ccc",
+            backgroundColor: form.selectedGoals.includes(goal)
+              ? "#2e75ff"
+              : "transparent",
+            marginRight: "0.5rem",
+            cursor: "pointer",
           }}
         />
         {goal}
