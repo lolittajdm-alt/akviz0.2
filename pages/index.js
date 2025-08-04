@@ -234,32 +234,6 @@ useEffect(() => {
   }, [form.noIssue, form.targetNumber]);
 
   // ——— Валидации ———
-  const validateBeforeSend = () => {
-  const requiredFields = [
-    { field: form.selectedGoals.length, label: "Тип цілі" },
-    { field: form.side, label: "Сторона" },
-    { field: form.noIssue || form.targetNumber.trim() !== "", label: "Номер цілі" },
-    { field: validateAzimuth(form.azimuth), label: "Азимут" },
-    { field: validateCourse(form.course), label: "Курс" },
-    { field: validateDistance(form.distance), label: "Відстань" },
-    { field: validateHeight(form.height), label: "Висота" },
-    { field: form.detectionMethods.length, label: "Вияв" },
-  ];
-
-  const missing = requiredFields.filter(r => !r.field).map(r => r.label);
-
-  if (missing.length > 0) {
-    alert("Будь ласка, заповніть обовʼязкові поля:\n\n• " + missing.join("\n• "));
-    return false;
-  }
-
-  return true;
-};
-  const validateAzimuth = v => /^\d{1,3}$/.test(v) && +v <= 359;
-  const validateCourse = v => /^\d{1,3}$/.test(v) && +v <= 359;
-  const validateDistance = v => /^\d+$/.test(v) && +v > 0;
-  const validateHeight = v => /^\d+$/.test(v);
-
   const onAzimuthChange = e => {
     let v = e.target.value.replace(/\D/g,"").slice(0,3);
     setForm(f => ({ ...f, azimuth: v }));
