@@ -432,72 +432,73 @@ useEffect(() => {
 </div>
 
     {/* Підрозділ */}
-    <div style={blockMargin}>
-  <label style={labelStyle}>Сектор</label>
-  <div style={{ display: "flex", gap: "0.5rem" }}>
-    <input
-      type="text"
-      name="sector"
-      value={form.sector}
-      onChange={handleChange}
-      style={inputStyle(locks.sector)}
-    />
+<div style={blockMargin}>
+  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+    <label style={labelStyle}>Підрозділ</label>
     <button
-      onClick={() => toggleLock("sector")}
+      onClick={() => toggleLock("subdivision")}
       style={{
         ...buttonStyle,
-        backgroundColor: locks.sector ? "#a94442" : "#4caf50"
+        backgroundColor: locks.subdivision ? "#a94442" : "#4caf50"
       }}
     >
-      {locks.sector ? "Заблоковано" : "Редагувати"}
+      {locks.subdivision ? "Заблоковано" : "Редагувати"}
     </button>
   </div>
+  <input
+    type="text"
+    name="subdivision"
+    value={form.subdivision}
+    onChange={handleChange}
+    style={inputStyle(locks.subdivision)}
+  />
 </div>
 
     {/* Позиція */}
-    <div style={blockMargin}>
-  <label style={labelStyle}>Сектор</label>
-  <div style={{ display: "flex", gap: "0.5rem" }}>
-    <input
-      type="text"
-      name="sector"
-      value={form.sector}
-      onChange={handleChange}
-      style={inputStyle(locks.sector)}
-    />
+    {/* Позиція */}
+<div style={blockMargin}>
+  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+    <label style={labelStyle}>Позиція</label>
     <button
-      onClick={() => toggleLock("sector")}
+      onClick={() => toggleLock("position")}
       style={{
         ...buttonStyle,
-        backgroundColor: locks.sector ? "#a94442" : "#4caf50"
+        backgroundColor: locks.position ? "#a94442" : "#4caf50"
       }}
     >
-      {locks.sector ? "Заблоковано" : "Редагувати"}
+      {locks.position ? "Заблоковано" : "Редагувати"}
     </button>
   </div>
+  <input
+    type="text"
+    name="position"
+    value={form.position}
+    onChange={handleChange}
+    style={inputStyle(locks.position)}
+  />
 </div>
 
     {/* Населений пункт */}
-    <div style={blockMargin}>
-  <label style={labelStyle}>Сектор</label>
-  <div style={{ display: "flex", gap: "0.5rem" }}>
-    <input
-      type="text"
-      name="sector"
-      value={form.sector}
-      onChange={handleChange}
-      style={inputStyle(locks.sector)}
-    />
+<div style={blockMargin}>
+  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+    <label style={labelStyle}>Населений пункт</label>
     <button
-      onClick={() => toggleLock("sector")}
+      onClick={() => toggleLock("location")}
       style={{
         ...buttonStyle,
-        backgroundColor: locks.sector ? "#a94442" : "#4caf50"
+        backgroundColor: locks.location ? "#a94442" : "#4caf50"
       }}
     >
-      {locks.sector ? "Заблоковано" : "Редагувати"}
+      {locks.location ? "Заблоковано" : "Редагувати"}
     </button>
   </div>
+  <input
+    type="text"
+    name="location"
+    value={form.location}
+    onChange={handleChange}
+    style={inputStyle(locks.location)}
+  />
 </div>
 
         {/* Ціль */}
