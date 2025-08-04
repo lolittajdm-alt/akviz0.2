@@ -993,30 +993,55 @@ useEffect(() => {
           />
         </div>
 
-        {/* Звіт */}
-        <div style={{...blockMargin,marginTop:"2rem"}}>
-  <h2 style={{...labelStyle,marginBottom:"0.5rem"}}>Звіт</h2>
-  <div style={{
-    backgroundColor:"transparent",color:"#fff",padding:"1rem",
-    borderRadius:"6px",whiteSpace:"pre-wrap",fontFamily:"monospace"
-  }}>
-{`
-П: ${form.sector},${form.subdivision},${form.position}
-Ціль: ${form.selectedGoals.join(", ")},${form.side || ""},${form.noIssue ? "Без видачі" : form.targetNumber}
-Висота: ${form.height ? form.height + " м" : ""}
-Відстань: ${form.distance ? form.distance + " м" : ""}
-Кількість: ${form.quantity} од.
-А: ${form.azimuth ? form.azimuth + "°" : ""}
-К: ${form.course ? form.course + "°" : ""}
-НП: ${form.location}
-Ч: ${form.time}
-Вияв: ${form.detectionMethods.length ? form.detectionMethods.join(", ") : ""}
-ПП: ${form.result || ""}
-Опис: ${[form.additionalInfo, form.description].filter(Boolean).join(". ")}
-`}
-  </div>
+        {/* ——— Звіт ——— */}
+<div style={{ marginTop: "1.5rem" }}>
+  <label
+    style={{
+      fontSize: "0.8rem",
+      marginBottom: "0.5rem",
+      display: "block",
+      color: "#fff",
+    }}
+  >
+    Звіт
+  </label>
+  <pre
+    style={{
+      whiteSpace: "pre-wrap",
+      fontSize: "clamp(0.9rem, 3vw, 1.1rem)",
+      backgroundColor: "#222",
+      padding: "1rem",
+      borderRadius: "10px",
+      color: "#fff",
+      minHeight: "6rem",
+    }}
+  >
+    {[
+      form.sector || form.subdivision || form.position
+        ? `П: ${[form.sector, form.subdivision, form.position].filter(Boolean).join(", ")}`
+        : null,
+      form.selectedGoals.length || form.side || form.targetNumber || form.noIssue
+        ? `Ціль: ${[
+            ...form.selectedGoals,
+            form.side,
+            form.noIssue ? "Без видачі" : form.targetNumber
+          ].filter(Boolean).join(", ")}`
+        : null,
+      form.height ? `Висота: ${form.height} м` : null,
+      form.distance ? `Відстань: ${form.distance} м` : null,
+      form.quantity ? `Кількість: ${form.quantity} од.` : null,
+      form.azimuth ? `А: ${form.azimuth}°` : null,
+      form.course ? `К: ${form.course}°` : null,
+      form.location ? `НП: ${form.location}` : null,
+      form.time ? `Ч: ${form.time}` : null,
+      form.detectionMethods.length ? `Вияв: ${form.detectionMethods.join(", ")}` : null,
+      form.result ? `ПП: ${form.result}` : null,
+      form.description?.trim() ? `Інше: ${form.description.trim()}` : null
+    ]
+      .filter(Boolean)
+      .join("\n")}
+  </pre>
 </div>
-
         {/* Дії */}
         <div style={{display:"flex",gap:"1rem",marginBottom:"1rem"}}>
           <button
