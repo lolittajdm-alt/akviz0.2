@@ -1160,12 +1160,13 @@ useEffect(() => {
         ? `П: ${[form.sector, form.subdivision, form.position].filter(Boolean).join(", ")}`
         : null,
       form.selectedGoals.length || form.side || form.targetNumber || form.noIssue
-        ? `Ціль: ${[
-            ...form.selectedGoals,
-            form.side,
-            form.noIssue ? "Без видачі" : form.targetNumber
-          ].filter(Boolean).join(", ")}`
-        : null,
+        form.selectedGoals.length || form.side || form.targetNumber || form.noIssue
+  ? `Ціль: ${[
+      ...form.selectedGoals,
+      form.side,
+      form.noIssue ? "Без видачі" : form.targetNumber ? `по цілі /${form.targetNumber}/` : null
+    ].filter(Boolean).join(", ")}`
+  : null,
       form.height ? `Висота: ${form.height} м` : null,
       form.distance ? `Відстань: ${form.distance} м` : null,
       form.quantity ? `Кількість: ${form.quantity} од.` : null,
