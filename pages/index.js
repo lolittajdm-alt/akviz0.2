@@ -1025,8 +1025,17 @@ useEffect(() => {
 )}
 
         {/* ——— Ціль ——— */}
-<div style={blockMargin}>
-  <label style={{ ...labelStyle, fontSize: "1rem" }}>Тип цілі</label>
+<div
+  style={{
+    ...blockMargin,
+    border: "1px solid #555",
+    borderRadius: "12px",
+    padding: "0.8rem",
+  }}
+>
+  <label style={{ ...labelStyle, fontSize: "1rem", marginBottom: "0.5rem" }}>
+    Тип цілі
+  </label>
   <div
     style={{
       display: "flex",
@@ -1035,31 +1044,46 @@ useEffect(() => {
       justifyContent: "space-between",
     }}
   >
-    {goalsList.map((goal) => (
-      <label
-        key={goal}
-        style={{
-          flex: "1 1 calc(33.33% - 0.5rem)",
-          display: "flex",
-          alignItems: "center",
-          backgroundColor: form.selectedGoals.includes(goal) ? "#2e75ff" : "#333",
-          color: "#fff",
-          padding: "0.4rem 0.8rem",
-          borderRadius: "16px",
-          fontSize: "0.9rem",
-          cursor: "pointer",
-          userSelect: "none",
-        }}
-      >
-        <input
-          type="checkbox"
-          checked={form.selectedGoals.includes(goal)}
-          onChange={() => toggleGoal(goal)}
-          style={{ marginRight: "0.5rem" }}
-        />
-        {goal}
-      </label>
-    ))}
+    {goalsList.map((goal) => {
+      const selected = form.selectedGoals.includes(goal);
+      return (
+        <label
+          key={goal}
+          style={{
+            flex: "1 1 calc(50% - 0.5rem)",
+            display: "flex",
+            alignItems: "center",
+            padding: "0.3rem 0.6rem",
+            borderRadius: "8px",
+            fontSize: "0.9rem",
+            cursor: "pointer",
+            userSelect: "none",
+            background: selected ? "#2e75ff" : "#333", // 🟦 вибране / 🟫 сіре
+            color: "#fff",
+            border: selected ? "1px solid #2e75ff" : "1px solid #444",
+          }}
+        >
+          <span
+            style={{
+              display: "inline-block",
+              width: "1rem",
+              height: "1rem",
+              marginRight: "0.5rem",
+              border: "2px solid #ccc",
+              borderRadius: "50%",
+              backgroundColor: selected ? "#2e75ff" : "transparent",
+            }}
+          ></span>
+          <input
+            type="checkbox"
+            checked={selected}
+            onChange={() => toggleGoal(goal)}
+            style={{ display: "none" }}
+          />
+          {goal}
+        </label>
+      );
+    })}
   </div>
 </div>
           {/* Сторона */}
