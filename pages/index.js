@@ -645,39 +645,67 @@ useEffect(() => {
   )}
 </div> 
            
-           {/* Назва */}
+           {/* ——— Назва ——— */}
 {form.selectedGoals.includes("БПЛА") && (
-  <div style={blockMargin}>
-    <label style={{ ...labelStyle, fontSize: "1rem" }}>Назва</label>
-    <div style={{ display: "flex", gap: "0.5rem" }}>
+  <div
+    style={{
+      ...blockMargin,
+      border: "1px solid #555",
+      borderRadius: "12px",
+      padding: "0.8rem",
+    }}
+  >
+    <label style={{ ...labelStyle, fontSize: "1rem", marginBottom: "0.5rem" }}>
+      Назва
+    </label>
+    <div
+      style={{
+        display: "flex",
+        flexWrap: "wrap",
+        gap: "0.5rem",
+        justifyContent: "space-between",
+      }}
+    >
       {namesList.map((name) => (
         <label
           key={name}
           style={{
-            flex: 1,
+            flex: "1 1 calc(50% - 0.5rem)",
             display: "flex",
             alignItems: "center",
-            justifyContent: "center",
-            backgroundColor: form.name === name ? "#2e75ff" : "#333",
-            color: "#fff",
-            padding: "0.4rem 0.8rem",
-            borderRadius: "16px",
+            padding: "0.3rem 0.6rem",
+            borderRadius: "8px",
             fontSize: "0.9rem",
             cursor: "pointer",
             userSelect: "none",
+            background: form.name === name ? "#2e75ff" : "#444",
+            color: "#fff",
+            border: form.name === name ? "1px solid #2e75ff" : "1px solid #444",
           }}
         >
+          <span
+            style={{
+              display: "inline-block",
+              width: "1rem",
+              height: "1rem",
+              marginRight: "0.5rem",
+              border: "2px solid #ccc",
+              borderRadius: "50%",
+              backgroundColor: form.name === name ? "#2e75ff" : "transparent",
+            }}
+          ></span>
           <input
             type="radio"
             checked={form.name === name}
             onChange={() => selectName(name)}
-            style={{ marginRight: "0.5rem" }}
+            style={{ display: "none" }}
           />
           {name}
         </label>
       ))}
     </div>
   </div>
+)}
 )}
         
         {/* Кількість */}
