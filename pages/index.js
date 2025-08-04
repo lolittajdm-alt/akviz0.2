@@ -285,34 +285,6 @@ useEffect(() => {
   };
   const setTimeNow = () => updateTime();
 
-  // ——— Генерація тексту звіту ——
-  const generateReportText = () => {
-  return [
-    form.sector || form.subdivision || form.position
-      ? `П: ${[form.sector, form.subdivision, form.position].filter(Boolean).join(", ")}`
-      : null,
-    form.selectedGoals.length || form.side || form.targetNumber || form.noIssue
-      ? `Ціль: ${[
-          ...form.selectedGoals,
-          form.side,
-          form.noIssue ? "Без видачі" : form.targetNumber ? `по цілі ${form.targetNumber}` : null
-        ].filter(Boolean).join(", ")}`
-      : null,
-    form.height ? `Висота: ${form.height} м` : null,
-    form.distance ? `Відстань: ${form.distance} м` : null,
-    form.quantity ? `Кількість: ${form.quantity} од.` : null,
-    form.azimuth ? `А: ${form.azimuth}°` : null,
-    form.course ? `К: ${form.course}°` : null,
-    form.location ? `НП: ${form.location}` : null,
-    form.time ? `Ч: ${form.time}` : null,
-    form.detectionMethods.length ? `Вияв: ${form.detectionMethods.join(", ")}` : null,
-    form.result ? `ПП: ${form.result}` : null,
-    form.description?.trim() ? `Інше: ${form.description.trim()}` : null
-  ]
-    .filter(Boolean)
-    .join("\n");
-};
-
   // ——— Копировать/WhatsApp ———
   const copyToClipboard = () => {
   const text = `
@@ -1188,13 +1160,12 @@ useEffect(() => {
         ? `П: ${[form.sector, form.subdivision, form.position].filter(Boolean).join(", ")}`
         : null,
       form.selectedGoals.length || form.side || form.targetNumber || form.noIssue
-        form.selectedGoals.length || form.side || form.targetNumber || form.noIssue
-  ? `Ціль: ${[
-      ...form.selectedGoals,
-      form.side,
-      form.noIssue ? "Без видачі" : form.targetNumber ? `по цілі ${form.targetNumber}` : null
-    ].filter(Boolean).join(", ")}`
-  : null,
+        ? `Ціль: ${[
+            ...form.selectedGoals,
+            form.side,
+            form.noIssue ? "Без видачі" : form.targetNumber
+          ].filter(Boolean).join(", ")}`
+        : null,
       form.height ? `Висота: ${form.height} м` : null,
       form.distance ? `Відстань: ${form.distance} м` : null,
       form.quantity ? `Кількість: ${form.quantity} од.` : null,
