@@ -633,7 +633,7 @@ useEffect(() => {
     type="text"
     value={form.azimuth ? `${form.azimuth}°` : ""}
     onChange={onAzimuthChange}
-    placeholder="0 – 359"
+    placeholder="0° – 359°"
     maxLength={4}
     style={{
       width: "100%",
@@ -659,78 +659,26 @@ useEffect(() => {
         {/* Курс */}
 <div style={{ ...blockMargin, display: "flex", flexDirection: "column" }}>
   <div style={labelStyle}>Курс°*</div>
-
-  <div style={{ display: "flex", gap: "0.5rem" }}>
-    <input
-      type="text"
-      value={form.course ? `${form.course}°` : ""}
-      onChange={onCourseChange}
-      placeholder="0 – 359"
-      maxLength={4}
-      style={{
-        flex: 1,
-        padding: "0.5rem",
-        borderRadius: "6px",
-        backgroundColor: "#222",
-        color: "#fff",
-        fontSize: "1rem",
-        boxSizing: "border-box",
-        border:
-          form.course.trim() === "" || !validateCourse(form.course)
-            ? "1px solid #ff6666"
-            : "none",
-      }}
-    />
-
-    <button
-      onClick={() => {
-        if (
-          typeof DeviceOrientationEvent !== "undefined" &&
-          typeof DeviceOrientationEvent.requestPermission === "function"
-        ) {
-          DeviceOrientationEvent.requestPermission().then((res) => {
-            if (res === "granted") {
-              window.addEventListener(
-                "deviceorientation",
-                (e) => {
-                  if (e.alpha !== null) {
-                    const angle = Math.round(e.alpha);
-                    setForm((f) => ({ ...f, course: String(angle) }));
-                  }
-                },
-                { once: true }
-              );
-            } else {
-              alert("Доступ до сенсорів не надано");
-            }
-          });
-        } else {
-          window.addEventListener(
-            "deviceorientation",
-            (e) => {
-              if (e.alpha !== null) {
-                const angle = Math.round(e.alpha);
-                setForm((f) => ({ ...f, course: String(angle) }));
-              }
-            },
-            { once: true }
-          );
-        }
-      }}
-      style={{
-        padding: "0.5rem 1rem",
-        border: "none",
-        borderRadius: "6px",
-        backgroundColor: "#4caf50",
-        color: "#fff",
-        cursor: "pointer",
-        whiteSpace: "nowrap",
-      }}
-    >
-      Авто
-    </button>
-  </div>
-
+  <input
+    type="text"
+    value={form.course ? `${form.course}°` : ""}
+    onChange={onCourseChange}
+    placeholder="0° – 359°"
+    maxLength={4}
+    style={{
+      width: "100%",
+      padding: "0.5rem",
+      borderRadius: "6px",
+      backgroundColor: "#222",
+      color: "#fff",
+      fontSize: "1rem",
+      boxSizing: "border-box",
+      border:
+        form.course.trim() === "" || !validateCourse(form.course)
+          ? "1px solid #ff6666"
+          : "none",
+    }}
+  />
   {(form.course.trim() === "" || !validateCourse(form.course)) && (
     <div style={errorStyle}>
       Поле має бути заповненим та мати значення між 0°–359°
@@ -745,7 +693,7 @@ useEffect(() => {
             type="text"
             value={form.distance}
             onChange={onDistanceChange}
-            placeholder="Відстань до цілі"
+            placeholder="- о - о -"
             style={{
               width:"100%",padding:"0.5rem",borderRadius:"6px",
               backgroundColor:"#222",color:"#fff",fontSize:"1rem",
@@ -775,7 +723,7 @@ useEffect(() => {
             type="text"
             value={form.height}
             onChange={onHeightChange}
-            placeholder="Висота над рівнем моря"
+            placeholder="- о - о -"
             style={{
               width:"100%",padding:"0.5rem",borderRadius:"6px",
               backgroundColor:"#222",color:"#fff",fontSize:"1rem",
