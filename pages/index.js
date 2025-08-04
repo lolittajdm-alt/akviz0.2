@@ -510,9 +510,11 @@ useEffect(() => {
     </div>
   </>
 )}
-
-        {/* ——— Ціль ——— */}
-<div
+       
+       
+       
+{/* ----Ціль----*/}
+        <div
   style={{
     ...blockMargin,
     border: "1px solid #555",
@@ -543,11 +545,9 @@ useEffect(() => {
           fontSize: "0.9rem",
           cursor: "pointer",
           userSelect: "none",
-          background: form.selectedGoals.includes(goal) ? "#2e75ff" : "transparent",
+          background: form.selectedGoals.includes(goal) ? "#2e75ff" : "#444",
           color: "#fff",
-          border: form.selectedGoals.includes(goal)
-            ? "1px solid #2e75ff"
-            : "1px solid #444",
+          border: "1px solid #444",
         }}
       >
         <span
@@ -558,9 +558,7 @@ useEffect(() => {
             marginRight: "0.5rem",
             border: "2px solid #ccc",
             borderRadius: "50%",
-            backgroundColor: form.selectedGoals.includes(goal)
-              ? "#2e75ff"
-              : "transparent",
+            backgroundColor: "transparent",
           }}
         ></span>
         <input
