@@ -21,6 +21,7 @@ export default function Home() {
     detectionMethods: [],
     result: null,
     description: "",
+    additionalInfo: "",
   });
   // ——— Состояние: показывать или скрывать верхние поля ———
   const [showTopFields, setShowTopFields] = useState(true);
@@ -298,7 +299,7 @@ useEffect(() => {
 Ч: ${form.time}
 Вияв: ${form.detectionMethods.length ? form.detectionMethods.join(", ") : ""}
 ПП: ${form.result || ""}
-Опис: ${form.description || ""}
+Опис: ${[form.additionalInfo, form.description].filter(Boolean).join(". ")}
 `.trim();
 
   navigator.clipboard.writeText(text);
@@ -980,7 +981,7 @@ useEffect(() => {
         <div style={{...blockMargin,display:"flex",flexDirection:"column"}}>
           <div style={labelStyle}>Інша інформація про ціль або застосування</div>
           <textarea
-            name="description"
+            name="additionalInfo"
             value={form.description}
             onChange={handleChange}
             placeholder="Інша інформація про ціль або застосування"
@@ -1011,7 +1012,7 @@ useEffect(() => {
 Ч: ${form.time}
 Вияв: ${form.detectionMethods.length ? form.detectionMethods.join(", ") : ""}
 ПП: ${form.result || ""}
-Опис: ${form.description || ""}
+Опис: ${[form.additionalInfo, form.description].filter(Boolean).join(". ")}
 `}
   </div>
 </div>
