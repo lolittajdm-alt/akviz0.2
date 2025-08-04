@@ -283,9 +283,34 @@ useEffect(() => {
     setForm(f => ({ ...f, time:`${hh}:${mm}` }));
   };
   const setTimeNow = () => updateTime();
+  
+  // ——— Перевірка заповнення перед копіюванням/відправкою ——
+  const validateBeforeSend = () => {
+  const requiredFields = [
+    { field: form.selectedGoals.length, label: "Тип цілі" },
+    { field: form.side, label: "Сторона" },
+    { field: form.noIssue || form.targetNumber.trim() !== "", label: "Номер цілі" },
+    { field: validateAzimuth(form.azimuth), label: "Азимут" },
+    { field: validateCourse(form.course), label: "Курс" },
+    { field: validateDistance(form.distance), label: "Відстань" },
+    { field: validateHeight(form.height), label: "Висота" },
+    { field: form.detectionMethods.length, label: "Вияв" },
+  ];
+
+  const missing = requiredFields.filter(r => !r.field).map(r => r.label);
+
+  if (missing.length > 0) {
+    alert("Будь ласка, заповніть обовʼязкові поля:\n\n• " + missing.join("\n• "));
+    return false;
+  }
+
+  return true;
+};
 
   // ——— Копировать/WhatsApp ———
   const copyToClipboard = () => {
+  if (!validateBeforeSend()) return;
+
   const text = `
 П: ${form.sector},${form.subdivision},${form.position}
 Ціль: ${form.selectedGoals.join(", ")},${form.side || ""},${form.noIssue ? "Без видачі" : form.targetNumber}
@@ -304,6 +329,8 @@ useEffect(() => {
   alert("Скопійовано!");
 };
   const openWhatsApp = () => {
+  if (!validateBeforeSend()) return;
+
   const text = `
 П: ${form.sector},${form.subdivision},${form.position}
 Ціль: ${form.selectedGoals.join(", ")},${form.side || ""},${form.noIssue ? "Без видачі" : form.targetNumber}
@@ -319,6 +346,8 @@ useEffect(() => {
 `.trim();
 
   const encoded = encodeURIComponent(text);
+  window.location.href = `whatsapp://send?text=${encoded}`;
+};
 
   // Використає системний WhatsApp (звичайний або бізнес)
   window.location.href = `whatsapp://send?text=${encoded}`;
