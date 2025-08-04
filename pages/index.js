@@ -544,15 +544,17 @@ useEffect(() => {
         {/* Сторона */}
 <div style={blockMargin}>
   <div style={labelStyle}>Сторона</div>
-  <div style={{ display: "flex", flexDirection: "column", gap: "0.3rem" }}>
+  <div style={{ display: "flex", gap: "0.3rem" }}>
     {["Ворожий", "Свій", "Нейтральний"].map((s) => (
       <button
         key={s}
         onClick={() => selectSide(s)}
         style={{
           ...buttonStyle,
-          width: "100%",
-          backgroundColor: form.side === s ? "#4caf50" : "#666",
+          flex: 1,
+          border: "1px solid #555",
+          backgroundColor: form.side === s ? "#4caf50" : "#222",
+          opacity: 1,
         }}
       >
         {s}
@@ -587,7 +589,7 @@ useEffect(() => {
         {/* Назва */}
 <div style={blockMargin}>
   <div style={labelStyle}>Назва</div>
-  <div style={{ display: "flex", flexDirection: "column", gap: "0.3rem" }}>
+  <div style={{ display: "flex", gap: "0.3rem" }}>
     {namesList.map((n) => (
       <button
         key={n}
@@ -595,10 +597,15 @@ useEffect(() => {
         disabled={!form.selectedGoals.includes("БПЛА")}
         style={{
           ...buttonStyle,
-          width: "100%",
-          opacity: form.selectedGoals.includes("БПЛА") ? 1 : 0.5,
+          flex: 1,
+          border: "1px solid #555",
           backgroundColor:
-            form.name === n ? "#4caf50" : buttonStyle.backgroundColor,
+            !form.selectedGoals.includes("БПЛА")
+              ? "#222"
+              : form.name === n
+              ? "#4caf50"
+              : "#222",
+          opacity: form.selectedGoals.includes("БПЛА") ? 1 : 0.5,
         }}
       >
         {n}
