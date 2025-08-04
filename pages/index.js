@@ -328,7 +328,8 @@ useEffect(() => {
   navigator.clipboard.writeText(text);
   alert("Скопійовано!");
 };
-  const openWhatsApp = () => {
+
+const openWhatsApp = () => {
   if (!validateBeforeSend()) return;
 
   const text = `
