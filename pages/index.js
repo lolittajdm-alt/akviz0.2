@@ -540,25 +540,35 @@ useEffect(() => {
     ))}
   </div>
 </div>
-
-        {/* Сторона */}
-<div style={blockMargin}>
-  <div style={labelStyle}>Сторона</div>
-  <div style={{ display: "flex", gap: "0.3rem" }}>
-    {["Ворожий", "Свій", "Нейтральний"].map((s) => (
-      <button
-        key={s}
-        onClick={() => selectSide(s)}
+          {/* Сторона */}
+        <div style={blockMargin}>
+  <label style={{ ...labelStyle, fontSize: "1rem" }}>Сторона</label>
+  <div style={{ display: "flex", gap: "0.5rem" }}>
+    {["Ворожий", "Свій", "Нейтральний"].map((side) => (
+      <label
+        key={side}
         style={{
-          ...buttonStyle,
           flex: 1,
-          border: "1px solid #555",
-          backgroundColor: form.side === s ? "#4caf50" : "#222",
-          opacity: 1,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          backgroundColor: form.side === side ? "#2e75ff" : "#333",
+          color: "#fff",
+          padding: "0.4rem 0.8rem",
+          borderRadius: "16px",
+          fontSize: "0.9rem",
+          cursor: "pointer",
+          userSelect: "none",
         }}
       >
-        {s}
-      </button>
+        <input
+          type="radio"
+          checked={form.side === side}
+          onChange={() => selectSide(side)}
+          style={{ marginRight: "0.5rem" }}
+        />
+        {side}
+      </label>
     ))}
   </div>
 </div>
@@ -584,35 +594,75 @@ useEffect(() => {
             >Без видачі</button>
           </div>
           {errors.targetNumber&&<div style={errorStyle}>Вкажіть номер цілі, або «Без видачі»</div>}
-        </div>
-
-        {/* Назва */}
-<div style={blockMargin}>
-  <div style={labelStyle}>Назва</div>
-  <div style={{ display: "flex", gap: "0.3rem" }}>
-    {namesList.map((n) => (
-      <button
-        key={n}
-        onClick={() => selectName(n)}
-        disabled={!form.selectedGoals.includes("БПЛА")}
-        style={{
-          ...buttonStyle,
-          flex: 1,
-          border: "1px solid #555",
-          backgroundColor:
-            !form.selectedGoals.includes("БПЛА")
-              ? "#222"
-              : form.name === n
-              ? "#4caf50"
-              : "#222",
-          opacity: form.selectedGoals.includes("БПЛА") ? 1 : 0.5,
-        }}
-      >
-        {n}
-      </button>
-    ))}
+        </div> 
+           
+           {/* Назва */}
+{form.selectedGoals.includes("БПЛА") && (
+  <div style={blockMargin}>
+    <label style={{ ...labelStyle, fontSize: "1rem" }}>Назва</label>
+    <div style={{ display: "flex", gap: "0.5rem" }}>
+      {namesList.map((name) => (
+        <label
+          key={name}
+          style={{
+            flex: 1,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: form.name === name ? "#2e75ff" : "#333",
+            color: "#fff",
+            padding: "0.4rem 0.8rem",
+            borderRadius: "16px",
+            fontSize: "0.9rem",
+            cursor: "pointer",
+            userSelect: "none",
+          }}
+        >
+          <input
+            type="radio"
+            checked={form.name === name}
+            onChange={() => selectName(name)}
+            style={{ marginRight: "0.5rem" }}
+          />
+          {name}
+        </label>
+      ))}
+    </div>
   </div>
-</div>
+)}
+        {form.selectedGoals.includes("БПЛА") && (
+  <div style={blockMargin}>
+    <label style={{ ...labelStyle, fontSize: "1rem" }}>Назва</label>
+    <div style={{ display: "flex", gap: "0.5rem" }}>
+      {namesList.map((name) => (
+        <label
+          key={name}
+          style={{
+            flex: 1,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: form.name === name ? "#2e75ff" : "#333",
+            color: "#fff",
+            padding: "0.4rem 0.8rem",
+            borderRadius: "16px",
+            fontSize: "0.9rem",
+            cursor: "pointer",
+            userSelect: "none",
+          }}
+        >
+          <input
+            type="radio"
+            checked={form.name === name}
+            onChange={() => selectName(name)}
+            style={{ marginRight: "0.5rem" }}
+          />
+          {name}
+        </label>
+      ))}
+    </div>
+  </div>
+)}
         {/* Кількість */}
         <div style={blockMargin}>
           <div style={{ ...labelStyle, marginBottom:"0.3rem" }}>
