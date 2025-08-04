@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+  import { useState, useEffect } from "react";
 
-export default function Home() {
+  export default function Home() {
   // ——— Состояние формы ———
   const [form, setForm] = useState({
     sector: "",
@@ -124,7 +124,7 @@ useEffect(() => {
   };
 
   // ——— Таймер ———
-const updateTime = () => {
+  const updateTime = () => {
   const now = new Date();
   setForm(f => ({
     ...f,
@@ -284,6 +284,33 @@ useEffect(() => {
     setForm(f => ({ ...f, time:`${hh}:${mm}` }));
   };
   const setTimeNow = () => updateTime();
+  // ——— Формування тексту звіту тільки з заповнених полів ———
+  const generateReportText = () => {
+  return [
+    form.sector || form.subdivision || form.position
+      ? `П: ${[form.sector, form.subdivision, form.position].filter(Boolean).join(", ")}`
+      : null,
+    form.selectedGoals.length || form.side || form.targetNumber || form.noIssue
+      ? `Ціль: ${[
+          ...form.selectedGoals,
+          form.side,
+          form.noIssue ? "Без видачі" : form.targetNumber
+        ].filter(Boolean).join(", ")}`
+      : null,
+    form.height ? `Висота: ${form.height} м` : null,
+    form.distance ? `Відстань: ${form.distance} м` : null,
+    form.quantity ? `Кількість: ${form.quantity} од.` : null,
+    form.azimuth ? `А: ${form.azimuth}°` : null,
+    form.course ? `К: ${form.course}°` : null,
+    form.location ? `НП: ${form.location}` : null,
+    form.time ? `Ч: ${form.time}` : null,
+    form.detectionMethods.length ? `Вияв: ${form.detectionMethods.join(", ")}` : null,
+    form.result ? `ПП: ${form.result}` : null,
+    form.description?.trim() ? `Інше: ${form.description.trim()}` : null
+  ]
+    .filter(Boolean)
+    .join("\n");
+};
 
   // ——— Копировать/WhatsApp ———
   const copyToClipboard = () => {
