@@ -705,8 +705,7 @@ useEffect(() => {
       ))}
     </div>
   </div>
-)}
-)}
+
         
         {/* Кількість */}
         <div style={blockMargin}>
