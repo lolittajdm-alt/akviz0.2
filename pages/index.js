@@ -353,7 +353,7 @@ useEffect(() => {
     marginBottom: "0.3rem",
   };
   const labelStyle = {
-  fontSize: "1.2rem", // ← більше розмір
+  fontSize: "0.6rem", // ← зменшено вдвічі
   marginBottom: "0.4rem",
   fontWeight: 700,
 };
@@ -542,22 +542,24 @@ useEffect(() => {
 </div>
 
         {/* Сторона */}
-        <div style={blockMargin}>
-          <div style={labelStyle}>Сторона</div>
-          <div style={{ display:"flex", gap:"0.3rem" }}>
-            {["Ворожий","Свій","Нейтральний"].map(s=>(
-              <button
-                key={s}
-                onClick={()=>selectSide(s)}
-                style={{
-                  ...buttonStyle,
-                  flexGrow:1,
-                  backgroundColor: form.side===s?"#4caf50":"#666"
-                }}
-              >{s}</button>
-            ))}
-          </div>
-        </div>
+<div style={blockMargin}>
+  <div style={labelStyle}>Сторона</div>
+  <div style={{ display: "flex", flexDirection: "column", gap: "0.3rem" }}>
+    {["Ворожий", "Свій", "Нейтральний"].map((s) => (
+      <button
+        key={s}
+        onClick={() => selectSide(s)}
+        style={{
+          ...buttonStyle,
+          width: "100%",
+          backgroundColor: form.side === s ? "#4caf50" : "#666",
+        }}
+      >
+        {s}
+      </button>
+    ))}
+  </div>
+</div>
 
         {/* Номер цілі */}
         <div style={blockMargin}>
@@ -585,8 +587,7 @@ useEffect(() => {
         {/* Назва */}
 <div style={blockMargin}>
   <div style={labelStyle}>Назва</div>
-
-  <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
+  <div style={{ display: "flex", flexDirection: "column", gap: "0.3rem" }}>
     {namesList.map((n) => (
       <button
         key={n}
@@ -594,9 +595,10 @@ useEffect(() => {
         disabled={!form.selectedGoals.includes("БПЛА")}
         style={{
           ...buttonStyle,
-          flex: "1 1 auto",
+          width: "100%",
           opacity: form.selectedGoals.includes("БПЛА") ? 1 : 0.5,
-          backgroundColor: form.name === n ? "#4caf50" : buttonStyle.backgroundColor,
+          backgroundColor:
+            form.name === n ? "#4caf50" : buttonStyle.backgroundColor,
         }}
       >
         {n}
@@ -884,19 +886,33 @@ useEffect(() => {
         </div>
 
         {/* Опис */}
-        <div style={blockMargin}>
-          <div style={labelStyle}>Опис</div>
-          <div style={{display:"flex",gap:"0.3rem"}}>
-            <button
-              onClick={()=>setForm(f=>({...f,description:"Змінила звук"}))}
-              style={{...buttonStyle,flex:1,backgroundColor:form.description==="Змінила звук"?"#4caf50":"#666"}}
-            >Змінила звук</button>
-            <button
-              onClick={()=>setForm(f=>({...f,description:"Змінила курс"}))}
-              style={{...buttonStyle,flex:1,backgroundColor:form.description==="Змінила курс"?"#4caf50":"#666"}}
-            >Змінила курс</button>
-          </div>
-        </div>
+<div style={blockMargin}>
+  <div style={labelStyle}>Опис</div>
+  <div style={{ display: "flex", flexDirection: "column", gap: "0.3rem" }}>
+    <button
+      onClick={() => setForm((f) => ({ ...f, description: "Змінила звук" }))}
+      style={{
+        ...buttonStyle,
+        width: "100%",
+        backgroundColor:
+          form.description === "Змінила звук" ? "#4caf50" : "#666",
+      }}
+    >
+      Змінила звук
+    </button>
+    <button
+      onClick={() => setForm((f) => ({ ...f, description: "Змінила курс" }))}
+      style={{
+        ...buttonStyle,
+        width: "100%",
+        backgroundColor:
+          form.description === "Змінила курс" ? "#4caf50" : "#666",
+      }}
+    >
+      Змінила курс
+    </button>
+  </div>
+</div>
 
         {/* Інша інформація */}
         <div style={{...blockMargin,display:"flex",flexDirection:"column"}}>
