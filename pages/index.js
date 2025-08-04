@@ -298,6 +298,7 @@ useEffect(() => {
 Ч: ${form.time}
 Вияв: ${form.detectionMethods.length ? form.detectionMethods.join(", ") : ""}
 ПП: ${form.result || ""}
+Опис: ${form.description || ""}
 `.trim();
 
   navigator.clipboard.writeText(text);
@@ -316,6 +317,7 @@ useEffect(() => {
 Ч: ${form.time}
 Вияв: ${form.detectionMethods.length ? form.detectionMethods.join(", ") : ""}
 ПП: ${form.result || ""}
+Опис: ${form.description || ""}
 `.trim();
 
   const encoded = encodeURIComponent(text);
@@ -1009,6 +1011,7 @@ useEffect(() => {
 Ч: ${form.time}
 Вияв: ${form.detectionMethods.length ? form.detectionMethods.join(", ") : ""}
 ПП: ${form.result || ""}
+Опис: ${form.description || ""}
 `}
   </div>
 </div>
