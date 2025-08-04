@@ -371,14 +371,18 @@ useEffect(() => {
   return (
     <div
   style={{
-  transform: "scale(0.9)",
-  transformOrigin: "top center",
-  minHeight: "100vh",
-  padding: "1rem",
-  backgroundColor: "#111",
-  color: "#fff",
-  fontFamily: "sans-serif",
-}}
+    width: "100vw",              // ширина рівна ширині екрана
+    maxWidth: "100vw",           // не ширше екрана
+    height: "100vh",             // на весь екран по висоті
+    overflowY: "auto",
+    padding: "1rem",
+    backgroundColor: "#111",
+    color: "#fff",
+    fontFamily: "sans-serif",
+    display: "flex",
+    flexDirection: "column",
+    boxSizing: "border-box",
+  }}
 >
       <div style={{ maxWidth: 600, margin: "0 auto" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}>
