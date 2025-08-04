@@ -869,7 +869,71 @@ useEffect(() => {
   )}
 </div>
 
-        
+{/* ——— Вияв ——— */}
+<div
+  style={{
+    ...blockMargin,
+    border: "1px solid #555",
+    borderRadius: "12px",
+    padding: "0.8rem",
+  }}
+>
+  <label style={{ ...labelStyle, fontSize: "1rem", marginBottom: "0.5rem" }}>
+    Вияв
+  </label>
+  <div
+    style={{
+      display: "flex",
+      flexWrap: "wrap",
+      gap: "0.5rem",
+      justifyContent: "space-between",
+    }}
+  >
+    {["Акустично", "Візуально", "Радіолокаційно", "Із застосуванням приладів спостереження"].map((method) => (
+      <label
+        key={method}
+        style={{
+          flex: "1 1 calc(50% - 0.5rem)",
+          display: "flex",
+          alignItems: "center",
+          padding: "0.3rem 0.6rem",
+          borderRadius: "8px",
+          fontSize: "0.9rem",
+          cursor: "pointer",
+          userSelect: "none",
+          background: form.detectionMethods.includes(method) ? "#2e75ff" : "#444",
+          color: "#fff",
+          border: form.detectionMethods.includes(method) ? "1px solid #2e75ff" : "1px solid #444",
+        }}
+      >
+        <span
+          style={{
+            display: "inline-block",
+            width: "1rem",
+            height: "1rem",
+            marginRight: "0.5rem",
+            border: "2px solid #ccc",
+            borderRadius: "50%",
+            backgroundColor: form.detectionMethods.includes(method) ? "#2e75ff" : "transparent",
+          }}
+        ></span>
+        <input
+          type="checkbox"
+          checked={form.detectionMethods.includes(method)}
+          onChange={() => {
+            const selected = form.detectionMethods.includes(method)
+              ? form.detectionMethods.filter((m) => m !== method)
+              : [...form.detectionMethods, method];
+            setForm((f) => ({ ...f, detectionMethods: selected }));
+          }}
+          style={{ display: "none" }}
+        />
+        {method}
+      </label>
+    ))}
+  </div>
+</div>
+
         {/* Час */}
         <div style={{ ...blockMargin, display:"flex", flexDirection:"column" }}>
           <div style={{ ...labelStyle, marginBottom:"0.3rem" }}>Час</div>
