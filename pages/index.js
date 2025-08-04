@@ -676,6 +676,8 @@ useEffect(() => {
   <div style={labelStyle}>Азимут°*</div>
   <input
     type="text"
+    inputMode="numeric"
+    pattern="\d*"
     value={form.azimuth ? `${form.azimuth}°` : ""}
     onChange={onAzimuthChange}
     placeholder="0° – 359°"
@@ -706,6 +708,8 @@ useEffect(() => {
   <div style={labelStyle}>Курс°*</div>
   <input
     type="text"
+    inputMode="numeric"
+    pattern="\d*"
     value={form.course ? `${form.course}°` : ""}
     onChange={onCourseChange}
     placeholder="0° – 359°"
