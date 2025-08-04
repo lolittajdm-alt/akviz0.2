@@ -504,12 +504,20 @@ useEffect(() => {
 
         {/* ——— Ціль ——— */}
 <div style={blockMargin}>
-  <label style={labelStyle}>Тип цілі</label>
-  <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
+  <label style={{ ...labelStyle, fontSize: "1rem" }}>Тип цілі</label>
+  <div
+    style={{
+      display: "flex",
+      flexWrap: "wrap",
+      gap: "0.5rem",
+      justifyContent: "space-between",
+    }}
+  >
     {goalsList.map((goal) => (
       <label
         key={goal}
         style={{
+          flex: "1 1 calc(33.33% - 0.5rem)",
           display: "flex",
           alignItems: "center",
           backgroundColor: form.selectedGoals.includes(goal) ? "#2e75ff" : "#333",
@@ -743,36 +751,49 @@ useEffect(() => {
           ))}
         </div>
 
-        {/* Вияв */}
-<div style={{ marginBottom: "1rem" }}>
-  <div style={labelStyle}>Вияв</div>
-
-  <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
-    {["Акустично", "Радіолокаційно", "Візуально"].map((method) => (
-      <button
+        {/* ——— Вияв ——— */}
+<div style={blockMargin}>
+  <label style={{ ...labelStyle, fontSize: "1rem" }}>Вияв</label>
+  <div
+    style={{
+      display: "flex",
+      flexWrap: "wrap",
+      gap: "0.5rem",
+      justifyContent: "space-between",
+    }}
+  >
+    {[
+      "Акустично",
+      "Радіолокаційно",
+      "Візуально",
+      "Із застосуванням приладів спостереження",
+    ].map((method) => (
+      <label
         key={method}
-        onClick={() => toggleDetection(method)}
         style={{
-          ...buttonStyle,
-          flex: "1 1 auto",
-          backgroundColor: form.detectionMethods.includes(method) ? "#4caf50" : buttonStyle.backgroundColor
+          flex: "1 1 calc(50% - 0.5rem)",
+          display: "flex",
+          alignItems: "center",
+          backgroundColor: form.detectionMethods.includes(method)
+            ? "#2e75ff"
+            : "#333",
+          color: "#fff",
+          padding: "0.4rem 0.8rem",
+          borderRadius: "16px",
+          fontSize: "0.9rem",
+          cursor: "pointer",
+          userSelect: "none",
         }}
       >
+        <input
+          type="checkbox"
+          checked={form.detectionMethods.includes(method)}
+          onChange={() => toggleDetection(method)}
+          style={{ marginRight: "0.5rem" }}
+        />
         {method}
-      </button>
+      </label>
     ))}
-
-    {/* 4-та кнопка на всю ширину */}
-    <button
-      onClick={() => toggleDetection("Із застосуванням приладів спостереження")}
-      style={{
-        ...buttonStyle,
-        width: "100%",
-        backgroundColor: form.detectionMethods.includes("Із застосуванням приладів спостереження") ? "#4caf50" : buttonStyle.backgroundColor
-      }}
-    >
-      Із застосуванням приладів спостереження
-    </button>
   </div>
 </div>
 
@@ -794,22 +815,45 @@ useEffect(() => {
           </div>
         </div>
 
-        {/* Результат */}
-        <div style={blockMargin}>
-          <div style={labelStyle}>Результат</div>
-          <div style={{ display:"flex", gap:"0.3rem" }}>
-            {["Виявлено","Обстріляно","Уражено"].map(r=>(
-              <button
-                key={r}
-                onClick={()=>setForm(f=>({...f,result:r}))}
-                style={{
-                  ...buttonStyle,flex:1,
-                  backgroundColor: form.result===r?"#4caf50":"#666"
-                }}
-              >{r}</button>
-            ))}
-          </div>
-        </div>
+        {/* ——— Результат ——— */}
+<div style={blockMargin}>
+  <label style={{ ...labelStyle, fontSize: "1rem" }}>Результат</label>
+  <div
+    style={{
+      display: "flex",
+      flexWrap: "wrap",
+      gap: "0.5rem",
+      justifyContent: "space-between",
+    }}
+  >
+    {["Виявлено", "Обстріляно", "Уражено"].map((r) => (
+      <label
+        key={r}
+        style={{
+          flex: "1 1 calc(33.33% - 0.5rem)",
+          display: "flex",
+          alignItems: "center",
+          backgroundColor: form.result === r ? "#2e75ff" : "#333",
+          color: "#fff",
+          padding: "0.4rem 0.8rem",
+          borderRadius: "16px",
+          fontSize: "0.9rem",
+          cursor: "pointer",
+          userSelect: "none",
+        }}
+      >
+        <input
+          type="radio"
+          name="result"
+          checked={form.result === r}
+          onChange={() => setForm((f) => ({ ...f, result: r }))}
+          style={{ marginRight: "0.5rem" }}
+        />
+        {r}
+      </label>
+    ))}
+  </div>
+</div>
 
         {/* Розхід БК */}
         <div style={blockMargin}>
