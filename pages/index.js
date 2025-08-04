@@ -1016,9 +1016,25 @@ useEffect(() => {
 </div>
 
 {/* ——— Опис ——— */}
-<div style={{ ...blockMargin, border: "1px solid #555", borderRadius: "12px", padding: "0.8rem" }}>
-  <label style={{ ...labelStyle, fontSize: "1rem", marginBottom: "0.5rem" }}>Опис</label>
-  <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", justifyContent: "space-between" }}>
+<div
+  style={{
+    ...blockMargin,
+    border: "1px solid #555",
+    borderRadius: "12px",
+    padding: "0.8rem",
+  }}
+>
+  <label style={{ ...labelStyle, fontSize: "1rem", marginBottom: "0.5rem" }}>
+    Опис
+  </label>
+  <div
+    style={{
+      display: "flex",
+      flexWrap: "wrap",
+      gap: "0.5rem",
+      justifyContent: "space-between",
+    }}
+  >
     {["Змінила звук", "Змінила курс"].map((desc) => (
       <label
         key={desc}
@@ -1033,7 +1049,10 @@ useEffect(() => {
           userSelect: "none",
           background: form.description === desc ? "#2e75ff" : "transparent",
           color: "#fff",
-          border: form.description === desc ? "1px solid #2e75ff" : "1px solid #444",
+          border:
+            form.description === desc
+              ? "1px solid #2e75ff"
+              : "1px solid #444",
         }}
       >
         <span
@@ -1044,13 +1063,16 @@ useEffect(() => {
             marginRight: "0.5rem",
             border: "2px solid #ccc",
             borderRadius: "50%",
-            backgroundColor: form.description === desc ? "#2e75ff" : "transparent",
+            backgroundColor:
+              form.description === desc ? "#2e75ff" : "transparent",
           }}
         ></span>
         <input
           type="radio"
           checked={form.description === desc}
-          onChange={() => setForm((f) => ({ ...f, description: desc }))}
+          onChange={() =>
+            setForm((f) => ({ ...f, description: desc }))
+          }
           style={{ display: "none" }}
         />
         {desc}
