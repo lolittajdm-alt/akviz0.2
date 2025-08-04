@@ -869,54 +869,7 @@ useEffect(() => {
   )}
 </div>
 
-        {/* ——— Вияв ——— */}
-<div style={{ ...blockMargin, border: "1px solid #555", borderRadius: "12px", padding: "0.8rem" }}>
-  <label style={{ ...labelStyle, fontSize: "1rem", marginBottom: "0.5rem" }}>Вияв</label>
-  <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", justifyContent: "space-between" }}>
-    {[
-      "Акустично",
-      "Радіолокаційно",
-      "Візуально",
-      "Із застосуванням приладів спостереження",
-    ].map((method) => (
-      <label
-        key={method}
-        style={{
-          flex: "1 1 calc(50% - 0.5rem)",
-          display: "flex",
-          alignItems: "center",
-          padding: "0.3rem 0.6rem",
-          borderRadius: "8px",
-          fontSize: "0.9rem",
-          cursor: "pointer",
-          userSelect: "none",
-          background: form.detectionMethods.includes(method) ? "#2e75ff" : "transparent",
-          color: "#fff",
-          border: form.detectionMethods.includes(method) ? "1px solid #2e75ff" : "1px solid #444",
-        }}
-      >
-        <span
-          style={{
-            display: "inline-block",
-            width: "1rem",
-            height: "1rem",
-            marginRight: "0.5rem",
-            border: "2px solid #ccc",
-            borderRadius: "50%",
-            backgroundColor: form.detectionMethods.includes(method) ? "#2e75ff" : "transparent",
-          }}
-        ></span>
-        <input
-          type="checkbox"
-          checked={form.detectionMethods.includes(method)}
-          onChange={() => toggleDetection(method)}
-          style={{ display: "none" }}
-        />
-        {method}
-      </label>
-    ))}
-  </div>
-</div>
+        
         {/* Час */}
         <div style={{ ...blockMargin, display:"flex", flexDirection:"column" }}>
           <div style={{ ...labelStyle, marginBottom:"0.3rem" }}>Час</div>
@@ -936,12 +889,28 @@ useEffect(() => {
         </div>
 
         {/* ——— Результат ——— */}
-<div style={{ ...blockMargin, border: "1px solid #555", borderRadius: "12px", padding: "0.8rem" }}>
-  <label style={{ ...labelStyle, fontSize: "1rem", marginBottom: "0.5rem" }}>Результат</label>
-  <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", justifyContent: "space-between" }}>
-    {["Виявлено", "Обстріляно", "Уражено"].map((r) => (
+<div
+  style={{
+    ...blockMargin,
+    border: "1px solid #555",
+    borderRadius: "12px",
+    padding: "0.8rem",
+  }}
+>
+  <label style={{ ...labelStyle, fontSize: "1rem", marginBottom: "0.5rem" }}>
+    Результат
+  </label>
+  <div
+    style={{
+      display: "flex",
+      flexWrap: "wrap",
+      gap: "0.5rem",
+      justifyContent: "space-between",
+    }}
+  >
+    {["Уражено", "Пошкоджено", "Без результату"].map((res) => (
       <label
-        key={r}
+        key={res}
         style={{
           flex: "1 1 calc(50% - 0.5rem)",
           display: "flex",
@@ -951,9 +920,9 @@ useEffect(() => {
           fontSize: "0.9rem",
           cursor: "pointer",
           userSelect: "none",
-          background: form.result === r ? "#2e75ff" : "transparent",
+          background: form.result === res ? "#2e75ff" : "#444",
           color: "#fff",
-          border: form.result === r ? "1px solid #2e75ff" : "1px solid #444",
+          border: form.result === res ? "1px solid #2e75ff" : "1px solid #444",
         }}
       >
         <span
@@ -964,16 +933,16 @@ useEffect(() => {
             marginRight: "0.5rem",
             border: "2px solid #ccc",
             borderRadius: "50%",
-            backgroundColor: form.result === r ? "#2e75ff" : "transparent",
+            backgroundColor: form.result === res ? "#2e75ff" : "transparent",
           }}
         ></span>
         <input
           type="radio"
-          checked={form.result === r}
-          onChange={() => setForm((f) => ({ ...f, result: r }))}
+          checked={form.result === res}
+          onChange={() => setForm(f => ({ ...f, result: res }))}
           style={{ display: "none" }}
         />
-        {r}
+        {res}
       </label>
     ))}
   </div>
@@ -1050,58 +1019,22 @@ useEffect(() => {
   <label style={{ ...labelStyle, fontSize: "1rem", marginBottom: "0.5rem" }}>
     Опис
   </label>
-  <div
+  <textarea
+    name="description"
+    value={form.description}
+    onChange={handleChange}
+    placeholder="Додаткова інформація"
     style={{
-      display: "flex",
-      flexWrap: "wrap",
-      gap: "0.5rem",
-      justifyContent: "space-between",
+      width: "100%",
+      background: "transparent",
+      color: "#fff",
+      border: "none",
+      outline: "none",
+      fontSize: "0.9rem",
+      resize: "none",
     }}
-  >
-    {["Змінила звук", "Змінила курс"].map((desc) => (
-      <label
-        key={desc}
-        style={{
-          flex: "1 1 calc(50% - 0.5rem)",
-          display: "flex",
-          alignItems: "center",
-          padding: "0.3rem 0.6rem",
-          borderRadius: "8px",
-          fontSize: "0.9rem",
-          cursor: "pointer",
-          userSelect: "none",
-          background: form.description === desc ? "#2e75ff" : "transparent",
-          color: "#fff",
-          border:
-            form.description === desc
-              ? "1px solid #2e75ff"
-              : "1px solid #444",
-        }}
-      >
-        <span
-          style={{
-            display: "inline-block",
-            width: "1rem",
-            height: "1rem",
-            marginRight: "0.5rem",
-            border: "2px solid #ccc",
-            borderRadius: "50%",
-            backgroundColor:
-              form.description === desc ? "#2e75ff" : "transparent",
-          }}
-        ></span>
-        <input
-          type="radio"
-          checked={form.description === desc}
-          onChange={() =>
-            setForm((f) => ({ ...f, description: desc }))
-          }
-          style={{ display: "none" }}
-        />
-        {desc}
-      </label>
-    ))}
-  </div>
+    rows={3}
+  />
 </div>
         {/* Інша інформація */}
         <div style={{...blockMargin,display:"flex",flexDirection:"column"}}>
