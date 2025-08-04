@@ -639,39 +639,7 @@ useEffect(() => {
     </div>
   </div>
 )}
-        {form.selectedGoals.includes("БПЛА") && (
-  <div style={blockMargin}>
-    <label style={{ ...labelStyle, fontSize: "1rem" }}>Назва</label>
-    <div style={{ display: "flex", gap: "0.5rem" }}>
-      {namesList.map((name) => (
-        <label
-          key={name}
-          style={{
-            flex: 1,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            backgroundColor: form.name === name ? "#2e75ff" : "#333",
-            color: "#fff",
-            padding: "0.4rem 0.8rem",
-            borderRadius: "16px",
-            fontSize: "0.9rem",
-            cursor: "pointer",
-            userSelect: "none",
-          }}
-        >
-          <input
-            type="radio"
-            checked={form.name === name}
-            onChange={() => selectName(name)}
-            style={{ marginRight: "0.5rem" }}
-          />
-          {name}
-        </label>
-      ))}
-    </div>
-  </div>
-)}
+        
         {/* Кількість */}
         <div style={blockMargin}>
           <div style={{ ...labelStyle, marginBottom:"0.3rem" }}>
