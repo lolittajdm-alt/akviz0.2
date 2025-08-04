@@ -526,23 +526,32 @@ useEffect(() => {
       <label
         key={goal}
         style={{
-          flex: "1 1 calc(33.33% - 0.5rem)",
+          flex: "1 1 calc(50% - 0.5rem)",
           display: "flex",
           alignItems: "center",
-          backgroundColor: form.selectedGoals.includes(goal) ? "#2e75ff" : "#333",
-          color: "#fff",
-          padding: "0.4rem 0.8rem",
-          borderRadius: "16px",
+          padding: "0.2rem 0.4rem",
+          borderRadius: "8px",
           fontSize: "0.9rem",
           cursor: "pointer",
           userSelect: "none",
+          border: form.selectedGoals.includes(goal)
+            ? "2px solid #2e75ff"
+            : "1px solid #555",
+          background: "transparent",
+          color: "#fff",
         }}
       >
         <input
           type="checkbox"
           checked={form.selectedGoals.includes(goal)}
           onChange={() => toggleGoal(goal)}
-          style={{ marginRight: "0.5rem" }}
+          style={{
+            marginRight: "0.5rem",
+            width: "1rem",
+            height: "1rem",
+            borderRadius: "50%",
+            accentColor: "#2e75ff",
+          }}
         />
         {goal}
       </label>
