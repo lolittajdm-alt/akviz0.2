@@ -1012,7 +1012,7 @@ useEffect(() => {
 Ч: ${form.time}
 Вияв: ${form.detectionMethods.length ? form.detectionMethods.join(", ") : ""}
 ПП: ${form.result || ""}
-${form.description ? `Опис: ${form.description}` : ""}
+form.description.trim() ? `Опис: ${[form.additionalInfo, form.description].filter(Boolean).join(". ")}
 `}
   </div>
 </div>
