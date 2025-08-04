@@ -1017,45 +1017,22 @@ useEffect(() => {
       minHeight: "6rem",
     }}
   >
-    {[
-      form.sector || form.subdivision || form.position
-        ? `П: ${[form.sector, form.subdivision, form.position].filter(Boolean).join(", ")}`
-        : null,
-      form.selectedGoals.length || form.side || form.targetNumber || form.noIssue
-        ? `Ціль: ${[
-            ...form.selectedGoals,
-            form.side,
-            form.noIssue ? "Без видачі" : form.targetNumber
-          ].filter(Boolean).join(", ")}`
-        : null,
-      form.height ? `Висота: ${form.height} м` : null,
-      form.distance ? `Відстань: ${form.distance} м` : null,
-      form.quantity ? `Кількість: ${form.quantity} од.` : null,
-      form.azimuth ? `А: ${form.azimuth}°` : null,
-      form.course ? `К: ${form.course}°` : null,
-      form.location ? `НП: ${form.location}` : null,
-      form.time ? `Ч: ${form.time}` : null,
-      form.detectionMethods.length ? `Вияв: ${form.detectionMethods.join(", ")}` : null,
-      form.result ? `ПП: ${form.result}` : null,
-      form.description?.trim() ? `Інше: ${form.description.trim()}` : null
-    ]
-      .filter(Boolean)
-      .join("\n")}
+    {generateReportText()}
   </pre>
 </div>
-        {/* Дії */}
-        <div style={{display:"flex",gap:"1rem",marginBottom:"1rem"}}>
-          <button
-            onClick={copyToClipboard}
-            style={{...buttonStyle,flex:1,backgroundColor:"#1e90ff"}}
-          >Копіювати</button>
-          <button
-            onClick={openWhatsApp}
-            style={{...buttonStyle,flex:1,backgroundColor:"#25d366"}}
-          >Відкрити WhatsApp</button>
-        </div>
-      </div>
 
+{/* Дії — Копіювати та WhatsApp */}
+<div style={{display:"flex",gap:"1rem",marginBottom:"1rem"}}>
+  <button
+    onClick={copyToClipboard}
+    style={{...buttonStyle,flex:1,backgroundColor:"#1e90ff"}}
+  >Копіювати</button>
+
+  <button
+    onClick={openWhatsApp}
+    style={{...buttonStyle,flex:1,backgroundColor:"#25d366"}}
+  >Відкрити WhatsApp</button>
+</div>
       {/* Модалка вибору зброї */}
       {showWeaponModal && (
         <div style={{
