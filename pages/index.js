@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+юimport { useState, useEffect } from "react";
 
 export default function Home() {
   // ——— Состояние формы ———
@@ -285,45 +285,52 @@ useEffect(() => {
   };
   const setTimeNow = () => updateTime();
 
-  // ——— Копировать/WhatsApp ———
-  const copyToClipboard = () => {
-  const text = `
-П: ${form.sector},${form.subdivision},${form.position}
-Ціль: ${form.selectedGoals.join(", ")},${form.side || ""},${form.noIssue ? "Без видачі" : form.targetNumber}
-Висота: ${form.height ? form.height + " м" : ""}
-Відстань: ${form.distance ? form.distance + " м" : ""}
-Кількість: ${form.quantity} од.
-А: ${form.azimuth ? form.azimuth + "°" : ""}
-К: ${form.course ? form.course + "°" : ""}
-НП: ${form.location}
-Ч: ${form.time}
-Вияв: ${form.detectionMethods.length ? form.detectionMethods.join(", ") : ""}
-ПП: ${form.result || ""}
-Опис: ${[form.additionalInfo, form.description].filter(Boolean).join(". ")}
-`.trim();
+  // ——— Копіювання звіту в буфер ———
+const copyToClipboard = () => {
+  if (!validateBeforeSend()) return;
+
+  const lines = [
+    `П: ${form.sector},${form.subdivision},${form.position}`,
+    `Ціль: ${form.selectedGoals.join(", ")},${form.side || ""},${form.noIssue ? "Без видачі" : form.targetNumber}`,
+    form.height ? `Висота: ${form.height} м` : "",
+    form.distance ? `Відстань: ${form.distance} м` : "",
+    `Кількість: ${form.quantity} од.`,
+    form.azimuth ? `А: ${form.azimuth}°` : "",
+    form.course ? `К: ${form.course}°` : "",
+    `НП: ${form.location}`,
+    `Ч: ${form.time}`,
+    form.detectionMethods.length ? `Вияв: ${form.detectionMethods.join(", ")}` : "",
+    form.result ? `ПП: ${form.result}` : "",
+    form.description.trim() ? `Інше: ${form.description.trim()}` : "",
+  ];
+
+  const text = lines.filter(Boolean).join("\n");
 
   navigator.clipboard.writeText(text);
   alert("Скопійовано!");
 };
-  const openWhatsApp = () => {
-  const text = `
-П: ${form.sector},${form.subdivision},${form.position}
-Ціль: ${form.selectedGoals.join(", ")},${form.side || ""},${form.noIssue ? "Без видачі" : form.targetNumber}
-Висота: ${form.height ? form.height + " м" : ""}
-Відстань: ${form.distance ? form.distance + " м" : ""}
-Кількість: ${form.quantity} од.
-А: ${form.azimuth ? form.azimuth + "°" : ""}
-К: ${form.course ? form.course + "°" : ""}
-НП: ${form.location}
-Ч: ${form.time}
-Вияв: ${form.detectionMethods.length ? form.detectionMethods.join(", ") : ""}
-ПП: ${form.result || ""}
-Опис: ${form.description || ""}
-`.trim();
 
+// ——— Відкриття WhatsApp з текстом ———
+const openWhatsApp = () => {
+  if (!validateBeforeSend()) return;
+
+  const lines = [
+    `П: ${form.sector},${form.subdivision},${form.position}`,
+    `Ціль: ${form.selectedGoals.join(", ")},${form.side || ""},${form.noIssue ? "Без видачі" : form.targetNumber}`,
+    form.height ? `Висота: ${form.height} м` : "",
+    form.distance ? `Відстань: ${form.distance} м` : "",
+    `Кількість: ${form.quantity} од.`,
+    form.azimuth ? `А: ${form.azimuth}°` : "",
+    form.course ? `К: ${form.course}°` : "",
+    `НП: ${form.location}`,
+    `Ч: ${form.time}`,
+    form.detectionMethods.length ? `Вияв: ${form.detectionMethods.join(", ")}` : "",
+    form.result ? `ПП: ${form.result}` : "",
+    form.description.trim() ? `Інше: ${form.description.trim()}` : "",
+  ];
+
+  const text = lines.filter(Boolean).join("\n");
   const encoded = encodeURIComponent(text);
-
-  // Використає системний WhatsApp (звичайний або бізнес)
   window.location.href = `whatsapp://send?text=${encoded}`;
 };
 
