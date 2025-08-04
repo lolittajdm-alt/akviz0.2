@@ -379,7 +379,7 @@ useEffect(() => {
     height: "100vh",             // на весь екран по висоті
     overflowY: "auto",
     padding: "1rem",
-    backgroundColor: "#111",
+    backgroundColor: "#1e2b40",
     color: "#fff",
     fontFamily: "sans-serif",
     display: "flex",
