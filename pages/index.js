@@ -353,10 +353,10 @@ useEffect(() => {
     marginBottom: "0.3rem",
   };
   const labelStyle = {
-    fontSize: "0.9rem",
-    marginBottom: "0.2rem",
-    fontWeight: 600,
-  };
+  fontSize: "1.2rem", // ← більше розмір
+  marginBottom: "0.4rem",
+  fontWeight: 700,
+};
   function toggleDetection(method) {
   setForm((prev) => {
     const alreadySelected = prev.detectionMethods.includes(method);
