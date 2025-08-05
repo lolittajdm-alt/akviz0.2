@@ -195,7 +195,7 @@ export default function Home() {
         value={form.sector}
         onChange={handleChange}
         style={iosInput}
-        placeholder="Сектор"
+        placeholder="Сектор Центр"
       />
       <button onClick={() => toggleLock("sector")} style={iosButton}>
         {locks.sector ? "🔒" : "✏️"}
@@ -209,7 +209,7 @@ export default function Home() {
         value={form.subdivision}
         onChange={handleChange}
         style={iosInput}
-        placeholder="Підрозділ"
+        placeholder="напр. ____ зрап, зрадн ___ омбр"
       />
       <button onClick={() => toggleLock("subdivision")} style={iosButton}>
         {locks.subdivision ? "🔒" : "✏️"}
@@ -223,7 +223,7 @@ export default function Home() {
         value={form.position}
         onChange={handleChange}
         style={iosInput}
-        placeholder="Позиція"
+        placeholder="Наприклад МВГ Халк"
       />
       <button onClick={() => toggleLock("position")} style={iosButton}>
         {locks.position ? "🔒" : "✏️"}
@@ -237,7 +237,7 @@ export default function Home() {
         value={form.location}
         onChange={handleChange}
         style={iosInput}
-        placeholder="НП"
+        placeholder="Наприклад м.Кривий Ріг,Дніпропетровська обл."
       />
       <button onClick={() => toggleLock("location")} style={iosButton}>
         {locks.location ? "🔒" : "✏️"}
