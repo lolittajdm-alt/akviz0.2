@@ -559,74 +559,57 @@ const changeHeight = (delta) => {
 </div>
 
 {/* ——— Відстань і Висота ——— */}
-<div
-  style={{
-    border: "1px solid #ccc",
-    borderRadius: "16px",
-    padding: "1rem",
-    marginBottom: "1.5rem",
-    backgroundColor: "#fff",
-  }}
->
+<div style={{
+  border: "1px solid #ccc",
+  borderRadius: "16px",
+  padding: "1rem",
+  marginBottom: "1.5rem",
+  backgroundColor: "#fff",
+}}>
   {/* Відстань */}
-  <label style={iosLabel}>Відстань, м*</label>
-  <input
-    type="text"
-    inputMode="numeric"
-    name="distance"
-    value={form.distance}
-    onChange={onDistanceChange}
-    placeholder="Вкажіть відстань"
-    style={{
-      ...iosInput,
-      border:
-        form.distance.trim() === "" || !validateDistance(form.distance)
-          ? "1px solid #FF3B30"
-          : "1px solid transparent",
-    }}
-  />
-  {(form.distance.trim() === "" || !validateDistance(form.distance)) && (
-    <div
+  <div style={{ marginBottom: "1rem" }}>
+    <label style={iosLabel}>Відстань, м*</label>
+    <input
+      type="text"
+      inputMode="numeric"
+      value={form.distance}
+      onChange={onDistanceChange}
+      onFocus={() => setFocusedField("distance")}
+      onBlur={() => setFocusedField(null)}
+      placeholder="Відстань до цілі"
       style={{
-        color: "#FF3B30",
-        fontSize: "0.75rem",
-        marginTop: "0.25rem",
-        marginBottom: "0.75rem",
+        ...iosInput,
+        border: errors.distance ? "1px solid #FF3B30" : "1px solid transparent",
       }}
-    >
-      Поле має бути заповненим!
-    </div>
-  )}
+    />
+    {errors.distance && (
+      <div style={{ color: "#FF3B30", fontSize: "0.75rem", marginTop: "0.25rem" }}>
+        Поле має бути заповненим!
+      </div>
+    )}
+    {focusedField === "distance" && (
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "0.5rem", marginTop: "0.5rem" }}>
+        {["+100", "+1000", "+5000", "-100", "-1000", "-5000"].map((label) => {
+          const isNegative = label.startsWith("-");
+          return (
+            <button
+              key={label}
+              onClick={() => changeDistance(Number(label))}
+              style={{
+                ...iosButton,
+                backgroundColor: isNegative ? "#FF3B30" : "#34C759",
+                color: "#fff",
+                padding: "0.5rem 0.3rem",
+              }}
+            >
+              {label}
+            </button>
+          );
+        })}
+      </div>
+    )}
+  </div>
 
-  {/* Висота */}
-  <label style={iosLabel}>Висота, м*</label>
-  <input
-    type="text"
-    inputMode="numeric"
-    name="height"
-    value={form.height}
-    onChange={onHeightChange}
-    placeholder="Вкажіть висоту"
-    style={{
-      ...iosInput,
-      border:
-        form.height.trim() === "" || !validateHeight(form.height)
-          ? "1px solid #FF3B30"
-          : "1px solid transparent",
-    }}
-  />
-  {(form.height.trim() === "" || !validateHeight(form.height)) && (
-    <div
-      style={{
-        color: "#FF3B30",
-        fontSize: "0.75rem",
-        marginTop: "0.25rem",
-      }}
-    >
-      Поле має бути заповненим!
-    </div>
-  )}
-</div>
   {/* Висота */}
   <div>
     <label style={iosLabel}>Висота, м*</label>
@@ -635,9 +618,9 @@ const changeHeight = (delta) => {
       inputMode="numeric"
       value={form.height}
       onChange={onHeightChange}
-      placeholder="Висота над рівнем"
       onFocus={() => setFocusedField("height")}
       onBlur={() => setFocusedField(null)}
+      placeholder="Висота над рівнем"
       style={{
         ...iosInput,
         border: errors.height ? "1px solid #FF3B30" : "1px solid transparent",
@@ -649,27 +632,18 @@ const changeHeight = (delta) => {
       </div>
     )}
     {focusedField === "height" && (
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(2, 1fr)",
-          gap: "0.5rem",
-          marginTop: "0.5rem",
-        }}
-      >
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.5rem", marginTop: "0.5rem" }}>
         {["+100", "+500", "-100", "-500"].map((label) => {
-          const delta = Number(label);
-          const isNegative = delta < 0;
+          const isNegative = label.startsWith("-");
           return (
             <button
               key={label}
-              onMouseDown={(e) => e.preventDefault()}
-              onClick={() => changeHeight(delta)}
+              onClick={() => changeHeight(Number(label))}
               style={{
                 ...iosButton,
                 backgroundColor: isNegative ? "#FF3B30" : "#34C759",
                 color: "#fff",
-                padding: "0.6rem 0.5rem",
+                padding: "0.5rem 0.3rem",
               }}
             >
               {label}
@@ -681,7 +655,7 @@ const changeHeight = (delta) => {
   </div>
 </div>
 
-      
+      {/* Час */}
 <div style={iosCard}>
   <label style={iosLabel}>Час</label>
   <input
