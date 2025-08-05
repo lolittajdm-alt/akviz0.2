@@ -85,10 +85,19 @@ export default function Home() {
   const selectName = n => setForm(f => ({ ...f, name: n }));
   const changeQuantity = d => setForm(f => ({ ...f, quantity: Math.max(1, f.quantity + d) }));
   const validateNumeric = (v, max=null) => /^\d+$/.test(v) && (max===null || +v <= max);
-  const onFieldNumeric = (field, max) => e => {
-    const v = e.target.value.replace(/\D/g, "").slice(0, max ? String(max).length : undefined);
-    setForm(f => ({ ...f, [field]: v }));
-  };
+  // ——— Універсальний хендлер числових полів ———
+const onFieldNumeric = (fieldName, maxLength = 3) => (e) => {
+  const raw = e.target.value;
+  const digits = raw.replace(/\D/g, "").slice(0, maxLength);
+  setForm((prev) => ({ ...prev, [fieldName]: digits }));
+
+  if (fieldName === "distance") {
+    setErrors((prev) => ({ ...prev, distance: !validateDistance(digits) }));
+  }
+  if (fieldName === "height") {
+    setErrors((prev) => ({ ...prev, height: !validateHeight(digits) }));
+  }
+};
   const toggleDetection = m => setForm(f => ({
     ...f,
     detectionMethods: f.detectionMethods.includes(m)
@@ -335,8 +344,10 @@ const onHeightChange = (e) => {
         type="text"
         name="targetNumber"
         value={form.targetNumber}
-        onChange={onFieldNumeric("targetNumber", 999)}
+        onChange={onFieldNumeric("targetNumber", 9999)}
         placeholder="по цілі"
+        inputMode="numeric"
+        pattern="\d*"
         style={{
           flex: 1,
           height: "44px",
@@ -368,7 +379,7 @@ const onHeightChange = (e) => {
         backgroundColor: form.noIssue ? "#FF375F" : "#E5E5F0",
         color: form.noIssue ? "#fff" : "#1C1C1E",
         whiteSpace: "nowrap",
-        flex: form.noIssue ? 1 : "unset", // ← ось ця частина
+        flexShrink: 0,
       }}
     >
       {form.noIssue ? "Видати номер" : "Без видачі"}
@@ -521,7 +532,12 @@ const onHeightChange = (e) => {
       </div>
     )}
     {focusedField === "distance" && (
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "0.8rem", marginTop: "1rem" }}>
+      <div style={{
+        display: "grid",
+        gridTemplateColumns: "1fr 1fr 1fr",
+        gap: "0.5rem",
+        marginTop: "0.75rem"
+      }}>
         {["+100", "+1000", "+5000", "-100", "-1000", "-5000"].map((label) => {
           const isNegative = label.startsWith("-");
           return (
@@ -529,11 +545,13 @@ const onHeightChange = (e) => {
               key={label}
               onClick={() => changeDistance(Number(label))}
               style={{
-                ...iosButton,
-                backgroundColor: isNegative ? "#FF3B30" : "#34C759",
-                color: "#fff",
-                padding: "0.8rem 1rem",
+                padding: "0.6rem 0.8rem",
+                backgroundColor: "#EBEBF5",
+                color: "#1C1C1E",
                 fontSize: "1rem",
+                borderRadius: "12px",
+                border: "none",
+                flex: 1,
               }}
             >
               {label}
@@ -568,7 +586,12 @@ const onHeightChange = (e) => {
       </div>
     )}
     {focusedField === "height" && (
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.8rem", marginTop: "1rem" }}>
+      <div style={{
+        display: "grid",
+        gridTemplateColumns: "1fr 1fr",
+        gap: "0.5rem",
+        marginTop: "0.75rem"
+      }}>
         {["+100", "+500", "-100", "-500"].map((label) => {
           const isNegative = label.startsWith("-");
           return (
@@ -576,11 +599,13 @@ const onHeightChange = (e) => {
               key={label}
               onClick={() => changeHeight(Number(label))}
               style={{
-                ...iosButton,
-                backgroundColor: isNegative ? "#FF3B30" : "#34C759",
-                color: "#fff",
-                padding: "0.8rem 1rem",
+                padding: "0.6rem 0.8rem",
+                backgroundColor: "#EBEBF5",
+                color: "#1C1C1E",
                 fontSize: "1rem",
+                borderRadius: "12px",
+                border: "none",
+                flex: 1,
               }}
             >
               {label}
