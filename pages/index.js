@@ -330,6 +330,7 @@ export default function Home() {
         backgroundColor: form.noIssue ? "#FF375F" : "#E5E5F0",
         color: form.noIssue ? "#fff" : "#1C1C1E",
         whiteSpace: "nowrap",
+        flex: form.noIssue ? 1 : "unset", // ← ось ця частина
       }}
     >
       {form.noIssue ? "Видати номер" : "Без видачі"}
