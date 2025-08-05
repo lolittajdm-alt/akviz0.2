@@ -117,7 +117,7 @@ const onFieldNumeric = (fieldName, maxLength = 3) => (e) => {
   const validateCourse = (v) => /^\d{1,3}$/.test(v) && +v >= 0 && +v <= 359;
 const validateAzimuth = (v) => /^\d{1,3}$/.test(v) && +v >= 0 && +v <= 359;
 const validateDistance = (v) => /^\d+$/.test(v) && +v > 0;
-const validateHeight = (v) => /^\d+$/.test(v) && +v >= 0;
+const validateHeight = (v) => /^\d+$/.test(v);
 
 const onCourseChange = (e) => {
 const value = e.target.value.replace(/\D/g, "").slice(0, 3);
@@ -131,20 +131,16 @@ setForm((f) => ({ ...f, azimuth: value }));
 setErrors((f) => ({ ...f, azimuth: !validateAzimuth(value) }));
 };
 
-const changeDistance = (d) => {
-  let x = +form.distance || 0;
-  x += d;
-  if (x < 0) x = 0;
-  setForm(f => ({ ...f, distance: String(x) }));
-  setErrors(f => ({ ...f, distance: !validateDistance(String(x)) }));
+const onDistanceChange = (e) => {
+  const value = e.target.value.replace(/\D/g, "").slice(0, 5);
+  setForm((f) => ({ ...f, distance: value }));
+  setErrors((err) => ({ ...err, distance: !validateDistance(value) }));
 };
 
-const changeHeight = (d) => {
-  let h = +form.height || 0;
-  h += d;
-  if (h < 0) h = 0;
-  setForm(f => ({ ...f, height: String(h) }));
-  setErrors(f => ({ ...f, height: !validateHeight(String(h)) }));
+const onHeightChange = (e) => {
+  const value = e.target.value.replace(/\D/g, "").slice(0, 5);
+  setForm((f) => ({ ...f, height: value }));
+  setErrors((err) => ({ ...err, height: !validateHeight(value) }));
 };
   
   // ——— Генерация текста ———
