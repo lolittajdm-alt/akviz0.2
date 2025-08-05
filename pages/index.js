@@ -829,4 +829,4 @@ const iosButton = {
         </button>
       </div>
     </div>
-  </div> // закриття головного <div style={iosContainer}>
+  </div> 
