@@ -412,55 +412,60 @@ const onCourseChange = (e) => {
   </div>
 </div>
       <div style={iosCard}>
-  <label style={iosLabel}>Азимут</label>
-  <input
-    type="text"
-    inputMode="numeric"
-    pattern="\d*"
-    name="azimuth"
-    value={form.azimuth}
-    onChange={onAzimuthChange}
-    placeholder="0° – 359°"
-    maxLength={3}
-    style={{
-      ...iosInput,
-      border:
-        form.azimuth.trim() === "" || !validateAzimuth(form.azimuth)
-          ? "1px solid #FF3B30"
-          : "none",
-    }}
-  />
-  {(form.azimuth.trim() === "" || !validateAzimuth(form.azimuth)) && (
-    <div style={{ color: "#FF3B30", fontSize: "0.75rem", marginTop: "0.3rem" }}>
-      Поле має бути заповненим!
+  <label style={iosLabel}>Азимут і Курс</label>
+  <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap" }}>
+    {/* Азимут */}
+    <div style={{ flex: 1, minWidth: "120px" }}>
+      <input
+        type="text"
+        inputMode="numeric"
+        pattern="\d*"
+        name="azimuth"
+        value={form.azimuth}
+        onChange={onAzimuthChange}
+        placeholder="Азимут (0° – 359°)"
+        maxLength={3}
+        style={{
+          ...iosInput,
+          border:
+            form.azimuth.trim() === "" || !validateAzimuth(form.azimuth)
+              ? "1px solid #FF3B30"
+              : "none",
+        }}
+      />
+      {(form.azimuth.trim() === "" || !validateAzimuth(form.azimuth)) && (
+        <div style={{ color: "#FF3B30", fontSize: "0.75rem", marginTop: "0.3rem" }}>
+          Поле має бути заповненим!
+        </div>
+      )}
     </div>
-  )}
-</div>
 
-       <div style={iosCard}>
-  <label style={iosLabel}>Курс</label>
-  <input
-    type="text"
-    inputMode="numeric"
-    pattern="\d*"
-    name="course"
-    value={form.course}
-    onChange={onCourseChange}
-    placeholder="0° – 359°"
-    maxLength={3}
-    style={{
-      ...iosInput,
-      border:
-        form.course.trim() === "" || !validateCourse(form.course)
-          ? "1px solid #FF3B30"
-          : "none",
-    }}
-  />
-  {(form.course.trim() === "" || !validateCourse(form.course)) && (
-    <div style={{ color: "#FF3B30", fontSize: "0.75rem", marginTop: "0.3rem" }}>
-      Поле має бути заповненим!
+    {/* Курс */}
+    <div style={{ flex: 1, minWidth: "120px" }}>
+      <input
+        type="text"
+        inputMode="numeric"
+        pattern="\d*"
+        name="course"
+        value={form.course}
+        onChange={onCourseChange}
+        placeholder="Курс (0° – 359°)"
+        maxLength={3}
+        style={{
+          ...iosInput,
+          border:
+            form.course.trim() === "" || !validateCourse(form.course)
+              ? "1px solid #FF3B30"
+              : "none",
+        }}
+      />
+      {(form.course.trim() === "" || !validateCourse(form.course)) && (
+        <div style={{ color: "#FF3B30", fontSize: "0.75rem", marginTop: "0.3rem" }}>
+          Поле має бути заповненим!
+        </div>
+      )}
     </div>
-  )}
+  </div>
 </div>
 
       <div style={iosCard}>
