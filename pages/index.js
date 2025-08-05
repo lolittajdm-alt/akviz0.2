@@ -693,48 +693,40 @@ const onHeightChange = (e) => {
   </div>
 </div>
       {/* ——— Вияв ——— */}
-<div
-  style={{
-    border: "1px solid #ccc",
-    borderRadius: "16px",
-    padding: "1rem",
-    marginBottom: "1.5rem",
-    backgroundColor: "#fff",
-  }}
->
+<div style={iosCard}>
   <label style={iosLabel}>Вияв</label>
-  <div
-    style={{
-      display: "grid",
-      gridTemplateColumns: "1fr 1fr",
-      gap: "0.5rem",
-    }}
-  >
-    {[
-      "Акустично",
-      "Радіолокаційно",
-      "Візуально",
-      "Із застосуванням приладів спостереження",
-    ].map((method) => (
+  <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
+    {["Акустично", "Візуально"].map((method) => (
       <button
         key={method}
         onClick={() => toggleDetection(method)}
         style={{
           ...iosButton,
-          padding: "0.4rem 0.6rem",
-          fontSize: "0.85rem",
-          backgroundColor: form.detectionMethods.includes(method)
-            ? "#32D74B"
-            : "#EBEBF5",
-          color: form.detectionMethods.includes(method)
-            ? "#fff"
-            : "#1C1C1E",
-          borderRadius: "10px",
+          flex: "1 1 calc(50% - 0.25rem)",
+          background: form.detectionMethods.includes(method) ? "#32D74B" : "#EBEBF5",
+          color: form.detectionMethods.includes(method) ? "#fff" : "#1C1C1E",
         }}
       >
         {method}
       </button>
     ))}
+
+    {/* Окрема кнопка на всю ширину */}
+    <button
+      onClick={() => toggleDetection("Із застосуванням приладів спостереження")}
+      style={{
+        ...iosButton,
+        flex: "1 1 100%",
+        background: form.detectionMethods.includes("Із застосуванням приладів спостереження")
+          ? "#32D74B"
+          : "#EBEBF5",
+        color: form.detectionMethods.includes("Із застосуванням приладів спостереження")
+          ? "#fff"
+          : "#1C1C1E",
+      }}
+    >
+      Із застосуванням приладів спостереження
+    </button>
   </div>
 </div>
 
