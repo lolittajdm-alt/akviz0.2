@@ -291,14 +291,18 @@ export default function Home() {
      {/* Номер цілі */}
 <div style={iosCard}>
   <label style={iosLabel}>Номер цілі</label>
-  <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
+  <div style={{ display: "flex", gap: "0.5rem", alignItems: "stretch" }}>
     {!form.noIssue && (
       <input
         type="text"
         name="targetNumber"
         value={form.targetNumber}
-        onChange={onFieldNumeric("targetNumber", 9999)}
-        style={{ ...iosInput, flex: 1 }}
+        onChange={onFieldNumeric("targetNumber", 999)}
+        style={{
+          ...iosInput,
+          flex: 1,
+          height: "2.6rem", // така ж висота як у кнопки
+        }}
         placeholder="по цілі"
       />
     )}
@@ -312,7 +316,7 @@ export default function Home() {
       }
       style={{
         ...iosButton,
-        padding: "0.6rem 1rem",
+        height: "2.6rem",
         background: form.noIssue ? "#FF375F" : "#EBEBF5",
         color: form.noIssue ? "#fff" : "#1C1C1E",
         whiteSpace: "nowrap",
