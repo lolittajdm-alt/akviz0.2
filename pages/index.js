@@ -127,13 +127,10 @@ const onDistanceChange = (e) => {
   setErrors((f) => ({ ...f, distance: !validateDistance(value) }));
 };
 
-const changeHeight = (d) => {
-let h = +form.height || 0;
-h += d;
-if (h < 0) h = 0;
-const value = String(h);
-setForm((f) => ({ ...f, height: value }));
-setErrors((f) => ({ ...f, height: !validateHeight(value) }));
+const onHeightChange = (e) => {
+  const value = e.target.value.replace(/\D/g, "");
+  setForm((f) => ({ ...f, height: value }));
+  setErrors((f) => ({ ...f, height: !validateHeight(value) }));
 };
   
   // ——— Генерация текста ———
