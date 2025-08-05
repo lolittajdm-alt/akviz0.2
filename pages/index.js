@@ -338,13 +338,36 @@ const onHeightChange = (e) => {
      {/* ——— Номер цілі ——— */}
 <div style={iosCard}>
   <label style={iosLabel}>Номер цілі</label>
-  <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
-    {!form.noIssue && (
+
+  {form.noIssue ? (
+    // Кнопка "Видати номер" на всю ширину
+    <button
+      onClick={() =>
+        setForm((f) => ({
+          ...f,
+          noIssue: false,
+          targetNumber: "",
+        }))
+      }
+      style={{
+        width: "100%",
+        height: "44px",
+        borderRadius: "12px",
+        border: "none",
+        fontSize: "1rem",
+        backgroundColor: "#FF375F",
+        color: "#fff",
+      }}
+    >
+      Видати номер
+    </button>
+  ) : (
+    // Поле вводу + кнопка "Без видачі" в один ряд
+    <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
       <input
-        type="text"
         name="targetNumber"
         value={form.targetNumber}
-        onChange={onFieldNumeric("targetNumber", 9999)}
+        onChange={onFieldNumeric("targetNumber", 3)}
         placeholder="по цілі"
         inputMode="numeric"
         pattern="\d*"
@@ -353,38 +376,45 @@ const onHeightChange = (e) => {
           height: "44px",
           borderRadius: "12px",
           backgroundColor: "#E5E5EA",
-          border: "none",
+          border:
+            form.targetNumber.trim() === "" ? "1px solid #FF3B30" : "none",
           padding: "0 1rem",
           fontSize: "1rem",
           color: "#1C1C1E",
-          lineHeight: "1.2",
           boxSizing: "border-box",
         }}
       />
-    )}
-    <button
-      onClick={() =>
-        setForm(f => ({
-          ...f,
-          noIssue: !f.noIssue,
-          targetNumber: "",
-        }))
-      }
-      style={{
-        height: "44px",
-        padding: "0 1rem",
-        borderRadius: "12px",
-        border: "none",
-        fontSize: "1rem",
-        backgroundColor: form.noIssue ? "#FF375F" : "#E5E5F0",
-        color: form.noIssue ? "#fff" : "#1C1C1E",
-        whiteSpace: "nowrap",
-        flexShrink: 0,
-      }}
-    >
-      {form.noIssue ? "Видати номер" : "Без видачі"}
-    </button>
-  </div>
+      <button
+        onClick={() =>
+          setForm((f) => ({
+            ...f,
+            noIssue: true,
+            targetNumber: "",
+          }))
+        }
+        style={{
+          height: "44px",
+          padding: "0 1rem",
+          borderRadius: "12px",
+          border: "none",
+          fontSize: "1rem",
+          backgroundColor: "#E5E5F0",
+          color: "#1C1C1E",
+          whiteSpace: "nowrap",
+          flexShrink: 0,
+        }}
+      >
+        Без видачі
+      </button>
+    </div>
+  )}
+
+  {/* Повідомлення про помилку */}
+  {!form.noIssue && form.targetNumber.trim() === "" && (
+    <div style={{ color: "#FF3B30", fontSize: "0.75rem", marginTop: "0.25rem" }}>
+      Поле має бути заповненим!
+    </div>
+  )}
 </div>
               
 {/* Назва (БПЛА) */}
