@@ -38,7 +38,9 @@ export default function Home() {
   const [errors, setErrors] = useState({
   distance: false,
   height: false,
-  });
+  course: false,
+  azimuth: false,
+});
   const [showWeaponModal, setShowWeaponModal] = useState(false);
   const [ammoList, setAmmoList] = useState([]);
   const [ammoQuantities, setAmmoQuantities] = useState({});
