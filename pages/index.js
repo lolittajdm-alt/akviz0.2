@@ -282,13 +282,20 @@ const onHeightChange = (e) => {
       {/* Тип цілі */}
 <div style={iosCard}>
   <label style={iosLabel}>Ціль</label>
-  <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
+  <div style={{
+    display: "flex",
+    flexWrap: "wrap",
+    gap: "0.3rem", // менший відступ між кнопками
+  }}>
     {goalsList.map(goal => (
       <button
         key={goal}
         onClick={() => toggleGoal(goal)}
         style={{
           ...iosButton,
+          padding: "0.3rem 0.6rem", // менший padding
+          fontSize: "0.8rem", // менший шрифт
+          borderRadius: "8px", // трохи менший радіус
           background: form.selectedGoals.includes(goal) ? "#32D74B" : "#EBEBF5",
           color: form.selectedGoals.includes(goal) ? "#fff" : "#1C1C1E",
         }}
@@ -491,16 +498,16 @@ const onHeightChange = (e) => {
   backgroundColor: "#F2F2F7"
 }}>
   {/* Відстань */}
-  <div style={{ marginBottom: "1rem" }}>
+  <div style={{ marginBottom: "1.5rem" }}>
     <label style={iosLabel}>Відстань, м*</label>
     <input
       type="text"
       inputMode="numeric"
       value={form.distance}
-      onFocus={() => setFocusedField("distance")}
-      onBlur={() => setFocusedField(null)}
       onChange={onDistanceChange}
       placeholder="Відстань до цілі"
+      onFocus={() => setFocusedField("distance")}
+      onBlur={() => setFocusedField(null)}
       style={{
         ...iosInput,
         border: form.distance.trim() === "" || !validateDistance(form.distance)
@@ -514,7 +521,7 @@ const onHeightChange = (e) => {
       </div>
     )}
     {focusedField === "distance" && (
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: "0.5rem", marginTop: "0.5rem" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "0.8rem", marginTop: "1rem" }}>
         {["+100", "+1000", "+5000", "-100", "-1000", "-5000"].map((label) => {
           const isNegative = label.startsWith("-");
           return (
@@ -525,7 +532,8 @@ const onHeightChange = (e) => {
                 ...iosButton,
                 backgroundColor: isNegative ? "#FF3B30" : "#34C759",
                 color: "#fff",
-                padding: "0.6rem",
+                padding: "0.8rem 1rem",
+                fontSize: "1rem",
               }}
             >
               {label}
@@ -543,10 +551,10 @@ const onHeightChange = (e) => {
       type="text"
       inputMode="numeric"
       value={form.height}
-      onFocus={() => setFocusedField("height")}
-      onBlur={() => setFocusedField(null)}
       onChange={onHeightChange}
       placeholder="Висота над рівнем"
+      onFocus={() => setFocusedField("height")}
+      onBlur={() => setFocusedField(null)}
       style={{
         ...iosInput,
         border: form.height.trim() === "" || !validateHeight(form.height)
@@ -560,7 +568,7 @@ const onHeightChange = (e) => {
       </div>
     )}
     {focusedField === "height" && (
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: "0.5rem", marginTop: "0.5rem" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.8rem", marginTop: "1rem" }}>
         {["+100", "+500", "-100", "-500"].map((label) => {
           const isNegative = label.startsWith("-");
           return (
@@ -571,7 +579,8 @@ const onHeightChange = (e) => {
                 ...iosButton,
                 backgroundColor: isNegative ? "#FF3B30" : "#34C759",
                 color: "#fff",
-                padding: "0.6rem",
+                padding: "0.8rem 1rem",
+                fontSize: "1rem",
               }}
             >
               {label}
