@@ -249,34 +249,24 @@ export default function Home() {
       
           
       {/* Тип цілі */}
-      <div style={iosCard}>
-        <label style={iosLabel}>Ціль</label>
-        <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
-          {goalsList.map(goal => (
-            <button
-              key={goal}
-              onClick={() => toggleGoal(goal)}
-              style={{
-                ...iosButton,
-                background: form.selectedGoals.includes(goal) ? "#32D74B" : "#EBEBF5",
-                color: form.selectedGoals.includes(goal) ? "#fff" : "#1C1C1E",
-              }}
-            >
-              {goal}
-            </button>
-          ))}
-          <button
-            onClick={() => setForm(f => ({ ...f, noIssue: !f.noIssue }))}
-            style={{
-              ...iosButton,
-              background: form.noIssue ? "#FF375F" : "#EBEBF5",
-              color: form.noIssue ? "#fff" : "#1C1C1E",
-            }}
-          >
-            Без видачі
-          </button>
-        </div>
-      </div>
+<div style={iosCard}>
+  <label style={iosLabel}>Ціль</label>
+  <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
+    {goalsList.map(goal => (
+      <button
+        key={goal}
+        onClick={() => toggleGoal(goal)}
+        style={{
+          ...iosButton,
+          background: form.selectedGoals.includes(goal) ? "#32D74B" : "#EBEBF5",
+          color: form.selectedGoals.includes(goal) ? "#fff" : "#1C1C1E",
+        }}
+      >
+        {goal}
+      </button>
+    ))}
+  </div>
+</div>
 
       {/* Сторона */}
       <div style={iosCard}>
@@ -298,22 +288,42 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Номер цілі */}
-      {!form.noIssue && (
-        <div style={iosCard}>
-          <label style={iosLabel}>Номер цілі</label>
-          <input
-            type="text"
-            name="targetNumber"
-            value={form.targetNumber}
-            onChange={onFieldNumeric("targetNumber", 999)}
-            style={iosInput}
-            placeholder="по цілі"
-          />
-        </div>
-      )}
-
-      {/* Назва (БПЛА) */}
+     {/* Номер цілі */}
+<div style={iosCard}>
+  <label style={iosLabel}>Номер цілі</label>
+  <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
+    {!form.noIssue && (
+      <input
+        type="text"
+        name="targetNumber"
+        value={form.targetNumber}
+        onChange={onFieldNumeric("targetNumber", 999)}
+        style={{ ...iosInput, flex: 1 }}
+        placeholder="по цілі"
+      />
+    )}
+    <button
+      onClick={() =>
+        setForm(f => ({
+          ...f,
+          noIssue: !f.noIssue,
+          targetNumber: "",
+        }))
+      }
+      style={{
+        ...iosButton,
+        padding: "0.6rem 1rem",
+        background: form.noIssue ? "#FF375F" : "#EBEBF5",
+        color: form.noIssue ? "#fff" : "#1C1C1E",
+        whiteSpace: "nowrap",
+      }}
+    >
+      {form.noIssue ? "Видати номер" : "Без видачі"}
+    </button>
+  </div>
+</div>
+              
+{/* Назва (БПЛА) */}
       {form.selectedGoals.includes("БПЛА") && (
         <div style={iosCard}>
           <label style={iosLabel}>Назва</label>
