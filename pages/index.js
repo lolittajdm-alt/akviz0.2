@@ -288,22 +288,29 @@ export default function Home() {
         </div>
       </div>
 
-     {/* Номер цілі */}
+     {{/* Номер цілі */}
 <div style={iosCard}>
   <label style={iosLabel}>Номер цілі</label>
-  <div style={{ display: "flex", gap: "0.5rem", alignItems: "stretch" }}>
+  <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
     {!form.noIssue && (
       <input
         type="text"
         name="targetNumber"
         value={form.targetNumber}
         onChange={onFieldNumeric("targetNumber", 999)}
-        style={{
-          ...iosInput,
-          flex: 1,
-          height: "2.6rem", // така ж висота як у кнопки
-        }}
         placeholder="по цілі"
+        style={{
+          flex: 1,
+          height: "44px", // чітко як у iOS
+          borderRadius: "12px",
+          backgroundColor: "#E5E5EA",
+          border: "none",
+          padding: "0 1rem",
+          fontSize: "1rem",
+          color: "#1C1C1E",
+          lineHeight: "1.2",
+          boxSizing: "border-box",
+        }}
       />
     )}
     <button
@@ -315,9 +322,12 @@ export default function Home() {
         }))
       }
       style={{
-        ...iosButton,
-        height: "2.6rem",
-        background: form.noIssue ? "#FF375F" : "#EBEBF5",
+        height: "44px", // точно як у input
+        padding: "0 1rem",
+        borderRadius: "12px",
+        border: "none",
+        fontSize: "1rem",
+        backgroundColor: form.noIssue ? "#FF375F" : "#E5E5F0",
         color: form.noIssue ? "#fff" : "#1C1C1E",
         whiteSpace: "nowrap",
       }}
