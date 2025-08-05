@@ -291,19 +291,13 @@ useEffect(() => {
     form.sector || form.subdivision || form.position
       ? `П: ${[form.sector, form.subdivision, form.position].filter(Boolean).join(", ")}`
       : null,
-
     form.selectedGoals.length || form.side || form.targetNumber || form.noIssue
       ? `Ціль: ${[
           ...form.selectedGoals,
           form.side,
-          form.noIssue
-            ? "Без видачі"
-            : form.targetNumber
-              ? `по цілі /${form.targetNumber}/`
-              : null
+          form.noIssue ? "Без видачі" : form.targetNumber ? `по цілі ${form.targetNumber}` : null
         ].filter(Boolean).join(", ")}`
       : null,
-
     form.height ? `Висота: ${form.height} м` : null,
     form.distance ? `Відстань: ${form.distance} м` : null,
     form.quantity ? `Кількість: ${form.quantity} од.` : null,
@@ -313,7 +307,7 @@ useEffect(() => {
     form.time ? `Ч: ${form.time}` : null,
     form.detectionMethods.length ? `Вияв: ${form.detectionMethods.join(", ")}` : null,
     form.result ? `ПП: ${form.result}` : null,
-    form.description?.trim() ? `Опис: ${form.description.trim()}` : null,
+    form.description?.trim() ? `Опис: ${form.description.trim()}` : null
   ]
     .filter(Boolean)
     .join("\n");
@@ -664,35 +658,32 @@ useEffect(() => {
     ))}
   </div>
 </div>
-        {/* Номер цілі */}
-<div style={blockMargin}>
-  <div style={labelStyle}>Номер цілі</div>
-  <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
+        {/* ——— Номер цілі ——— */}
+{!form.noIssue && (
+  <div style={blockMargin}>
+    <label style={labelStyle}>Номер цілі</label>
     <input
       type="text"
-      value={form.targetNumber}
-      onChange={handleTargetNumberChange}
-      disabled={form.noIssue}
-      placeholder="номер цілі"
+      name="targetNumber"
       inputMode="numeric"
-      style={inputStyle(form.noIssue)}
-    />
-    <button
-      onClick={toggleNoIssue}
-      style={{
-        ...buttonStyle,
-        backgroundColor: form.noIssue ? "#a94442" : "#4caf50",
+      value={form.targetNumber ? `по цілі ${form.targetNumber}` : ""}
+      onChange={(e) => {
+        const digits = e.target.value.replace(/\D/g, ""); // тільки цифри
+        setForm((f) => ({ ...f, targetNumber: digits }));
+        setErrors((f) => ({ ...f, targetNumber: false }));
       }}
-    >
-      Без видачі
-    </button>
+      style={{
+        width: "100%",
+        background: "transparent",
+        border: "none",
+        borderBottom: "1px solid #888",
+        color: "#fff",
+        fontSize: "1rem",
+        padding: "0.5rem 0",
+      }}
+    />
   </div>
-  {errors.targetNumber && (
-    <div style={errorStyle}>
-      Вкажіть номер цілі, або «Без видачі»
-    </div>
-  )}
-</div> 
+)} 
            
            {/* ——— Назва ——— */}
 {form.selectedGoals.includes("БПЛА") && (
