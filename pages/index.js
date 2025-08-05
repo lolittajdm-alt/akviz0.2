@@ -288,7 +288,7 @@ export default function Home() {
         </div>
       </div>
 
-     {{/* Номер цілі */}
+     {/* ——— Номер цілі ——— */}
 <div style={iosCard}>
   <label style={iosLabel}>Номер цілі</label>
   <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
@@ -301,7 +301,7 @@ export default function Home() {
         placeholder="по цілі"
         style={{
           flex: 1,
-          height: "44px", // чітко як у iOS
+          height: "44px",
           borderRadius: "12px",
           backgroundColor: "#E5E5EA",
           border: "none",
@@ -322,7 +322,7 @@ export default function Home() {
         }))
       }
       style={{
-        height: "44px", // точно як у input
+        height: "44px",
         padding: "0 1rem",
         borderRadius: "12px",
         border: "none",
