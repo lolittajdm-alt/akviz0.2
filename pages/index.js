@@ -463,24 +463,99 @@ const onCourseChange = (e) => {
   )}
 </div>
 
-      <div style={iosCard}>
-        <label style={iosLabel}>Відстань, м</label>
-        <input
-          type="text"
-          value={form.distance}
-          onChange={onFieldNumeric("distance", null)}
-          style={iosInput}
-          placeholder="м"
-        />
-        <label style={iosLabel}>Висота, м</label>
-        <input
-          type="text"
-          value={form.height}
-          onChange={onFieldNumeric("height", null)}
-          style={iosInput}
-          placeholder="м"
-        />
-      </div>
+      {/* Відстань */}
+<div style={iosCard}>
+  <label style={iosLabel}>Відстань, м</label>
+  <input
+    type="text"
+    name="distance"
+    value={form.distance}
+    onChange={onDistanceChange}
+    placeholder="Введіть відстань"
+    inputMode="numeric"
+    style={iosInput}
+  />
+  {!form.distance || !validateDistance(form.distance) ? (
+    <div style={{ color: "#FF3B30", fontSize: "0.8rem", marginTop: "0.25rem" }}>
+      Поле має бути заповненим!
+    </div>
+  ) : null}
+  
+  {form.distance && validateDistance(form.distance) && (
+    <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", marginTop: "0.5rem" }}>
+      {[
+        { label: "+100", delta: 100, color: "#32D74B" },
+        { label: "+1000", delta: 1000, color: "#32D74B" },
+        { label: "+5000", delta: 5000, color: "#32D74B" },
+        { label: "-100", delta: -100, color: "#FF3B30" },
+        { label: "-1000", delta: -1000, color: "#FF3B30" },
+        { label: "-5000", delta: -5000, color: "#FF3B30" },
+      ].map(({ label, delta, color }) => (
+        <button
+          key={label}
+          onClick={() => changeDistance(delta)}
+          style={{
+            flex: "1 1 calc(33.333% - 0.5rem)",
+            padding: "0.6rem",
+            backgroundColor: color,
+            color: "#fff",
+            border: "none",
+            borderRadius: "12px",
+            fontSize: "1rem",
+          }}
+        >
+          {label}
+        </button>
+      ))}
+    </div>
+  )}
+</div>
+
+{/* Висота */}
+<div style={iosCard}>
+  <label style={iosLabel}>Висота, м</label>
+  <input
+    type="text"
+    name="height"
+    value={form.height}
+    onChange={onHeightChange}
+    placeholder="Введіть висоту"
+    inputMode="numeric"
+    style={iosInput}
+  />
+  {!form.height || !validateHeight(form.height) ? (
+    <div style={{ color: "#FF3B30", fontSize: "0.8rem", marginTop: "0.25rem" }}>
+      Поле має бути заповненим!
+    </div>
+  ) : null}
+
+  {form.height && validateHeight(form.height) && (
+    <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", marginTop: "0.5rem" }}>
+      {[
+        { label: "+100", delta: 100, color: "#32D74B" },
+        { label: "+500", delta: 500, color: "#32D74B" },
+        { label: "-100", delta: -100, color: "#FF3B30" },
+        { label: "-500", delta: -500, color: "#FF3B30" },
+      ].map(({ label, delta, color }) => (
+        <button
+          key={label}
+          onClick={() => changeHeight(delta)}
+          style={{
+            flex: "1 1 calc(50% - 0.5rem)",
+            padding: "0.6rem",
+            backgroundColor: color,
+            color: "#fff",
+            border: "none",
+            borderRadius: "12px",
+            fontSize: "1rem",
+          }}
+        >
+          {label}
+        </button>
+      ))}
+    </div>
+  )}
+</div>
 
       {/* Вияв */}
       <div style={iosCard}>
