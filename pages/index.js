@@ -530,45 +530,53 @@ const onHeightChange = (e) => {
   )}
 </div>
 
-{/* ——— Відстань і Висота ——— */}
+{/* ——— Висота і Відстань ——— */}
 <div
   style={{
     border: "1px solid #ccc",
     borderRadius: "16px",
     padding: "1rem",
-    marginBottom: "1rem",
-    backgroundColor: "#fff"
+    marginBottom: "1.5rem",
+    backgroundColor: "#fff",
   }}
 >
   {/* Відстань */}
-  <div style={{ marginBottom: "1rem" }}>
+  <div style={{ marginBottom: "1.2rem" }}>
     <label style={iosLabel}>Відстань, м*</label>
     <input
       type="text"
       inputMode="numeric"
       value={form.distance}
       onChange={onDistanceChange}
+      onFocus={() => setFocusedField("distance")}
+      onBlur={() => setFocusedField(null)}
       placeholder="Відстань до цілі"
       style={{
         ...iosInput,
-        border: form.distance.trim() === "" || !validateDistance(form.distance)
-          ? "1px solid #FF3B30"
-          : "1px solid transparent",
+        border:
+          form.distance.trim() === "" || !validateDistance(form.distance)
+            ? "1px solid #FF3B30"
+            : "1px solid transparent",
       }}
     />
     {(form.distance.trim() === "" || !validateDistance(form.distance)) && (
-      <div style={{ color: "#FF3B30", fontSize: "0.75rem", marginTop: "0.25rem" }}>
+      <div
+        style={{
+          color: "#FF3B30",
+          fontSize: "0.75rem",
+          marginTop: "0.25rem",
+        }}
+      >
         Поле має бути заповненим!
       </div>
     )}
-    {/* Кнопки зʼявляються тільки при валідному значенні */}
-    {form.distance.trim() !== "" && validateDistance(form.distance) && (
+    {focusedField === "distance" && (
       <div
         style={{
           display: "grid",
           gridTemplateColumns: "1fr 1fr 1fr",
           gap: "0.5rem",
-          marginTop: "0.75rem"
+          marginTop: "0.75rem",
         }}
       >
         {["+100", "+1000", "+5000", "-100", "-1000", "-5000"].map((label) => {
@@ -582,7 +590,7 @@ const onHeightChange = (e) => {
                 backgroundColor: isNegative ? "#FF3B30" : "#34C759",
                 color: "#fff",
                 padding: "0.6rem 0.5rem",
-                borderRadius: "12px"
+                borderRadius: "12px",
               }}
             >
               {label}
@@ -601,27 +609,35 @@ const onHeightChange = (e) => {
       inputMode="numeric"
       value={form.height}
       onChange={onHeightChange}
+      onFocus={() => setFocusedField("height")}
+      onBlur={() => setFocusedField(null)}
       placeholder="Висота над рівнем"
       style={{
         ...iosInput,
-        border: form.height.trim() === "" || !validateHeight(form.height)
-          ? "1px solid #FF3B30"
-          : "1px solid transparent",
+        border:
+          form.height.trim() === "" || !validateHeight(form.height)
+            ? "1px solid #FF3B30"
+            : "1px solid transparent",
       }}
     />
     {(form.height.trim() === "" || !validateHeight(form.height)) && (
-      <div style={{ color: "#FF3B30", fontSize: "0.75rem", marginTop: "0.25rem" }}>
+      <div
+        style={{
+          color: "#FF3B30",
+          fontSize: "0.75rem",
+          marginTop: "0.25rem",
+        }}
+      >
         Поле має бути заповненим!
       </div>
     )}
-    {/* Кнопки */}
-    {form.height.trim() !== "" && validateHeight(form.height) && (
+    {focusedField === "height" && (
       <div
         style={{
           display: "grid",
           gridTemplateColumns: "1fr 1fr",
           gap: "0.5rem",
-          marginTop: "0.75rem"
+          marginTop: "0.75rem",
         }}
       >
         {["+100", "+500", "-100", "-500"].map((label) => {
@@ -635,7 +651,7 @@ const onHeightChange = (e) => {
                 backgroundColor: isNegative ? "#FF3B30" : "#34C759",
                 color: "#fff",
                 padding: "0.6rem 0.5rem",
-                borderRadius: "12px"
+                borderRadius: "12px",
               }}
             >
               {label}
