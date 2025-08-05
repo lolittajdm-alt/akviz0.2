@@ -662,45 +662,88 @@ const onHeightChange = (e) => {
     )}
   </div>
 </div>
-      {/* Вияв */}
-      <div style={iosCard}>
-        <label style={iosLabel}>Вияв</label>
-        <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
-          {["Акустично","Візуально","Радіолокаційно","Із застосуванням приладів спостереження"].map(m => (
-            <button
-              key={m}
-              onClick={() => toggleDetection(m)}
-              style={{
-                ...iosButton,
-                background: form.detectionMethods.includes(m) ? "#32D74B" : "#EBEBF5",
-                color: form.detectionMethods.includes(m) ? "#fff" : "#1C1C1E",
-              }}
-            >
-              {m}
-            </button>
-          ))}
-        </div>
-      </div>
+      {/* ——— Вияв ——— */}
+<div
+  style={{
+    border: "1px solid #ccc",
+    borderRadius: "16px",
+    padding: "1rem",
+    marginBottom: "1.5rem",
+    backgroundColor: "#fff",
+  }}
+>
+  <label style={iosLabel}>Вияв</label>
+  <div
+    style={{
+      display: "grid",
+      gridTemplateColumns: "1fr 1fr",
+      gap: "0.5rem",
+    }}
+  >
+    {[
+      "Акустично",
+      "Радіолокаційно",
+      "Візуально",
+      "Із застосуванням приладів спостереження",
+    ].map((method) => (
+      <button
+        key={method}
+        onClick={() => toggleDetection(method)}
+        style={{
+          ...iosButton,
+          padding: "0.4rem 0.6rem",
+          fontSize: "0.85rem",
+          backgroundColor: form.detectionMethods.includes(method)
+            ? "#32D74B"
+            : "#EBEBF5",
+          color: form.detectionMethods.includes(method)
+            ? "#fff"
+            : "#1C1C1E",
+          borderRadius: "10px",
+        }}
+      >
+        {method}
+      </button>
+    ))}
+  </div>
+</div>
 
-      {/* Результат */}
-      <div style={iosCard}>
-        <label style={iosLabel}>Результат</label>
-        <div style={{ display: "flex", gap: "0.5rem" }}>
-          {["Виявлено","Обстріляно","Уражено"].map(r => (
-            <button
-              key={r}
-              onClick={() => setForm(f => ({ ...f, result: r }))}
-              style={{
-                ...iosButton,
-                background: form.result === r ? "#0A84FF" : "#EBEBF5",
-                color: form.result === r ? "#fff" : "#1C1C1E",
-              }}
-            >
-              {r}
-            </button>
-          ))}
-        </div>
-      </div>
+      {/* ——— Результат ——— */}
+<div
+  style={{
+    border: "1px solid #ccc",
+    borderRadius: "16px",
+    padding: "1rem",
+    marginBottom: "1.5rem",
+    backgroundColor: "#fff",
+  }}
+>
+  <label style={iosLabel}>Результат</label>
+  <div
+    style={{
+      display: "grid",
+      gridTemplateColumns: "1fr 1fr",
+      gap: "0.5rem",
+    }}
+  >
+    {["Виявлено", "Обстріляно", "Уражено"].map((result) => (
+      <button
+        key={result}
+        onClick={() => setForm((f) => ({ ...f, result }))}
+        style={{
+          ...iosButton,
+          padding: "0.4rem 0.6rem",
+          fontSize: "0.85rem",
+          backgroundColor: form.result === result ? "#32D74B" : "#EBEBF5",
+          color: form.result === result ? "#fff" : "#1C1C1E",
+          borderRadius: "10px",
+        }}
+      >
+        {result}
+      </button>
+    ))}
+  </div>
+</div>
 
       {/* Інша інформація */}
       <div style={iosCard}>
