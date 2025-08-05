@@ -1149,21 +1149,6 @@ useEffect(() => {
     rows={3}
   />
 </div>
-        {/* Інша інформація */}
-        <div style={{...blockMargin,display:"flex",flexDirection:"column"}}>
-          <div style={labelStyle}>Інша інформація про ціль або застосування</div>
-          <textarea
-            name="additionalInfo"
-            value={form.description}
-            onChange={handleChange}
-            placeholder="Інша інформація про ціль або застосування"
-            style={{
-              width:"100%",padding:"0.5rem",borderRadius:"6px",border:"none",
-              backgroundColor:"#222",color:"#fff",fontSize:"1rem",boxSizing:"border-box",
-              minHeight:"4rem",resize:"vertical"
-            }}
-          />
-        </div>
 
         {/* ——— Звіт ——— */}
 <div style={{ marginTop: "1.5rem" }}>
