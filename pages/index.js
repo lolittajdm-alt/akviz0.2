@@ -681,7 +681,7 @@ const changeHeight = (delta) => {
   </div>
 </div>
 
-      {/* ——— Час ——— */}
+      
 <div style={iosCard}>
   <label style={iosLabel}>Час</label>
   <input
