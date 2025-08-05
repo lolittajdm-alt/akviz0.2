@@ -297,7 +297,7 @@ export default function Home() {
         type="text"
         name="targetNumber"
         value={form.targetNumber}
-        onChange={onFieldNumeric("targetNumber", 999)}
+        onChange={onFieldNumeric("targetNumber", 9999)}
         style={{ ...iosInput, flex: 1 }}
         placeholder="по цілі"
       />
