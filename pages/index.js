@@ -246,67 +246,8 @@ export default function Home() {
   </div>
 )}
 
-      {/* Верхние поля */}
-      {showTopFields && (
-        <div style={iosCard}>
-          <label style={iosLabel}>Сектор</label>
-          <div style={{ display: "flex", gap: "0.5rem" }}>
-            <input
-              name="sector"
-              value={form.sector}
-              onChange={handleChange}
-              style={iosInput}
-              placeholder="Сектор"
-            />
-            <button onClick={() => toggleLock("sector")} style={iosButton}>
-              {locks.sector ? "🔒" : "✏️"}
-            </button>
-          </div>
-
-          <label style={iosLabel}>Підрозділ</label>
-          <div style={{ display: "flex", gap: "0.5rem" }}>
-            <input
-              name="subdivision"
-              value={form.subdivision}
-              onChange={handleChange}
-              style={iosInput}
-              placeholder="Підрозділ"
-            />
-            <button onClick={() => toggleLock("subdivision")} style={iosButton}>
-              {locks.subdivision ? "🔒" : "✏️"}
-            </button>
-          </div>
-
-          <label style={iosLabel}>Позиція</label>
-          <div style={{ display: "flex", gap: "0.5rem" }}>
-            <input
-              name="position"
-              value={form.position}
-              onChange={handleChange}
-              style={iosInput}
-              placeholder="Позиція"
-            />
-            <button onClick={() => toggleLock("position")} style={iosButton}>
-              {locks.position ? "🔒" : "✏️"}
-            </button>
-          </div>
-
-          <label style={iosLabel}>Населений пункт</label>
-          <div style={{ display: "flex", gap: "0.5rem" }}>
-            <input
-              name="location"
-              value={form.location}
-              onChange={handleChange}
-              style={iosInput}
-              placeholder="НП"
-            />
-            <button onClick={() => toggleLock("location")} style={iosButton}>
-              {locks.location ? "🔒" : "✏️"}
-            </button>
-          </div>
-        </div>
-      )}
-
+      
+          
       {/* Тип цілі */}
       <div style={iosCard}>
         <label style={iosLabel}>Ціль</label>
