@@ -121,13 +121,10 @@ setForm((f) => ({ ...f, azimuth: value }));
 setErrors((f) => ({ ...f, azimuth: !validateAzimuth(value) }));
 };
 
-const changeDistance = (d) => {
-let x = +form.distance || 0;
-x += d;
-if (x < 0) x = 0;
-const value = String(x);
-setForm((f) => ({ ...f, distance: value }));
-setErrors((f) => ({ ...f, distance: !validateDistance(value) }));
+const onDistanceChange = (e) => {
+  const value = e.target.value.replace(/\D/g, "");
+  setForm((f) => ({ ...f, distance: value }));
+  setErrors((f) => ({ ...f, distance: !validateDistance(value) }));
 };
 
 const changeHeight = (d) => {
