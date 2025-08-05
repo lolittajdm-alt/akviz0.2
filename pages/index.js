@@ -114,6 +114,32 @@ const onCourseChange = (e) => {
   const value = e.target.value.replace(/\D/g, "").slice(0, 3);
   setForm((f) => ({ ...f, azimuth: value }));
 };
+  const validateDistance = v => /^\d+$/.test(v) && +v > 0;
+const validateHeight = v => /^\d+$/.test(v);
+
+const onDistanceChange = e => {
+  let v = e.target.value.replace(/\D/g, "");
+  setForm(f => ({ ...f, distance: v }));
+};
+
+const onHeightChange = e => {
+  let v = e.target.value.replace(/\D/g, "");
+  setForm(f => ({ ...f, height: v }));
+};
+
+const changeDistance = d => {
+  let val = +form.distance || 0;
+  val += d;
+  if (val < 0) val = 0;
+  setForm(f => ({ ...f, distance: String(val) }));
+};
+
+const changeHeight = d => {
+  let val = +form.height || 0;
+  val += d;
+  if (val < 0) val = 0;
+  setForm(f => ({ ...f, height: String(val) }));
+};
   
   // ——— Генерация текста ———
   const generateReportText = () => [
