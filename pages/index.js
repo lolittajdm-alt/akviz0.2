@@ -172,28 +172,54 @@ const changeHeight = (delta) => {
 };
   
   // ——— Генерация текста ———
-  const generateReportText = () => [
+  const generateReportText = () => {
+  const isExplosion = form.selectedGoals.includes("Вибух");
+  const isGunfire = form.selectedGoals.includes("Постріли(ЗУ,кулемет)");
+
+  return [
     form.sector || form.subdivision || form.position
-      ? `П: ${[form.sector,form.subdivision,form.position].filter(Boolean).join(", ")}`
+      ? `П: ${[form.sector, form.subdivision, form.position].filter(Boolean).join(", ")}`
       : null,
+
     `Ціль: ${[
       ...form.selectedGoals,
       form.side,
       form.noIssue ? "Без видачі" : `по цілі ${form.targetNumber || ""}`
     ].filter(Boolean).join(", ")}`,
-    form.height ? `Висота: ${form.height} м` : null,
+
+    // Показуємо "Висота", якщо НЕ "Вибух"
+    !isExplosion && form.height
+      ? `Висота: ${form.height} м`
+      : null,
+
+    // Показуємо "Відстань" завжди, якщо є
     form.distance ? `Відстань: ${form.distance} м` : null,
-    form.quantity && !form.selectedGoals.includes("Постріли(ЗУ,кулемет)")
-  ? `Кількість: ${form.quantity} од.`
-  : null,
+
+    // Показуємо "Кількість", якщо НЕ "Вибух" і НЕ "Постріли"
+    !isExplosion && !isGunfire && form.quantity
+      ? `Кількість: ${form.quantity} од.`
+      : null,
+
+    // Показуємо Азимут
     form.azimuth ? `А: ${form.azimuth}°` : null,
-    form.course ? `К: ${form.course}°` : null,
+
+    // Показуємо Курс, якщо НЕ "Вибух"
+    !isExplosion && form.course
+      ? `К: ${form.course}°`
+      : null,
+
     form.location ? `НП: ${form.location}` : null,
     form.time ? `Ч: ${form.time}` : null,
-    form.detectionMethods.length ? `Вияв: ${form.detectionMethods.join(", ")}` : null,
+
+    form.detectionMethods.length
+      ? `Вияв: ${form.detectionMethods.join(", ")}`
+      : null,
+
     form.result ? `ПП: ${form.result}` : null,
+
     form.description ? `Опис: ${form.description}` : null
   ].filter(Boolean).join("\n");
+};
 
   // ——— Стили iOS ———
   const iosContainer = {
