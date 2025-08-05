@@ -124,12 +124,10 @@ const onFieldNumeric = (fieldName, maxLength = 3) => (e) => {
   };
 
   // ——— Валидации ———
-  const validateCourse = (v) => /^\d{1,3}$/.test(v) && +v >= 0 && +v <= 359;
+const validateCourse = (v) => /^\d{1,3}$/.test(v) && +v >= 0 && +v <= 359;
 const validateAzimuth = (v) => /^\d{1,3}$/.test(v) && +v >= 0 && +v <= 359;
 const validateDistance = (v) => /^\d+$/.test(v) && +v > 0;
-  const validateDistance = (v) => /^\d+$/.test(v) && +v > 0;
 const validateHeight = (v) => /^\d+$/.test(v) && +v > 0;
-const validateHeight = (v) => /^\d+$/.test(v);
 
 const onCourseChange = (e) => {
 const value = e.target.value.replace(/\D/g, "").slice(0, 3);
