@@ -193,640 +193,582 @@ const changeHeight = (delta) => {
     form.description ? `Опис: ${form.description}` : null
   ].filter(Boolean).join("\n");
 
-// ——— Темні стилі iOS ———
-const iosContainer = {
-  fontFamily: systemFont,
-  backgroundColor: "#000", // глибокий чорний фон
-  minHeight: "100vh",
-  padding: "1rem",
-  boxSizing: "border-box",
-};
+  // ——— Стили iOS ———
+  const iosContainer = {
+    fontFamily: systemFont,
+    backgroundColor: "#F2F2F7",
+    minHeight: "100vh",
+    padding: "1rem",
+    boxSizing: "border-box",
+  };
+  const iosCard = {
+    backgroundColor: "rgba(255,255,255,0.8)",
+    backdropFilter: "blur(10px)",
+    borderRadius: "16px",
+    padding: "1rem",
+    marginBottom: "1rem",
+    boxShadow: "0 4px 16px rgba(0,0,0,0.1)",
+  };
+  const iosLabel = { fontSize: "0.9rem", marginBottom: "0.3rem", color: "#1C1C1E" };
+  const iosInput = {
+    width: "100%",
+    padding: "0.6rem",
+    borderRadius: "12px",
+    border: "none",
+    backgroundColor: "#ECECEC",
+    fontSize: "1rem",
+    color: "#1C1C1E",
+    marginBottom: "0.6rem",
+  };
+  const iosButton = {
+    flex: 1,
+    padding: "0.6rem",
+    borderRadius: "12px",
+    border: "none",
+    fontSize: "1rem",
+    color: "#fff",
+    background: "#0A84FF",
+    margin: "0.3rem",
+    cursor: "pointer",
+  };
 
-const iosCard = {
-  backgroundColor: "rgba(28,28,30,0.9)", // напівпрозора темна картка
-  backdropFilter: "blur(12px)",
-  borderRadius: "16px",
-  padding: "1rem",
-  marginBottom: "1.2rem",
-  boxShadow: "0 4px 16px rgba(0,0,0,0.4)",
-  border: "1px solid rgba(255,255,255,0.05)",
-};
-
-const iosLabel = {
-  fontSize: "0.9rem",
-  marginBottom: "0.3rem",
-  color: "#fff", // білий текст
-};
-
-const iosInput = {
-  width: "100%",
-  padding: "0.6rem",
-  borderRadius: "12px",
-  border: "none",
-  backgroundColor: "#1C1C1E", // темний інпут
-  fontSize: "1rem",
-  color: "#fff", // білий текст у полі
-  marginBottom: "0.6rem",
-};
-
-const iosButton = {
-  flex: 1,
-  padding: "0.6rem",
-  borderRadius: "12px",
-  border: "none",
-  fontSize: "1rem",
-  color: "#fff",
-  background: "#0A84FF", // стандартний синій iOS
-  margin: "0.3rem",
-  cursor: "pointer",
-};
-      {/* ——— Тип цілі ——— */}
-    <div style={iosCard}>
-      <label style={iosLabel}>Ціль</label>
-      <div style={{
-        display: "flex",
-        flexWrap: "wrap",
-        gap: "0.3rem",
-      }}>
-        {goalsList.map(goal => (
-          <button
-            key={goal}
-            onClick={() => toggleGoal(goal)}
-            style={{
-              ...iosButton,
-              padding: "0.3rem 0.6rem",
-              fontSize: "0.8rem",
-              borderRadius: "8px",
-              background: form.selectedGoals.includes(goal) ? "#32D74B" : "#3A3A3C",
-              color: form.selectedGoals.includes(goal) ? "#fff" : "#fff",
-            }}
-          >
-            {goal}
-          </button>
-        ))}
-      </div>
-    </div>
-
-    {/* ——— Сторона ——— */}
-    <div style={iosCard}>
-      <label style={iosLabel}>Сторона</label>
-      <div style={{ display: "flex", gap: "0.5rem" }}>
-        {["Ворожий", "Свій", "Нейтральний"].map(s => (
-          <button
-            key={s}
-            onClick={() => selectSide(s)}
-            style={{
-              ...iosButton,
-              background: form.side === s ? "#32D74B" : "#3A3A3C",
-              color: form.side === s ? "#fff" : "#fff",
-            }}
-          >
-            {s}
-          </button>
-        ))}
-      </div>
-    </div>
-
-    {/* ——— Номер цілі ——— */}
-    <div style={iosCard}>
-      <label style={iosLabel}>Номер цілі</label>
-      {form.noIssue ? (
-        <button
-          onClick={() =>
-            setForm((f) => ({
-              ...f,
-              noIssue: false,
-              targetNumber: "",
-            }))
-          }
-          style={{
-            width: "100%",
-            height: "44px",
-            borderRadius: "12px",
-            border: "none",
-            fontSize: "1rem",
-            backgroundColor: "#FF375F",
-            color: "#fff",
-          }}
-        >
-          Видати номер
+  return (
+    <div style={iosContainer}>
+      {/* Заголовок */}
+      <div style={{ ...iosCard, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <h1 style={{ margin: 0, fontSize: "1.4rem", color: "#1C1C1E" }}>АкВіз 2.0</h1>
+        <button onClick={() => window.location.reload()} style={{ ...iosButton, background: "#8E8E93" }}>
+          Оновити
         </button>
-      ) : (
-        <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
-          <input
-            name="targetNumber"
-            value={form.targetNumber}
-            onChange={onFieldNumeric("targetNumber", 9999)}
-            placeholder="по цілі"
-            inputMode="numeric"
-            pattern="\d*"
-            style={{
-              flex: 1,
-              height: "44px",
-              borderRadius: "12px",
-              backgroundColor: "#2C2C2E",
-              border: form.targetNumber.trim() === "" ? "1px solid #FF3B30" : "none",
-              padding: "0 1rem",
-              fontSize: "1rem",
-              color: "#fff",
-              boxSizing: "border-box",
-            }}
-          />
-          <button
-            onClick={() =>
-              setForm((f) => ({
-                ...f,
-                noIssue: true,
-                targetNumber: "",
-              }))
-            }
-            style={{
-              height: "44px",
-              padding: "0 1rem",
-              borderRadius: "12px",
-              border: "none",
-              fontSize: "1rem",
-              backgroundColor: "#3A3A3C",
-              color: "#fff",
-              whiteSpace: "nowrap",
-              flexShrink: 0,
-            }}
-          >
-            Без видачі
-          </button>
-        </div>
-      )}
-      {!form.noIssue && form.targetNumber.trim() === "" && (
-        <div style={{ color: "#FF3B30", fontSize: "0.75rem", marginTop: "0.25rem" }}>
-          Поле має бути заповненим!
-        </div>
-      )}
-    </div>
-
-    {/* ——— Назва (БПЛА) ——— */}
-    {form.selectedGoals.includes("БПЛА") && (
-      <div style={iosCard}>
-        <label style={iosLabel}>Назва</label>
-        <div style={{ display: "flex", gap: "0.5rem" }}>
-          {namesList.map(n => (
-            <button
-              key={n}
-              onClick={() => selectName(n)}
-              style={{
-                ...iosButton,
-                background: form.name === n ? "#0A84FF" : "#3A3A3C",
-                color: "#fff",
-              }}
-            >
-              {n}
-            </button>
-          ))}
-        </div>
       </div>
-    )}
+
+{/* ——— Кнопка скрыть/показать поля ——— */}
+<div style={{ ...iosCard, display: "flex", justifyContent: "center", marginBottom: "1rem" }}>
+  <button
+    onClick={() => setShowTopFields(prev => !prev)}
+    style={{ ...iosButton, background: "#8E8E93" }}
+  >
+    {showTopFields ? "Приховати поля" : "Показати поля"}
+  </button>
+</div>
+
+{/* ——— Первые 4 поля ——— */}
+{showTopFields && (
+  <div style={iosCard}>
+    {/* Сектор */}
+    <label style={iosLabel}>Сектор</label>
+    <div style={{ display: "flex", gap: "0.5rem" }}>
+      <input
+        name="sector"
+        value={form.sector}
+        onChange={handleChange}
+        style={iosInput}
+        placeholder="Сектор Центр"
+      />
+      <button onClick={() => toggleLock("sector")} style={iosButton}>
+        {locks.sector ? "🔒" : "✏️"}
+      </button>
+    </div>
+    {/* Підрозділ */}
+    <label style={iosLabel}>Підрозділ</label>
+    <div style={{ display: "flex", gap: "0.5rem" }}>
+      <input
+        name="subdivision"
+        value={form.subdivision}
+        onChange={handleChange}
+        style={iosInput}
+        placeholder="напр. ____ зрап, зрадн ___ омбр"
+      />
+      <button onClick={() => toggleLock("subdivision")} style={iosButton}>
+        {locks.subdivision ? "🔒" : "✏️"}
+      </button>
+    </div>
+    {/* Позиція */}
+    <label style={iosLabel}>Позиція</label>
+    <div style={{ display: "flex", gap: "0.5rem" }}>
+      <input
+        name="position"
+        value={form.position}
+        onChange={handleChange}
+        style={iosInput}
+        placeholder="Наприклад МВГ Халк"
+      />
+      <button onClick={() => toggleLock("position")} style={iosButton}>
+        {locks.position ? "🔒" : "✏️"}
+      </button>
+    </div>
+    {/* Населений пункт */}
+    <label style={iosLabel}>Населений пункт</label>
+    <div style={{ display: "flex", gap: "0.5rem" }}>
+      <input
+        name="location"
+        value={form.location}
+        onChange={handleChange}
+        style={iosInput}
+        placeholder="Наприклад м.Кривий Ріг,Дніпропетровська обл."
+      />
+      <button onClick={() => toggleLock("location")} style={iosButton}>
+        {locks.location ? "🔒" : "✏️"}
+      </button>
+    </div>
+  </div>
+)}
 
       
           
-          {/* ——— Тип цілі ——— */}
-    <div style={iosCard}>
-      <label style={iosLabel}>Ціль</label>
-      <div style={{
-        display: "flex",
-        flexWrap: "wrap",
-        gap: "0.3rem",
-      }}>
-        {goalsList.map(goal => (
-          <button
-            key={goal}
-            onClick={() => toggleGoal(goal)}
-            style={{
-              ...iosButton,
-              padding: "0.3rem 0.6rem",
-              fontSize: "0.8rem",
-              borderRadius: "8px",
-              background: form.selectedGoals.includes(goal) ? "#32D74B" : "#3A3A3C",
-              color: form.selectedGoals.includes(goal) ? "#fff" : "#fff",
-            }}
-          >
-            {goal}
-          </button>
-        ))}
-      </div>
-    </div>
-
-    {/* ——— Сторона ——— */}
-    <div style={iosCard}>
-      <label style={iosLabel}>Сторона</label>
-      <div style={{ display: "flex", gap: "0.5rem" }}>
-        {["Ворожий", "Свій", "Нейтральний"].map(s => (
-          <button
-            key={s}
-            onClick={() => selectSide(s)}
-            style={{
-              ...iosButton,
-              background: form.side === s ? "#32D74B" : "#3A3A3C",
-              color: form.side === s ? "#fff" : "#fff",
-            }}
-          >
-            {s}
-          </button>
-        ))}
-      </div>
-    </div>
-
-    {/* ——— Номер цілі ——— */}
-    <div style={iosCard}>
-      <label style={iosLabel}>Номер цілі</label>
-      {form.noIssue ? (
-        <button
-          onClick={() =>
-            setForm((f) => ({
-              ...f,
-              noIssue: false,
-              targetNumber: "",
-            }))
-          }
-          style={{
-            width: "100%",
-            height: "44px",
-            borderRadius: "12px",
-            border: "none",
-            fontSize: "1rem",
-            backgroundColor: "#FF375F",
-            color: "#fff",
-          }}
-        >
-          Видати номер
-        </button>
-      ) : (
-        <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
-          <input
-            name="targetNumber"
-            value={form.targetNumber}
-            onChange={onFieldNumeric("targetNumber", 9999)}
-            placeholder="по цілі"
-            inputMode="numeric"
-            pattern="\d*"
-            style={{
-              flex: 1,
-              height: "44px",
-              borderRadius: "12px",
-              backgroundColor: "#2C2C2E",
-              border: form.targetNumber.trim() === "" ? "1px solid #FF3B30" : "none",
-              padding: "0 1rem",
-              fontSize: "1rem",
-              color: "#fff",
-              boxSizing: "border-box",
-            }}
-          />
-          <button
-            onClick={() =>
-              setForm((f) => ({
-                ...f,
-                noIssue: true,
-                targetNumber: "",
-              }))
-            }
-            style={{
-              height: "44px",
-              padding: "0 1rem",
-              borderRadius: "12px",
-              border: "none",
-              fontSize: "1rem",
-              backgroundColor: "#3A3A3C",
-              color: "#fff",
-              whiteSpace: "nowrap",
-              flexShrink: 0,
-            }}
-          >
-            Без видачі
-          </button>
-        </div>
-      )}
-      {!form.noIssue && form.targetNumber.trim() === "" && (
-        <div style={{ color: "#FF3B30", fontSize: "0.75rem", marginTop: "0.25rem" }}>
-          Поле має бути заповненим!
-        </div>
-      )}
-    </div>
-
-    {/* ——— Назва (БПЛА) ——— */}
-    {form.selectedGoals.includes("БПЛА") && (
-      <div style={iosCard}>
-        <label style={iosLabel}>Назва</label>
-        <div style={{ display: "flex", gap: "0.5rem" }}>
-          {namesList.map(n => (
-            <button
-              key={n}
-              onClick={() => selectName(n)}
-              style={{
-                ...iosButton,
-                background: form.name === n ? "#0A84FF" : "#3A3A3C",
-                color: "#fff",
-              }}
-            >
-              {n}
-            </button>
-          ))}
-        </div>
-      </div>
-    )}
-
-          {/* ——— Тип цілі ——— */}
-    <div style={iosCard}>
-      <label style={iosLabel}>Ціль</label>
-      <div style={{
-        display: "flex",
-        flexWrap: "wrap",
-        gap: "0.3rem",
-      }}>
-        {goalsList.map(goal => (
-          <button
-            key={goal}
-            onClick={() => toggleGoal(goal)}
-            style={{
-              ...iosButton,
-              padding: "0.3rem 0.6rem",
-              fontSize: "0.8rem",
-              borderRadius: "8px",
-              background: form.selectedGoals.includes(goal) ? "#32D74B" : "#3A3A3C",
-              color: form.selectedGoals.includes(goal) ? "#fff" : "#fff",
-            }}
-          >
-            {goal}
-          </button>
-        ))}
-      </div>
-    </div>
-
-    {/* ——— Сторона ——— */}
-    <div style={iosCard}>
-      <label style={iosLabel}>Сторона</label>
-      <div style={{ display: "flex", gap: "0.5rem" }}>
-        {["Ворожий", "Свій", "Нейтральний"].map(s => (
-          <button
-            key={s}
-            onClick={() => selectSide(s)}
-            style={{
-              ...iosButton,
-              background: form.side === s ? "#32D74B" : "#3A3A3C",
-              color: form.side === s ? "#fff" : "#fff",
-            }}
-          >
-            {s}
-          </button>
-        ))}
-      </div>
-    </div>
-
-    {/* ——— Номер цілі ——— */}
-    <div style={iosCard}>
-      <label style={iosLabel}>Номер цілі</label>
-      {form.noIssue ? (
-        <button
-          onClick={() =>
-            setForm((f) => ({
-              ...f,
-              noIssue: false,
-              targetNumber: "",
-            }))
-          }
-          style={{
-            width: "100%",
-            height: "44px",
-            borderRadius: "12px",
-            border: "none",
-            fontSize: "1rem",
-            backgroundColor: "#FF375F",
-            color: "#fff",
-          }}
-        >
-          Видати номер
-        </button>
-      ) : (
-        <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
-          <input
-            name="targetNumber"
-            value={form.targetNumber}
-            onChange={onFieldNumeric("targetNumber", 9999)}
-            placeholder="по цілі"
-            inputMode="numeric"
-            pattern="\d*"
-            style={{
-              flex: 1,
-              height: "44px",
-              borderRadius: "12px",
-              backgroundColor: "#2C2C2E",
-              border: form.targetNumber.trim() === "" ? "1px solid #FF3B30" : "none",
-              padding: "0 1rem",
-              fontSize: "1rem",
-              color: "#fff",
-              boxSizing: "border-box",
-            }}
-          />
-          <button
-            onClick={() =>
-              setForm((f) => ({
-                ...f,
-                noIssue: true,
-                targetNumber: "",
-              }))
-            }
-            style={{
-              height: "44px",
-              padding: "0 1rem",
-              borderRadius: "12px",
-              border: "none",
-              fontSize: "1rem",
-              backgroundColor: "#3A3A3C",
-              color: "#fff",
-              whiteSpace: "nowrap",
-              flexShrink: 0,
-            }}
-          >
-            Без видачі
-          </button>
-        </div>
-      )}
-      {!form.noIssue && form.targetNumber.trim() === "" && (
-        <div style={{ color: "#FF3B30", fontSize: "0.75rem", marginTop: "0.25rem" }}>
-          Поле має бути заповненим!
-        </div>
-      )}
-    </div>
-
-    {/* ——— Назва (БПЛА) ——— */}
-    {form.selectedGoals.includes("БПЛА") && (
-      <div style={iosCard}>
-        <label style={iosLabel}>Назва</label>
-        <div style={{ display: "flex", gap: "0.5rem" }}>
-          {namesList.map(n => (
-            <button
-              key={n}
-              onClick={() => selectName(n)}
-              style={{
-                ...iosButton,
-                background: form.name === n ? "#0A84FF" : "#3A3A3C",
-                color: "#fff",
-              }}
-            >
-              {n}
-            </button>
-          ))}
-        </div>
-      </div>
-    )}
-
-          {/* ——— Вияв ——— */}
-    <div style={iosCard}>
-      <label style={iosLabel}>Вияв</label>
-      <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
-        {["Акустично", "Візуально"].map((method) => (
-          <button
-            key={method}
-            onClick={() => toggleDetection(method)}
-            style={{
-              ...iosButton,
-              padding: "0.3rem 0.8rem",
-              backgroundColor: form.detectionMethods.includes(method)
-                ? "#32D74B"
-                : "#3A3A3C",
-              color: "#fff",
-              borderRadius: "10px",
-              flex: "1 0 45%",
-            }}
-          >
-            {method}
-          </button>
-        ))}
-        <button
-          onClick={() => toggleDetection("Із застосуванням приладів спостереження")}
-          style={{
-            ...iosButton,
-            padding: "0.3rem 0.8rem",
-            backgroundColor: form.detectionMethods.includes("Із застосуванням приладів спостереження")
-              ? "#32D74B"
-              : "#3A3A3C",
-            color: "#fff",
-            borderRadius: "10px",
-            flex: "1 0 100%",
-          }}
-        >
-          Із застосуванням приладів спостереження
-        </button>
-      </div>
-    </div>
-
-    {/* ——— Результат ——— */}
-    <div style={iosCard}>
-      <label style={iosLabel}>Результат</label>
-      <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
-        {["Виявлено", "Обстріляно"].map((result) => (
-          <button
-            key={result}
-            onClick={() => setForm((f) => ({ ...f, result }))}
-            style={{
-              ...iosButton,
-              padding: "0.4rem 0.6rem",
-              fontSize: "0.85rem",
-              backgroundColor: form.result === result ? "#32D74B" : "#3A3A3C",
-              color: "#fff",
-              borderRadius: "10px",
-              flex: "1 0 48%",
-            }}
-          >
-            {result}
-          </button>
-        ))}
-        <button
-          onClick={() => setForm((f) => ({ ...f, result: "Уражено" }))}
-          style={{
-            ...iosButton,
-            padding: "0.4rem 0.6rem",
-            fontSize: "0.85rem",
-            backgroundColor: form.result === "Уражено" ? "#32D74B" : "#3A3A3C",
-            color: "#fff",
-            borderRadius: "10px",
-            flex: "1 0 100%",
-          }}
-        >
-          Уражено
-        </button>
-      </div>
-    </div>
-
-    {/* ——— Опис ——— */}
-    <div style={iosCard}>
-      <label style={iosLabel}>Опис</label>
-      <textarea
-        name="description"
-        value={form.description}
-        onChange={handleChange}
-        rows={3}
-        placeholder="Додаткова інформація..."
+      {/* Тип цілі */}
+<div style={iosCard}>
+  <label style={iosLabel}>Ціль</label>
+  <div style={{
+    display: "flex",
+    flexWrap: "wrap",
+    gap: "0.3rem", // менший відступ між кнопками
+  }}>
+    {goalsList.map(goal => (
+      <button
+        key={goal}
+        onClick={() => toggleGoal(goal)}
         style={{
-          width: "100%",
+          ...iosButton,
+          padding: "0.3rem 0.6rem", // менший padding
+          fontSize: "0.8rem", // менший шрифт
+          borderRadius: "8px", // трохи менший радіус
+          background: form.selectedGoals.includes(goal) ? "#32D74B" : "#EBEBF5",
+          color: form.selectedGoals.includes(goal) ? "#fff" : "#1C1C1E",
+        }}
+      >
+        {goal}
+      </button>
+    ))}
+  </div>
+</div>
+
+      {/* Сторона */}
+      <div style={iosCard}>
+        <label style={iosLabel}>Сторона</label>
+        <div style={{ display: "flex", gap: "0.5rem" }}>
+          {["Ворожий","Свій","Нейтральний"].map(s => (
+            <button
+              key={s}
+              onClick={() => selectSide(s)}
+              style={{
+                ...iosButton,
+                background: form.side === s ? "#32D74B" : "#EBEBF5",
+                color: form.side === s ? "#fff" : "#1C1C1E",
+              }}
+            >
+              {s}
+            </button>
+          ))}
+        </div>
+      </div>
+
+     {/* ——— Номер цілі ——— */}
+<div style={iosCard}>
+  <label style={iosLabel}>Номер цілі</label>
+
+  {form.noIssue ? (
+    // Кнопка "Видати номер" на всю ширину
+    <button
+      onClick={() =>
+        setForm((f) => ({
+          ...f,
+          noIssue: false,
+          targetNumber: "",
+        }))
+      }
+      style={{
+        width: "100%",
+        height: "44px",
+        borderRadius: "12px",
+        border: "none",
+        fontSize: "1rem",
+        backgroundColor: "#FF375F",
+        color: "#fff",
+      }}
+    >
+      Видати номер
+    </button>
+  ) : (
+    // Поле вводу + кнопка "Без видачі" в один ряд
+    <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
+      <input
+        name="targetNumber"
+        value={form.targetNumber}
+        onChange={onFieldNumeric("targetNumber", 9999 )}
+        placeholder="по цілі"
+        inputMode="numeric"
+        pattern="\d*"
+        style={{
+          flex: 1,
+          height: "44px",
           borderRadius: "12px",
-          padding: "0.8rem",
-          backgroundColor: "#2C2C2E",
-          color: "#fff",
-          border: "none",
+          backgroundColor: "#E5E5EA",
+          border:
+            form.targetNumber.trim() === "" ? "1px solid #FF3B30" : "none",
+          padding: "0 1rem",
           fontSize: "1rem",
-          resize: "none",
+          color: "#1C1C1E",
           boxSizing: "border-box",
         }}
       />
-    </div>
-
-    {/* ——— Час ——— */}
-    <div style={iosCard}>
-      <label style={iosLabel}>Час</label>
-      <div style={{ display: "flex", gap: "0.5rem" }}>
-        <input
-          name="time"
-          value={form.time}
-          onChange={handleChange}
-          style={{ ...iosInput, backgroundColor: "#2C2C2E", color: "#fff", flex: 1 }}
-          placeholder="год:хв"
-        />
-        <button onClick={setTimeNow} style={{ ...iosButton, flexShrink: 0 }}>
-          Зараз
-        </button>
-      </div>
-    </div>
-
-    {/* ——— Звіт ——— */}
-    <div style={iosCard}>
-      <label style={iosLabel}>Звіт</label>
-      <pre
+      <button
+        onClick={() =>
+          setForm((f) => ({
+            ...f,
+            noIssue: true,
+            targetNumber: "",
+          }))
+        }
         style={{
-          whiteSpace: "pre-wrap",
-          wordBreak: "break-word",
-          backgroundColor: "#1C1C1E",
-          color: "#fff",
-          padding: "1rem",
+          height: "44px",
+          padding: "0 1rem",
           borderRadius: "12px",
-          fontSize: "0.95rem",
-          marginBottom: "1rem",
+          border: "none",
+          fontSize: "1rem",
+          backgroundColor: "#E5E5F0",
+          color: "#1C1C1E",
+          whiteSpace: "nowrap",
+          flexShrink: 0,
         }}
       >
-        {generateReportText()}
-      </pre>
+        Без видачі
+      </button>
+    </div>
+  )}
 
-      {/* Кнопки */}
-      <div style={{ display: "flex", gap: "1rem" }}>
-        <button
-          onClick={copyReport}
-          style={{ ...iosButton, backgroundColor: "#0A84FF", flex: 1 }}
-        >
-          Копіювати
-        </button>
-        <button
-          onClick={openWhatsApp}
-          style={{ ...iosButton, backgroundColor: "#25D366", flex: 1 }}
-        >
-          WhatsApp
-        </button>
+  {/* Повідомлення про помилку */}
+  {!form.noIssue && form.targetNumber.trim() === "" && (
+    <div style={{ color: "#FF3B30", fontSize: "0.75rem", marginTop: "0.25rem" }}>
+      Поле має бути заповненим!
+    </div>
+  )}
+</div>
+              
+{/* Назва (БПЛА) */}
+      {form.selectedGoals.includes("БПЛА") && (
+        <div style={iosCard}>
+          <label style={iosLabel}>Назва</label>
+          <div style={{ display: "flex", gap: "0.5rem" }}>
+            {namesList.map(n => (
+              <button
+                key={n}
+                onClick={() => selectName(n)}
+                style={{
+                  ...iosButton,
+                  background: form.name === n ? "#0A84FF" : "#EBEBF5",
+                  color: form.name === n ? "#fff" : "#1C1C1E",
+                }}
+              >
+                {n}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Остальные поля (количество, азимут, курс, расстояние, высота) */}
+      <div style={iosCard}>
+  <label style={iosLabel}>Кількість</label>
+  <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+    <input
+      type="number"
+      value={form.quantity}
+      onChange={(e) =>
+        setForm((f) => ({
+          ...f,
+          quantity: Math.max(1, +e.target.value),
+        }))
+      }
+      style={{ ...iosInput, textAlign: "center", flex: 1 }}
+    />
+    <button
+      onClick={() => changeQuantity(-1)}
+      style={{
+        ...iosButton,
+        padding: "0.5rem 0.9rem",
+        backgroundColor: "#FF375F",
+        color: "#fff",
+      }}
+    >
+      –
+    </button>
+    <button
+      onClick={() => changeQuantity(1)}
+      style={{
+        ...iosButton,
+        padding: "0.5rem 0.9rem",
+        backgroundColor: "#32D74B",
+        color: "#fff",
+      }}
+    >
+      +
+    </button>
+  </div>
+</div>
+     
+        <div style={iosCard}>
+  {/* Азимут */}
+  <label style={iosLabel}>Азимут (°)</label>
+  <input
+    type="text"
+    inputMode="numeric"
+    pattern="\d*"
+    name="azimuth"
+    value={form.azimuth}
+    onChange={onAzimuthChange}
+    placeholder="Вкажіть азимут"
+    style={{
+      ...iosInput,
+      border:
+        form.azimuth.trim() === "" || !validateAzimuth(form.azimuth)
+          ? "1px solid #FF3B30"
+          : "none",
+      marginBottom: "0.5rem",
+    }}
+  />
+  {(form.azimuth.trim() === "" || !validateAzimuth(form.azimuth)) && (
+    <div style={{ color: "#FF3B30", fontSize: "0.75rem", marginBottom: "0.8rem" }}>
+      Поле має бути заповненим!
+    </div>
+  )}
+
+  {/* Курс */}
+  <label style={iosLabel}>Курс (°)</label>
+  <input
+    type="text"
+    inputMode="numeric"
+    pattern="\d*"
+    name="course"
+    value={form.course}
+    onChange={onCourseChange}
+    placeholder="Вкажіть курс"
+    style={{
+      ...iosInput,
+      border:
+        form.course.trim() === "" || !validateCourse(form.course)
+          ? "1px solid #FF3B30"
+          : "none",
+    }}
+  />
+  {(form.course.trim() === "" || !validateCourse(form.course)) && (
+    <div style={{ color: "#FF3B30", fontSize: "0.75rem", marginTop: "0.3rem" }}>
+      Поле має бути заповненим!
+    </div>
+  )}
+</div>
+
+{/* ——— Відстань і Висота ——— */}
+<div
+  style={{
+    border: "1px solid #ccc",
+    borderRadius: "16px",
+    padding: "1rem",
+    marginBottom: "1.5rem",
+    backgroundColor: "#fff",
+  }}
+>
+  {/* Відстань */}
+  <div style={{ marginBottom: "1rem" }}>
+    <label style={iosLabel}>Відстань, м*</label>
+    <input
+      type="text"
+      inputMode="numeric"
+      value={form.distance}
+      onChange={onDistanceChange}
+      placeholder="Відстань до цілі"
+      style={{
+        ...iosInput,
+        border:
+          form.distance.trim() === "" || !validateDistance(form.distance)
+            ? "1px solid #FF3B30"
+            : "1px solid transparent",
+      }}
+    />
+    {(form.distance.trim() === "" || !validateDistance(form.distance)) && (
+      <div style={{ color: "#FF3B30", fontSize: "0.75rem", marginTop: "0.25rem" }}>
+        Поле має бути заповненим!
+      </div>
+    )}
+  </div>
+
+  {/* Висота */}
+  <div>
+    <label style={iosLabel}>Висота, м*</label>
+    <input
+      type="text"
+      inputMode="numeric"
+      value={form.height}
+      onChange={onHeightChange}
+      placeholder="Висота над рівнем"
+      style={{
+        ...iosInput,
+        border:
+          form.height.trim() === "" || !validateHeight(form.height)
+            ? "1px solid #FF3B30"
+            : "1px solid transparent",
+      }}
+    />
+    {(form.height.trim() === "" || !validateHeight(form.height)) && (
+      <div style={{ color: "#FF3B30", fontSize: "0.75rem", marginTop: "0.25rem" }}>
+        Поле має бути заповненим!
+      </div>
+    )}
+  </div>
+</div>
+
+      {/* Час */}
+<div style={iosCard}>
+  <label style={iosLabel}>Час</label>
+  <input
+    type="text"
+    name="time"
+    value={form.time}
+    readOnly
+    style={{ ...iosInput, marginBottom: "0.5rem" }}
+  />
+  <div style={{ display: "flex", gap: "0.5rem" }}>
+    <button onClick={setTimeNow} style={{ ...iosButton, backgroundColor: "#34C759", color: "#fff", flex: 1 }}>
+      Щойно
+    </button>
+    <button onClick={() => changeTimeByMinutes(1)} style={{ ...iosButton, backgroundColor: "#34C759", color: "#fff", flex: 1 }}>
+      +1 хв
+    </button>
+    <button onClick={() => changeTimeByMinutes(-1)} style={{ ...iosButton, backgroundColor: "#FF3B30", color: "#fff", flex: 1 }}>
+      –1 хв
+    </button>
+  </div>
+</div>
+      {/* ——— Вияв ——— */}
+<div style={iosCard}>
+  <label style={iosLabel}>Вияв</label>
+
+  {/* Перший рядок: дві кнопки */}
+  <div style={{ display: "flex", gap: "0.5rem", marginBottom: "0.5rem" }}>
+    {["Акустично", "Візуально"].map((method) => (
+      <button
+        key={method}
+        onClick={() => toggleDetection(method)}
+        style={{
+          ...iosButton,
+          flex: 1,
+          background: form.detectionMethods.includes(method) ? "#32D74B" : "#EBEBF5",
+          color: form.detectionMethods.includes(method) ? "#fff" : "#1C1C1E",
+        }}
+      >
+        {method}
+      </button>
+    ))}
+  </div>
+
+  {/* Другий рядок: одна велика кнопка */}
+  <button
+    onClick={() => toggleDetection("Із застосуванням приладів спостереження")}
+    style={{
+      ...iosButton,
+      width: "100%",
+      background: form.detectionMethods.includes("Із застосуванням приладів спостереження")
+        ? "#32D74B"
+        : "#EBEBF5",
+      color: form.detectionMethods.includes("Із застосуванням приладів спостереження")
+        ? "#fff"
+        : "#1C1C1E",
+    }}
+  >
+    Із застосуванням приладів спостереження
+  </button>
+</div>
+
+      {/* ——— Результат ——— */}
+<div
+  style={{
+    border: "1px solid #ccc",
+    borderRadius: "16px",
+    padding: "1rem",
+    marginBottom: "1.5rem",
+    backgroundColor: "#fff",
+  }}
+>
+  <label style={iosLabel}>Результат</label>
+
+  {/* Перший ряд — 2 кнопки */}
+  <div
+    style={{
+      display: "flex",
+      gap: "0.5rem",
+      marginBottom: "0.5rem",
+    }}
+  >
+    {["Виявлено", "Обстріляно"].map((result) => (
+      <button
+        key={result}
+        onClick={() => setForm((f) => ({ ...f, result }))}
+        style={{
+          ...iosButton,
+          flex: 1,
+          padding: "0.4rem 0.6rem",
+          fontSize: "0.85rem",
+          backgroundColor: form.result === result ? "#32D74B" : "#EBEBF5",
+          color: form.result === result ? "#fff" : "#1C1C1E",
+          borderRadius: "10px",
+        }}
+      >
+        {result}
+      </button>
+    ))}
+  </div>
+
+  {/* Другий ряд — одна кнопка на всю ширину */}
+  <button
+    onClick={() => setForm((f) => ({ ...f, result: "Уражено" }))}
+    style={{
+      ...iosButton,
+      width: "100%",
+      padding: "0.6rem",
+      fontSize: "0.9rem",
+      backgroundColor: form.result === "Уражено" ? "#32D74B" : "#EBEBF5",
+      color: form.result === "Уражено" ? "#fff" : "#1C1C1E",
+      borderRadius: "10px",
+    }}
+  >
+    Уражено
+  </button>
+</div>
+
+      {/* Інша інформація */}
+      <div style={iosCard}>
+        <label style={iosLabel}>Опис</label>
+        <textarea
+          name="description"
+          value={form.description}
+          onChange={handleChange}
+          placeholder="Додаткова інформація"
+          rows={3}
+          style={{
+            width: "100%",
+            padding: "0.6rem",
+            borderRadius: "12px",
+            border: "none",
+            backgroundColor: "#ECECEC",
+            fontSize: "1rem",
+            color: "#1C1C1E",
+            resize: "none",
+          }}
+        />
+      </div>
+
+      {/* Кнопки копировать и WhatsApp */}
+      <div style={{ display: "flex", gap: "0.5rem", marginBottom: "2rem" }}>
+        <button onClick={copyReport} style={iosButton}>Копіювати</button>
+        <button onClick={openWhatsApp} style={{ ...iosButton, background: "#34C759" }}>WhatsApp</button>
+      </div>
+
+      {/* Отображение отчёта */}
+      <div style={iosCard}>
+        <pre style={{ whiteSpace: "pre-wrap", fontSize: "0.9rem", color: "#1C1C1E" }}>
+          {generateReportText()}
+        </pre>
       </div>
     </div>
-  </div> 
+  );
+}
