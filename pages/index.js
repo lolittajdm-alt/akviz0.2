@@ -66,6 +66,13 @@ export default function Home() {
   }, [showTopFields, locks]);
 
   // ——— Хендлеры ———
+  // ——— Встановлення поточного часу ———
+const setTimeNow = () => {
+  const now = new Date();
+  const hours = String(now.getHours()).padStart(2, "0");
+  const minutes = String(now.getMinutes()).padStart(2, "0");
+  setForm(f => ({ ...f, time: `${hours}:${minutes}` }));
+};
   const handleChange = e => {
     const { name, value } = e.target;
     if (locks[name]) return;
