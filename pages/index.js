@@ -183,7 +183,9 @@ const changeHeight = (delta) => {
     ].filter(Boolean).join(", ")}`,
     form.height ? `Висота: ${form.height} м` : null,
     form.distance ? `Відстань: ${form.distance} м` : null,
-    form.quantity ? `Кількість: ${form.quantity} од.` : null,
+    form.quantity && !form.selectedGoals.includes("Постріли(ЗУ,кулемет)")
+  ? `Кількість: ${form.quantity} од.`
+  : null,
     form.azimuth ? `А: ${form.azimuth}°` : null,
     form.course ? `К: ${form.course}°` : null,
     form.location ? `НП: ${form.location}` : null,
