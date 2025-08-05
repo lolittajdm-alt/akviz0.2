@@ -1021,7 +1021,7 @@ useEffect(() => {
       justifyContent: "space-between",
     }}
   >
-    {["Уражено", "Пошкоджено", "Без результату"].map((res) => (
+    {["Виявлено", "Обстріляно", "Уражено"].map((res) => (
       <label
         key={res}
         style={{
