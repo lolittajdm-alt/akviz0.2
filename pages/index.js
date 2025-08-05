@@ -564,63 +564,69 @@ const changeHeight = (delta) => {
     border: "1px solid #ccc",
     borderRadius: "16px",
     padding: "1rem",
-    marginBottom: "1rem",
+    marginBottom: "1.5rem",
     backgroundColor: "#fff",
   }}
 >
   {/* Відстань */}
-  <div style={{ marginBottom: "1.5rem" }}>
-    <label style={iosLabel}>Відстань, м*</label>
-    <input
-      type="text"
-      inputMode="numeric"
-      value={form.distance}
-      onChange={onDistanceChange}
-      placeholder="Відстань до цілі"
-      onFocus={() => setFocusedField("distance")}
-      onBlur={() => setFocusedField(null)}
+  <label style={iosLabel}>Відстань, м*</label>
+  <input
+    type="text"
+    inputMode="numeric"
+    name="distance"
+    value={form.distance}
+    onChange={onDistanceChange}
+    placeholder="Вкажіть відстань"
+    style={{
+      ...iosInput,
+      border:
+        form.distance.trim() === "" || !validateDistance(form.distance)
+          ? "1px solid #FF3B30"
+          : "1px solid transparent",
+    }}
+  />
+  {(form.distance.trim() === "" || !validateDistance(form.distance)) && (
+    <div
       style={{
-        ...iosInput,
-        border: errors.distance ? "1px solid #FF3B30" : "1px solid transparent",
+        color: "#FF3B30",
+        fontSize: "0.75rem",
+        marginTop: "0.25rem",
+        marginBottom: "0.75rem",
       }}
-    />
-    {errors.distance && (
-      <div style={{ color: "#FF3B30", fontSize: "0.75rem", marginTop: "0.25rem" }}>
-        Поле має бути заповненим!
-      </div>
-    )}
-    {focusedField === "distance" && (
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(3, 1fr)",
-          gap: "0.5rem",
-          marginTop: "0.5rem",
-        }}
-      >
-        {["+100", "+1000", "+5000", "-100", "-1000", "-5000"].map((label) => {
-          const delta = Number(label);
-          const isNegative = delta < 0;
-          return (
-            <button
-              key={label}
-              onMouseDown={(e) => e.preventDefault()}
-              onClick={() => changeDistance(delta)}
-              style={{
-                ...iosButton,
-                backgroundColor: isNegative ? "#FF3B30" : "#34C759",
-                color: "#fff",
-                padding: "0.6rem 0.5rem",
-              }}
-            >
-              {label}
-            </button>
-          );
-        })}
-      </div>
-    )}
-  </div>
+    >
+      Поле має бути заповненим!
+    </div>
+  )}
 
+  {/* Висота */}
+  <label style={iosLabel}>Висота, м*</label>
+  <input
+    type="text"
+    inputMode="numeric"
+    name="height"
+    value={form.height}
+    onChange={onHeightChange}
+    placeholder="Вкажіть висоту"
+    style={{
+      ...iosInput,
+      border:
+        form.height.trim() === "" || !validateHeight(form.height)
+          ? "1px solid #FF3B30"
+          : "1px solid transparent",
+    }}
+  />
+  {(form.height.trim() === "" || !validateHeight(form.height)) && (
+    <div
+      style={{
+        color: "#FF3B30",
+        fontSize: "0.75rem",
+        marginTop: "0.25rem",
+      }}
+    >
+      Поле має бути заповненим!
+    </div>
+  )}
+</div>
   {/* Висота */}
   <div>
     <label style={iosLabel}>Висота, м*</label>
@@ -748,19 +754,22 @@ const changeHeight = (delta) => {
   }}
 >
   <label style={iosLabel}>Результат</label>
+
+  {/* Перший ряд — 2 кнопки */}
   <div
     style={{
-      display: "grid",
-      gridTemplateColumns: "1fr 1fr",
+      display: "flex",
       gap: "0.5rem",
+      marginBottom: "0.5rem",
     }}
   >
-    {["Виявлено", "Обстріляно", "Уражено"].map((result) => (
+    {["Виявлено", "Обстріляно"].map((result) => (
       <button
         key={result}
         onClick={() => setForm((f) => ({ ...f, result }))}
         style={{
           ...iosButton,
+          flex: 1,
           padding: "0.4rem 0.6rem",
           fontSize: "0.85rem",
           backgroundColor: form.result === result ? "#32D74B" : "#EBEBF5",
@@ -772,6 +781,22 @@ const changeHeight = (delta) => {
       </button>
     ))}
   </div>
+
+  {/* Другий ряд — одна кнопка на всю ширину */}
+  <button
+    onClick={() => setForm((f) => ({ ...f, result: "Уражено" }))}
+    style={{
+      ...iosButton,
+      width: "100%",
+      padding: "0.6rem",
+      fontSize: "0.9rem",
+      backgroundColor: form.result === "Уражено" ? "#32D74B" : "#EBEBF5",
+      color: form.result === "Уражено" ? "#fff" : "#1C1C1E",
+      borderRadius: "10px",
+    }}
+  >
+    Уражено
+  </button>
 </div>
 
       {/* Інша інформація */}
