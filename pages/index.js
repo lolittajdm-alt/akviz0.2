@@ -662,6 +662,29 @@ const onHeightChange = (e) => {
     )}
   </div>
 </div>
+
+      {/* ——— Час ——— */}
+<div style={iosCard}>
+  <label style={iosLabel}>Час</label>
+  <input
+    type="text"
+    name="time"
+    value={form.time}
+    readOnly
+    style={{ ...iosInput, marginBottom: "0.5rem" }}
+  />
+  <div style={{ display: "flex", gap: "0.5rem" }}>
+    <button onClick={setTimeNow} style={{ ...iosButton, backgroundColor: "#34C759", color: "#fff", flex: 1 }}>
+      Щойно
+    </button>
+    <button onClick={() => changeTimeByMinutes(1)} style={{ ...iosButton, backgroundColor: "#34C759", color: "#fff", flex: 1 }}>
+      +1 хв
+    </button>
+    <button onClick={() => changeTimeByMinutes(-1)} style={{ ...iosButton, backgroundColor: "#FF3B30", color: "#fff", flex: 1 }}>
+      –1 хв
+    </button>
+  </div>
+</div>
       {/* ——— Вияв ——— */}
 <div
   style={{
