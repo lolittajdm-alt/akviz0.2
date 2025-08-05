@@ -375,32 +375,28 @@ export default function Home() {
       }
       style={{ ...iosInput, textAlign: "center", flex: 1 }}
     />
-    <div style={{ display: "flex", flexDirection: "column", gap: "0.4rem" }}>
-      <button
-        onClick={() => changeQuantity(1)}
-        style={{
-          ...iosButton,
-          height: "24px",
-          padding: "0 0.8rem",
-          backgroundColor: "#32D74B",
-          color: "#fff",
-        }}
-      >
-        +
-      </button>
-      <button
-        onClick={() => changeQuantity(-1)}
-        style={{
-          ...iosButton,
-          height: "24px",
-          padding: "0 0.8rem",
-          backgroundColor: "#FF375F",
-          color: "#fff",
-        }}
-      >
-        –
-      </button>
-    </div>
+    <button
+      onClick={() => changeQuantity(-1)}
+      style={{
+        ...iosButton,
+        padding: "0.5rem 0.9rem",
+        backgroundColor: "#FF375F",
+        color: "#fff",
+      }}
+    >
+      –
+    </button>
+    <button
+      onClick={() => changeQuantity(1)}
+      style={{
+        ...iosButton,
+        padding: "0.5rem 0.9rem",
+        backgroundColor: "#32D74B",
+        color: "#fff",
+      }}
+    >
+      +
+    </button>
   </div>
 </div>
       <div style={iosCard}>
