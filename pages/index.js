@@ -38,10 +38,7 @@ export default function Home() {
   const [errors, setErrors] = useState({
   distance: false,
   height: false,
-});
-
-  
-  const [errors, setErrors] = useState({});
+  });
   const [showWeaponModal, setShowWeaponModal] = useState(false);
   const [ammoList, setAmmoList] = useState([]);
   const [ammoQuantities, setAmmoQuantities] = useState({});
