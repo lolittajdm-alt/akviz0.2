@@ -367,7 +367,7 @@ const onHeightChange = (e) => {
       <input
         name="targetNumber"
         value={form.targetNumber}
-        onChange={onFieldNumeric("targetNumber", 3)}
+        onChange={onFieldNumeric("targetNumber", )}
         placeholder="по цілі"
         inputMode="numeric"
         pattern="\d*"
