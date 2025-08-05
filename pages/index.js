@@ -83,11 +83,6 @@ export default function Home() {
   const selectSide = s => setForm(f => ({ ...f, side: f.side === s ? null : s }));
   const selectName = n => setForm(f => ({ ...f, name: n }));
   const changeQuantity = d => setForm(f => ({ ...f, quantity: Math.max(1, f.quantity + d) }));
-  const validateAzimuth = (v) => /^\d{1,3}$/.test(v) && +v >= 0 && +v <= 359;
-  const onAzimuthChange = (e) => {
-  const value = e.target.value.replace(/\D/g, "").slice(0, 3);
-  setForm((f) => ({ ...f, azimuth: value }));
-};
   const validateNumeric = (v, max=null) => /^\d+$/.test(v) && (max===null || +v <= max);
   const onFieldNumeric = (field, max) => e => {
     const v = e.target.value.replace(/\D/g, "").slice(0, max ? String(max).length : undefined);
@@ -108,6 +103,18 @@ export default function Home() {
     window.location.href = `whatsapp://send?text=${encodeURIComponent(generateReportText())}`;
   };
 
+  // ——— Валидации ———
+  const validateCourse = (v) => /^\d{1,3}$/.test(v) && +v >= 0 && +v <= 359;
+const onCourseChange = (e) => {
+  const value = e.target.value.replace(/\D/g, "").slice(0, 3);
+  setForm((f) => ({ ...f, course: value }));
+};
+  const validateAzimuth = (v) => /^\d{1,3}$/.test(v) && +v >= 0 && +v <= 359;
+  const onAzimuthChange = (e) => {
+  const value = e.target.value.replace(/\D/g, "").slice(0, 3);
+  setForm((f) => ({ ...f, azimuth: value }));
+};
+  
   // ——— Генерация текста ———
   const generateReportText = () => [
     form.sector || form.subdivision || form.position
@@ -424,6 +431,32 @@ export default function Home() {
     }}
   />
   {(form.azimuth.trim() === "" || !validateAzimuth(form.azimuth)) && (
+    <div style={{ color: "#FF3B30", fontSize: "0.75rem", marginTop: "0.3rem" }}>
+      Поле має бути заповненим!
+    </div>
+  )}
+</div>
+
+       <div style={iosCard}>
+  <label style={iosLabel}>Курс</label>
+  <input
+    type="text"
+    inputMode="numeric"
+    pattern="\d*"
+    name="course"
+    value={form.course}
+    onChange={onCourseChange}
+    placeholder="0° – 359°"
+    maxLength={3}
+    style={{
+      ...iosInput,
+      border:
+        form.course.trim() === "" || !validateCourse(form.course)
+          ? "1px solid #FF3B30"
+          : "none",
+    }}
+  />
+  {(form.course.trim() === "" || !validateCourse(form.course)) && (
     <div style={{ color: "#FF3B30", fontSize: "0.75rem", marginTop: "0.3rem" }}>
       Поле має бути заповненим!
     </div>
