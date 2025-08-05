@@ -540,8 +540,8 @@ useEffect(() => {
        
        
        
-// ——— Блок цілі ———
-<div
+{/* ----Ціль----*/}
+        <div
   style={{
     ...blockMargin,
     border: "1px solid #555",
@@ -597,51 +597,6 @@ useEffect(() => {
         {goal}
       </label>
     ))}
-  </div>
-
-  {/* Номер цілі + Без видачі */}
-  <div style={{ marginTop: "0.8rem" }}>
-    <label style={{ ...labelStyle, fontSize: "1rem", marginBottom: "0.3rem" }}>
-      Номер цілі
-    </label>
-    <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
-      <input
-        type="text"
-        value={form.targetNumber}
-        onChange={handleTargetNumberChange}
-        disabled={form.noIssue}
-        placeholder="по цілі ..."
-        inputMode="numeric"
-        style={{
-          flexGrow: 1,
-          padding: "0.5rem",
-          borderRadius: "6px",
-          border: "none",
-          backgroundColor: form.noIssue ? "#222" : "#444",
-          color: "#fff",
-          fontSize: "1rem",
-        }}
-      />
-      <button
-        onClick={toggleNoIssue}
-        style={{
-          padding: "0.5rem 1rem",
-          fontSize: "1rem",
-          border: "none",
-          borderRadius: "6px",
-          cursor: "pointer",
-          backgroundColor: form.noIssue ? "#a94442" : "#4caf50",
-          color: "#fff",
-        }}
-      >
-        Без видачі
-      </button>
-    </div>
-    {errors.targetNumber && (
-      <div style={errorStyle}>
-        Вкажіть номер цілі або активуйте "Без видачі"
-      </div>
-    )}
   </div>
 </div>
           {/* ——— Сторона ——— */}
