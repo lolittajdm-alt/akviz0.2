@@ -34,7 +34,10 @@ export default function Home() {
     position: false,
     location: false,
   });
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState({
+  distance: false,
+  height: false,
+  });
   const [showWeaponModal, setShowWeaponModal] = useState(false);
   const [ammoList, setAmmoList] = useState([]);
   const [ammoQuantities, setAmmoQuantities] = useState({});
@@ -124,6 +127,7 @@ const onFieldNumeric = (fieldName, maxLength = 3) => (e) => {
   const validateCourse = (v) => /^\d{1,3}$/.test(v) && +v >= 0 && +v <= 359;
 const validateAzimuth = (v) => /^\d{1,3}$/.test(v) && +v >= 0 && +v <= 359;
 const validateDistance = (v) => /^\d+$/.test(v) && +v > 0;
+const validateHeight = (v) => /^\d+$/.test(v) && +v > 0;
 const validateHeight = (v) => /^\d+$/.test(v);
 
 const onCourseChange = (e) => {
@@ -148,6 +152,24 @@ const onHeightChange = (e) => {
   const value = e.target.value.replace(/\D/g, "").slice(0, 5);
   setForm((f) => ({ ...f, height: value }));
   setErrors((err) => ({ ...err, height: !validateHeight(value) }));
+};
+
+const changeDistance = (delta) => {
+  let x = +form.distance || 0;
+  x += delta;
+  if (x < 0) x = 0;
+  const updated = String(x);
+  setForm((f) => ({ ...f, distance: updated }));
+  setErrors((err) => ({ ...err, distance: !validateDistance(updated) }));
+};
+
+const changeHeight = (delta) => {
+  let h = +form.height || 0;
+  h += delta;
+  if (h < 0) h = 0;
+  const updated = String(h);
+  setForm((f) => ({ ...f, height: updated }));
+  setErrors((err) => ({ ...err, height: !validateHeight(updated) }));
 };
   
   // ——— Генерация текста ———
@@ -537,43 +559,34 @@ const onHeightChange = (e) => {
   )}
 </div>
 
-{/* ——— Висота і Відстань ——— */}
+{/* ——— Відстань і Висота ——— */}
 <div
   style={{
     border: "1px solid #ccc",
     borderRadius: "16px",
     padding: "1rem",
-    marginBottom: "1.5rem",
+    marginBottom: "1rem",
     backgroundColor: "#fff",
   }}
 >
   {/* Відстань */}
-  <div style={{ marginBottom: "1.2rem" }}>
+  <div style={{ marginBottom: "1.5rem" }}>
     <label style={iosLabel}>Відстань, м*</label>
     <input
       type="text"
       inputMode="numeric"
       value={form.distance}
       onChange={onDistanceChange}
+      placeholder="Відстань до цілі"
       onFocus={() => setFocusedField("distance")}
       onBlur={() => setFocusedField(null)}
-      placeholder="Відстань до цілі"
       style={{
         ...iosInput,
-        border:
-          form.distance.trim() === "" || !validateDistance(form.distance)
-            ? "1px solid #FF3B30"
-            : "1px solid transparent",
+        border: errors.distance ? "1px solid #FF3B30" : "1px solid transparent",
       }}
     />
-    {(form.distance.trim() === "" || !validateDistance(form.distance)) && (
-      <div
-        style={{
-          color: "#FF3B30",
-          fontSize: "0.75rem",
-          marginTop: "0.25rem",
-        }}
-      >
+    {errors.distance && (
+      <div style={{ color: "#FF3B30", fontSize: "0.75rem", marginTop: "0.25rem" }}>
         Поле має бути заповненим!
       </div>
     )}
@@ -581,23 +594,24 @@ const onHeightChange = (e) => {
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "1fr 1fr 1fr",
+          gridTemplateColumns: "repeat(3, 1fr)",
           gap: "0.5rem",
-          marginTop: "0.75rem",
+          marginTop: "0.5rem",
         }}
       >
         {["+100", "+1000", "+5000", "-100", "-1000", "-5000"].map((label) => {
-          const isNegative = label.startsWith("-");
+          const delta = Number(label);
+          const isNegative = delta < 0;
           return (
             <button
               key={label}
-              onClick={() => changeDistance(Number(label))}
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={() => changeDistance(delta)}
               style={{
                 ...iosButton,
                 backgroundColor: isNegative ? "#FF3B30" : "#34C759",
                 color: "#fff",
                 padding: "0.6rem 0.5rem",
-                borderRadius: "12px",
               }}
             >
               {label}
@@ -616,25 +630,16 @@ const onHeightChange = (e) => {
       inputMode="numeric"
       value={form.height}
       onChange={onHeightChange}
+      placeholder="Висота над рівнем"
       onFocus={() => setFocusedField("height")}
       onBlur={() => setFocusedField(null)}
-      placeholder="Висота над рівнем"
       style={{
         ...iosInput,
-        border:
-          form.height.trim() === "" || !validateHeight(form.height)
-            ? "1px solid #FF3B30"
-            : "1px solid transparent",
+        border: errors.height ? "1px solid #FF3B30" : "1px solid transparent",
       }}
     />
-    {(form.height.trim() === "" || !validateHeight(form.height)) && (
-      <div
-        style={{
-          color: "#FF3B30",
-          fontSize: "0.75rem",
-          marginTop: "0.25rem",
-        }}
-      >
+    {errors.height && (
+      <div style={{ color: "#FF3B30", fontSize: "0.75rem", marginTop: "0.25rem" }}>
         Поле має бути заповненим!
       </div>
     )}
@@ -642,23 +647,24 @@ const onHeightChange = (e) => {
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "1fr 1fr",
+          gridTemplateColumns: "repeat(2, 1fr)",
           gap: "0.5rem",
-          marginTop: "0.75rem",
+          marginTop: "0.5rem",
         }}
       >
         {["+100", "+500", "-100", "-500"].map((label) => {
-          const isNegative = label.startsWith("-");
+          const delta = Number(label);
+          const isNegative = delta < 0;
           return (
             <button
               key={label}
-              onClick={() => changeHeight(Number(label))}
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={() => changeHeight(delta)}
               style={{
                 ...iosButton,
                 backgroundColor: isNegative ? "#FF3B30" : "#34C759",
                 color: "#fff",
                 padding: "0.6rem 0.5rem",
-                borderRadius: "12px",
               }}
             >
               {label}
