@@ -105,40 +105,38 @@ export default function Home() {
 
   // ——— Валидации ———
   const validateCourse = (v) => /^\d{1,3}$/.test(v) && +v >= 0 && +v <= 359;
+const validateAzimuth = (v) => /^\d{1,3}$/.test(v) && +v >= 0 && +v <= 359;
+const validateDistance = (v) => /^\d+$/.test(v) && +v > 0;
+const validateHeight = (v) => /^\d+$/.test(v);
+
 const onCourseChange = (e) => {
-  const value = e.target.value.replace(/\D/g, "").slice(0, 3);
-  setForm((f) => ({ ...f, course: value }));
-};
-  const validateAzimuth = (v) => /^\d{1,3}$/.test(v) && +v >= 0 && +v <= 359;
-  const onAzimuthChange = (e) => {
-  const value = e.target.value.replace(/\D/g, "").slice(0, 3);
-  setForm((f) => ({ ...f, azimuth: value }));
-};
-  const validateDistance = v => /^\d+$/.test(v) && +v > 0;
-const validateHeight = v => /^\d+$/.test(v);
-
-const onDistanceChange = e => {
-  let v = e.target.value.replace(/\D/g, "");
-  setForm(f => ({ ...f, distance: v }));
+const value = e.target.value.replace(/\D/g, "").slice(0, 3);
+setForm((f) => ({ ...f, course: value }));
+setErrors((f) => ({ ...f, course: !validateCourse(value) }));
 };
 
-const onHeightChange = e => {
-  let v = e.target.value.replace(/\D/g, "");
-  setForm(f => ({ ...f, height: v }));
+const onAzimuthChange = (e) => {
+const value = e.target.value.replace(/\D/g, "").slice(0, 3);
+setForm((f) => ({ ...f, azimuth: value }));
+setErrors((f) => ({ ...f, azimuth: !validateAzimuth(value) }));
 };
 
-const changeDistance = d => {
-  let val = +form.distance || 0;
-  val += d;
-  if (val < 0) val = 0;
-  setForm(f => ({ ...f, distance: String(val) }));
+const changeDistance = (d) => {
+let x = +form.distance || 0;
+x += d;
+if (x < 0) x = 0;
+const value = String(x);
+setForm((f) => ({ ...f, distance: value }));
+setErrors((f) => ({ ...f, distance: !validateDistance(value) }));
 };
 
-const changeHeight = d => {
-  let val = +form.height || 0;
-  val += d;
-  if (val < 0) val = 0;
-  setForm(f => ({ ...f, height: String(val) }));
+const changeHeight = (d) => {
+let h = +form.height || 0;
+h += d;
+if (h < 0) h = 0;
+const value = String(h);
+setForm((f) => ({ ...f, height: value }));
+setErrors((f) => ({ ...f, height: !validateHeight(value) }));
 };
   
   // ——— Генерация текста ———
