@@ -362,19 +362,47 @@ export default function Home() {
 
       {/* Остальные поля (количество, азимут, курс, расстояние, высота) */}
       <div style={iosCard}>
-        <label style={iosLabel}>Кількість</label>
-        <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
-          <button onClick={() => changeQuantity(-1)} style={iosButton}>–</button>
-          <input
-            type="number"
-            value={form.quantity}
-            onChange={e => setForm(f => ({ ...f, quantity: Math.max(1, +e.target.value) }))}
-            style={{ ...iosInput, textAlign: "center" }}
-          />
-          <button onClick={() => changeQuantity(1)} style={iosButton}>+</button>
-        </div>
-      </div>
-
+  <label style={iosLabel}>Кількість</label>
+  <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+    <input
+      type="number"
+      value={form.quantity}
+      onChange={(e) =>
+        setForm((f) => ({
+          ...f,
+          quantity: Math.max(1, +e.target.value),
+        }))
+      }
+      style={{ ...iosInput, textAlign: "center", flex: 1 }}
+    />
+    <div style={{ display: "flex", flexDirection: "column", gap: "0.4rem" }}>
+      <button
+        onClick={() => changeQuantity(1)}
+        style={{
+          ...iosButton,
+          height: "24px",
+          padding: "0 0.8rem",
+          backgroundColor: "#32D74B",
+          color: "#fff",
+        }}
+      >
+        +
+      </button>
+      <button
+        onClick={() => changeQuantity(-1)}
+        style={{
+          ...iosButton,
+          height: "24px",
+          padding: "0 0.8rem",
+          backgroundColor: "#FF375F",
+          color: "#fff",
+        }}
+      >
+        –
+      </button>
+    </div>
+  </div>
+</div>
       <div style={iosCard}>
         <label style={iosLabel}>Азимут</label>
         <input
