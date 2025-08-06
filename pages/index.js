@@ -767,47 +767,219 @@ export default function Home() {
         </div>
       </div>
 
+
+      {/* ——— Час ——— */}
+<div style={cardStyle(theme)}>
+  <label style={labelStyle(theme)}>Час</label>
+  <div style={{ display: "flex", gap: "0.6rem", marginBottom: "0.7rem" }}>
+    <input
+      type="text"
+      name="time"
+      value={form.time}
+      onChange={handleChange}
+      style={{
+        ...inputStyle(theme),
+        flex: 1,
+        marginBottom: 0,
+        height: 44,
+        lineHeight: "44px",
+        textAlign: "center"
+      }}
+    />
+  </div>
+  {/* Кнопки Щойно, +1хв, -1хв */}
+  <div style={{ display: "flex", gap: "0.6rem" }}>
+    <button
+      onClick={() => {
+        const now = new Date();
+        setForm(f => ({
+          ...f,
+          time: now.toLocaleTimeString("uk-UA", { hour: "2-digit", minute: "2-digit" }),
+        }));
+      }}
+      style={{
+        ...buttonStyle(theme),
+        background: isDark ? theme.button : theme.success,
+        color: "#fff",
+        fontWeight: 500,
+        height: 44
+      }}
+    >
+      Щойно
+    </button>
+    <button
+      onClick={() => {
+        // +1 минута
+        let [h, m] = (form.time || "00:00").split(":").map(Number);
+        m++;
+        if (m > 59) { m = 0; h = (h + 1) % 24; }
+        setForm(f => ({
+          ...f,
+          time: `${h.toString().padStart(2, "0")}:${m.toString().padStart(2, "0")}`
+        }));
+      }}
+      style={{
+        ...buttonStyle(theme),
+        background: isDark ? theme.button : theme.success,
+        color: "#fff",
+        fontWeight: 500,
+        height: 44
+      }}
+    >
+      +1хв
+    </button>
+    <button
+      onClick={() => {
+        // -1 минута
+        let [h, m] = (form.time || "00:00").split(":").map(Number);
+        m--;
+        if (m < 0) { m = 59; h = h - 1; if (h < 0) h = 23; }
+        setForm(f => ({
+          ...f,
+          time: `${h.toString().padStart(2, "0")}:${m.toString().padStart(2, "0")}`
+        }));
+      }}
+      style={{
+        ...buttonStyle(theme),
+        background: isDark ? theme.button : theme.danger,
+        color: "#fff",
+        fontWeight: 500,
+        height: 44
+      }}
+    >
+      -1хв
+    </button>
+  </div>
+</div>
+
+
       {/* ——— Вияв ——— */}
-      <div style={cardStyle(theme)}>
-        <label style={labelStyle(theme)}>Вияв</label>
-        <div style={{ display: "flex", flexWrap: "wrap", gap: "0.6rem" }}>
-          {["Акустично", "Візуально", "Радіолокаційно", "Із застосуванням приладів спостереження"].map(m => (
-            <button
-              key={m}
-              onClick={() => toggleDetection(m)}
-              style={{
-                ...buttonStyle(theme),
-                background: form.detectionMethods.includes(m) ? theme.success : theme.secondary,
-                color: form.detectionMethods.includes(m) ? "#fff" : theme.label,
-                fontWeight: form.detectionMethods.includes(m) ? 600 : 500
-              }}
-            >
-              {m}
-            </button>
-          ))}
-        </div>
-      </div>
+      <div style={{
+  ...cardStyle(theme),
+  padding: "1rem 0.7rem",
+  display: "flex",
+  flexDirection: "column"
+}}>
+  <label style={{
+    ...labelStyle(theme),
+    marginLeft: "0.3rem",
+    marginBottom: "0.8rem",
+    fontSize: "1.07rem"
+  }}>Вияв</label>
+  <div
+    style={{
+      display: "grid",
+      gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+      gap: "0.65rem",
+      width: "100%",
+      alignItems: "stretch"
+    }}
+  >
+    {["Акустично", "Візуально", "Радіолокаційно", "Із застосуванням приладів спостереження"].map((m) => (
+      <button
+        key={m}
+        onClick={() => toggleDetection(m)}
+        style={{
+          background: form.detectionMethods.includes(m)
+            ? theme.success
+            : theme.secondary,
+          color: form.detectionMethods.includes(m)
+            ? "#fff"
+            : theme.label,
+          fontWeight: form.detectionMethods.includes(m) ? 600 : 500,
+          border: "none",
+          borderRadius: "14px",
+          boxShadow: form.detectionMethods.includes(m)
+            ? "0 2px 8px rgba(50,215,75,0.14)"
+            : theme.shadow,
+          padding: "0.62rem 0.7rem",
+          marginBottom: "0.02rem",
+          fontSize: "1.01rem",
+          transition: "background .18s, color .18s, box-shadow .18s",
+          cursor: "pointer",
+          minWidth: 0,
+          width: "100%",
+          whiteSpace: "nowrap",
+          overflow: "hidden",
+          textOverflow: "ellipsis"
+        }}
+        title={m}
+      >
+        {m}
+      </button>
+    ))}
+  </div>
+</div>
 
       {/* ——— Результат ——— */}
-      <div style={cardStyle(theme)}>
-        <label style={labelStyle(theme)}>Результат</label>
-        <div style={{ display: "flex", gap: "0.6rem" }}>
-          {["Виявлено", "Обстріляно", "Уражено"].map(r => (
-            <button
-              key={r}
-              onClick={() => setForm(f => ({ ...f, result: r }))}
-              style={{
-                ...buttonStyle(theme),
-                background: form.result === r ? theme.button : theme.secondary,
-                color: form.result === r ? "#fff" : theme.label,
-                fontWeight: form.result === r ? 600 : 500
-              }}
-            >
-              {r}
-            </button>
-          ))}
-        </div>
-      </div>
+     <div style={cardStyle(theme)}>
+  <label style={labelStyle(theme)}>Результат</label>
+  <div style={{
+    display: "grid",
+    gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
+    gap: "0.65rem",
+    width: "100%",
+    alignItems: "stretch"
+  }}>
+    {/* Виявлено — всегда активна если не выбран другой результат */}
+    <button
+      onClick={() => setForm(f => ({ ...f, result: null }))}
+      style={{
+        background: form.result === null ? theme.success : theme.secondary,
+        color: form.result === null ? "#fff" : theme.label,
+        fontWeight: form.result === null ? 600 : 500,
+        border: "none",
+        borderRadius: "14px",
+        boxShadow: form.result === null
+          ? "0 2px 8px rgba(50,215,75,0.14)"
+          : theme.shadow,
+        padding: "0.62rem 0.7rem",
+        marginBottom: "0.02rem",
+        fontSize: "1.01rem",
+        transition: "background .18s, color .18s, box-shadow .18s",
+        cursor: "pointer",
+        minWidth: 0,
+        width: "100%",
+        whiteSpace: "nowrap",
+        overflow: "hidden",
+        textOverflow: "ellipsis"
+      }}
+      title="Виявлено"
+    >
+      Виявлено
+    </button>
+    {["Обстріляно", "Уражено"].map(r => (
+      <button
+        key={r}
+        onClick={() => setForm(f => ({ ...f, result: r }))}
+        style={{
+          background: form.result === r ? theme.button : theme.secondary,
+          color: form.result === r ? "#fff" : theme.label,
+          fontWeight: form.result === r ? 600 : 500,
+          border: "none",
+          borderRadius: "14px",
+          boxShadow: form.result === r
+            ? "0 2px 8px rgba(10,132,255,0.14)"
+            : theme.shadow,
+          padding: "0.62rem 0.7rem",
+          marginBottom: "0.02rem",
+          fontSize: "1.01rem",
+          transition: "background .18s, color .18s, box-shadow .18s",
+          cursor: "pointer",
+          minWidth: 0,
+          width: "100%",
+          whiteSpace: "nowrap",
+          overflow: "hidden",
+          textOverflow: "ellipsis"
+        }}
+        title={r}
+      >
+        {r}
+      </button>
+    ))}
+  </div>
+</div>
+
 
       {/* ——— Опис ——— */}
       <div style={cardStyle(theme)}>
