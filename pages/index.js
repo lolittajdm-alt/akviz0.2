@@ -167,7 +167,6 @@ export default function Home() {
   };
 
   return (
-      return (
     <div style={iosContainer}>
       {/* Заголовок */}
       <div style={{ ...iosCard, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
