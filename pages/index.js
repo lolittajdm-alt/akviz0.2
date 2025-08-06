@@ -369,10 +369,11 @@ export default function Home() {
   }}>Ціль</label>
   <div
     style={{
-      display: "grid",
-      gridTemplateColumns: "1fr 1fr 1fr",
-      gap: "0.7rem",
+      display: "flex",
+      flexWrap: "wrap",
+      gap: "0.6rem",
       width: "100%",
+      alignItems: "flex-start"
     }}
   >
     {goalsList.map((goal) => (
@@ -394,18 +395,15 @@ export default function Home() {
           boxShadow: form.selectedGoals.includes(goal)
             ? "0 2px 8px rgba(50,215,75,0.14)"
             : theme.shadow,
-          padding: "0.58rem 0.5rem",
-          marginBottom: "0.08rem",
+          padding: "0.6rem 1.2rem",
           fontSize: "0.98rem",
           transition: "background .18s, border .18s, color .18s, box-shadow .18s",
           cursor: "pointer",
-          whiteSpace: "nowrap",
-          overflow: "hidden",
-          textOverflow: "ellipsis",
-          minWidth: 0,
-          width: "100%"
+          minWidth: "100px",
+          maxWidth: "100%",
+          whiteSpace: "nowrap"
         }}
-        title={goal} // Показывает полный текст при наведении
+        title={goal}
       >
         {goal}
       </button>
