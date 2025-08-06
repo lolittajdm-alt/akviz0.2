@@ -449,7 +449,7 @@ export default function Home() {
         type="text"
         name="targetNumber"
         value={form.targetNumber}
-        onChange={onFieldNumeric("targetNumber", 999)}
+        onChange={onFieldNumeric("targetNumber", 9999)}
         placeholder="по цілі"
         style={{
           ...inputStyle(theme),
@@ -458,9 +458,12 @@ export default function Home() {
           marginBottom: 0,
           height: 44,
           lineHeight: "44px",
-          padding: "0 1rem",
+          padding: "0 1.2rem",
           border: `1px solid ${theme.inputBorder}`,
-          fontSize: "1rem"
+          fontSize: "1rem",
+          boxShadow: "0 2px 8px rgba(0,0,0,0.14)", // такая же, как у кнопки
+          backgroundColor: theme.inputBg,
+          verticalAlign: "middle",
         }}
       />
     )}
@@ -489,6 +492,7 @@ export default function Home() {
     </button>
   </div>
 </div>
+
 
 
       {/* ——— Назва (БПЛА) ——— */}
