@@ -497,64 +497,130 @@ export default function Home() {
 
       {/* ——— Назва (БПЛА) ——— */}
       {form.selectedGoals.includes("БПЛА") && (
-        <div style={cardStyle(theme)}>
-          <label style={labelStyle(theme)}>Назва</label>
-          <div style={{ display: "flex", gap: "0.6rem" }}>
-            {namesList.map(n => (
-              <button
-                key={n}
-                onClick={() => selectName(n)}
-                style={{
-                  ...buttonStyle(theme),
-                  background: form.name === n ? theme.button : theme.secondary,
-                  color: form.name === n ? "#fff" : theme.label,
-                  fontWeight: form.name === n ? 600 : 500
-                }}
-              >
-                {n}
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
+  <div style={{
+    ...cardStyle(theme),
+    padding: "1rem 0.7rem",
+    display: "flex",
+    flexDirection: "column"
+  }}>
+    <label style={{
+      ...labelStyle(theme),
+      marginLeft: "0.3rem",
+      marginBottom: "0.8rem",
+      fontSize: "1.07rem"
+    }}>Назва</label>
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
+        gap: "0.65rem",
+        width: "100%",
+        alignItems: "stretch"
+      }}
+    >
+      {namesList.map((n) => (
+        <button
+          key={n}
+          onClick={() => selectName(n)}
+          style={{
+            background: form.name === n ? theme.button : theme.secondary,
+            color: form.name === n ? "#fff" : theme.label,
+            fontWeight: form.name === n ? 600 : 500,
+            border: "none",
+            borderRadius: "14px",
+            boxShadow: form.name === n
+              ? "0 2px 8px rgba(10,132,255,0.14)"
+              : theme.shadow,
+            padding: "0.62rem 0.7rem",
+            marginBottom: "0.02rem",
+            fontSize: "1.01rem",
+            transition: "background .18s, color .18s, box-shadow .18s",
+            cursor: "pointer",
+            minWidth: 0,
+            width: "100%",
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis"
+          }}
+          title={n}
+        >
+          {n}
+        </button>
+      ))}
+    </div>
+  </div>
+)}
+
 
       {/* ——— Кількість ——— */}
       <div style={cardStyle(theme)}>
-        <label style={labelStyle(theme)}>Кількість</label>
-        <div style={{ display: "flex", alignItems: "center", gap: "0.6rem" }}>
-          <input
-            type="number"
-            value={form.quantity}
-            onChange={(e) =>
-              setForm((f) => ({
-                ...f,
-                quantity: Math.max(1, +e.target.value),
-              }))
-            }
-            style={{ ...inputStyle(theme), textAlign: "center", flex: 1 }}
-          />
-          <button
-            onClick={() => changeQuantity(-1)}
-            style={{
-              ...buttonStyle(theme),
-              backgroundColor: theme.danger,
-              color: "#fff"
-            }}
-          >
-            –
-          </button>
-          <button
-            onClick={() => changeQuantity(1)}
-            style={{
-              ...buttonStyle(theme),
-              backgroundColor: theme.success,
-              color: "#fff"
-            }}
-          >
-            +
-          </button>
-        </div>
-      </div>
+  <label style={labelStyle(theme)}>Кількість</label>
+  <div style={{
+    display: "flex",
+    alignItems: "center",
+    gap: "0.6rem",
+    marginBottom: 0
+  }}>
+    <input
+      type="number"
+      value={form.quantity}
+      onChange={(e) =>
+        setForm((f) => ({
+          ...f,
+          quantity: Math.max(1, +e.target.value),
+        }))
+      }
+      style={{
+        ...inputStyle(theme),
+        textAlign: "center",
+        flex: 1,
+        marginBottom: 0,
+        height: 44,
+        lineHeight: "44px",
+        padding: "0 1.2rem",
+        fontSize: "1rem",
+        boxShadow: "0 2px 8px rgba(0,0,0,0.14)",
+        backgroundColor: theme.inputBg,
+        verticalAlign: "middle",
+      }}
+    />
+    <button
+      onClick={() => changeQuantity(-1)}
+      style={{
+        ...buttonStyle(theme),
+        backgroundColor: "#FF375F", // красная даже в светлой теме!
+        color: "#fff",
+        height: 44,
+        lineHeight: "44px",
+        minWidth: 44,
+        marginBottom: 0,
+        alignSelf: "center",
+        fontSize: "1.1rem",
+        padding: 0,
+      }}
+    >
+      –
+    </button>
+    <button
+      onClick={() => changeQuantity(1)}
+      style={{
+        ...buttonStyle(theme),
+        backgroundColor: "#32D74B", // зелёная даже в светлой теме!
+        color: "#fff",
+        height: 44,
+        lineHeight: "44px",
+        minWidth: 44,
+        marginBottom: 0,
+        alignSelf: "center",
+        fontSize: "1.1rem",
+        padding: 0,
+      }}
+    >
+      +
+    </button>
+  </div>
+</div>
+
 
       {/* ——— Азимут и Курс ——— */}
       <div style={cardStyle(theme)}>
