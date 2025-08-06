@@ -1096,10 +1096,11 @@ const generateReportText = () => {
               }}
               style={{
                 ...inputStyle(theme),
-                width: 70,
+                width: 120, // ← длиннее
                 marginBottom: 0,
                 textAlign: "center",
-                fontWeight: 500
+                fontWeight: 500,
+                fontSize: "1.06rem"
               }}
               placeholder="К-сть"
             />
@@ -1126,70 +1127,8 @@ const generateReportText = () => {
       style={{...buttonStyle(theme), width: "100%", fontWeight: 600, fontSize: "1.04rem"}}
       onClick={() => setShowAmmoModal(true)}
     >Вибрати наявні типи зброї</button>
-
-    {/* ——— Модалка выбора оружия ——— */}
-    {showAmmoModal && (
-      <div style={{
-        position: "fixed", zIndex: 2000, left: 0, top: 0, width: "100vw", height: "100vh",
-        background: "rgba(0,0,0,0.24)", display: "flex", alignItems: "center", justifyContent: "center"
-      }}>
-        <div style={{
-          background: theme.card, borderRadius: 18, boxShadow: theme.shadow, padding: 18, maxWidth: 420, width: "95vw",
-          maxHeight: "75vh", overflowY: "auto", position: "relative"
-        }}>
-          <h3 style={{margin: 0, marginBottom: 12, fontSize: "1.09rem", color: theme.label, fontWeight: 600, textAlign: "center"}}>Оберіть типи зброї</h3>
-          <div style={{
-            display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.6rem", marginBottom: 18
-          }}>
-            {ammoList.map(w => (
-              <button
-                key={w}
-                onClick={() => {
-                  setForm(f => {
-                    const ammo = {...f.ammo};
-                    if (ammo[w]) {
-                      delete ammo[w];
-                    } else {
-                      ammo[w] = "";
-                    }
-                    saveAmmo(ammo);
-                    return {...f, ammo};
-                  });
-                }}
-                style={{
-                  ...buttonStyle(theme),
-                  background: form.ammo[w] !== undefined ? theme.success : theme.secondary,
-                  color: form.ammo[w] !== undefined ? "#fff" : theme.label,
-                  fontWeight: form.ammo[w] !== undefined ? 600 : 500,
-                  minWidth: 0,
-                  fontSize: "0.97rem",
-                  padding: "0.48rem 0.2rem"
-                }}
-              >{w}</button>
-            ))}
-          </div>
-          <button
-            style={{
-              ...buttonStyle(theme),
-              width: "100%", background: theme.button, fontWeight: 600
-            }}
-            onClick={() => setShowAmmoModal(false)}
-          >OK</button>
-          <button
-            style={{
-              position: "absolute", top: 8, right: 10, background: "none", border: "none", color: theme.danger,
-              fontSize: 24, fontWeight: 800, cursor: "pointer"
-            }}
-            onClick={() => setShowAmmoModal(false)}
-            title="Закрити"
-          >×</button>
-        </div>
-      </div>
-    )}
   </div>
-)}
-
-                   
+)}              
 
       {/* ——— Опис ——— */}
       <div style={cardStyle(theme)}>
@@ -1236,6 +1175,79 @@ const generateReportText = () => {
           {generateReportText()}
         </pre>
       </div>
+          {/* ——— Модалка выбора оружия ——— */}
+{showAmmoModal && (
+  <div style={{
+    position: "fixed",
+    zIndex: 9999,
+    left: 0, top: 0, width: "100vw", height: "100vh",
+    background: "rgba(0,0,0,0.24)",
+    display: "flex", alignItems: "center", justifyContent: "center"
+  }}>
+    <div style={{
+      background: theme.card,
+      borderRadius: 18,
+      boxShadow: theme.shadow,
+      padding: 18,
+      maxWidth: 420,
+      width: "95vw",
+      maxHeight: "75vh",
+      overflowY: "auto",
+      position: "relative"
+    }}>
+      <h3 style={{margin: 0, marginBottom: 12, fontSize: "1.09rem", color: theme.label, fontWeight: 600, textAlign: "center"}}>Оберіть типи зброї</h3>
+      <div style={{
+        display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.6rem", marginBottom: 18
+      }}>
+        {ammoList.map(w => (
+          <button
+            key={w}
+            onClick={() => {
+              setForm(f => {
+                const ammo = {...f.ammo};
+                if (ammo[w]) {
+                  delete ammo[w];
+                } else {
+                  ammo[w] = "";
+                }
+                saveAmmo(ammo);
+                return {...f, ammo};
+              });
+            }}
+            style={{
+              ...buttonStyle(theme),
+              background: form.ammo[w] !== undefined ? theme.success : theme.secondary,
+              color: form.ammo[w] !== undefined ? "#fff" : theme.label,
+              fontWeight: form.ammo[w] !== undefined ? 600 : 500,
+              minWidth: 0,
+              fontSize: "0.97rem",
+              padding: "0.48rem 0.2rem"
+            }}
+          >{w}</button>
+        ))}
+      </div>
+      <button
+        style={{
+          ...buttonStyle(theme),
+          width: "100%", background: theme.button, fontWeight: 600
+        }}
+        onClick={() => setShowAmmoModal(false)}
+      >OK</button>
+      <button
+        style={{
+          position: "absolute",
+          top: 8, right: 10,
+          background: "none", border: "none",
+          color: theme.danger,
+          fontSize: 24, fontWeight: 800, cursor: "pointer"
+        }}
+        onClick={() => setShowAmmoModal(false)}
+        title="Закрити"
+      >×</button>
+    </div>
+  </div>
+)}
+
     </div>
   );
 }
