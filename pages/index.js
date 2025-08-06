@@ -436,9 +436,14 @@ export default function Home() {
       </div>
 
       {/* ——— Номер цілі ——— */}
-      <div style={cardStyle(theme)}>
+     <div style={cardStyle(theme)}>
   <label style={labelStyle(theme)}>Номер цілі</label>
-  <div style={{ display: "flex", gap: "0.6rem", alignItems: "stretch" }}>
+  <div style={{
+    display: "flex",
+    gap: "0.6rem",
+    alignItems: "center",
+    marginBottom: 0
+  }}>
     {!form.noIssue && (
       <input
         type="text"
@@ -452,7 +457,10 @@ export default function Home() {
           flex: 1,
           marginBottom: 0,
           height: 44,
-          minWidth: 0
+          lineHeight: "44px",
+          padding: "0 1rem",
+          border: `1px solid ${theme.inputBorder}`,
+          fontSize: "1rem"
         }}
       />
     )}
@@ -469,16 +477,19 @@ export default function Home() {
         backgroundColor: form.noIssue ? theme.danger : theme.secondary,
         color: form.noIssue ? "#fff" : theme.label,
         height: 44,
+        lineHeight: "44px",
         minWidth: 128,
         marginBottom: 0,
-        alignSelf: "stretch",
-        padding: "0 1.2rem"
+        alignSelf: "center",
+        padding: "0 1.2rem",
+        fontSize: "1rem"
       }}
     >
       {form.noIssue ? "Видати номер" : "Без видачі"}
     </button>
   </div>
 </div>
+
 
       {/* ——— Назва (БПЛА) ——— */}
       {form.selectedGoals.includes("БПЛА") && (
