@@ -4,17 +4,23 @@ const systemFont = `-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxyge
 
 export default function Home() {
   // ——— Тема ———
-  const [isDark, setIsDark] = useState(
-    typeof window !== "undefined"
-      ? localStorage.getItem("theme") === "dark"
-      : false
-  );
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      document.body.style.background = isDark ? "#17181c" : "#F2F2F7";
-      localStorage.setItem("theme", isDark ? "dark" : "light");
-    }
-  }, [isDark]);
+const [isDark, setIsDark] = useState(false);
+
+useEffect(() => {
+  if (typeof window !== "undefined") {
+    const themeLS = localStorage.getItem("theme");
+    if (themeLS === "dark") setIsDark(true);
+    if (themeLS === "light") setIsDark(false);
+  }
+}, []);
+
+useEffect(() => {
+  if (typeof window !== "undefined") {
+    localStorage.setItem("theme", isDark ? "dark" : "light");
+    document.body.style.background = isDark ? "#17181c" : "#F2F2F7";
+  }
+}, [isDark]);
+
 
   // ——— Стейты формы ———
   const [form, setForm] = useState({
