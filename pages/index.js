@@ -170,38 +170,49 @@ export default function Home() {
   };
 
   // ——— Генерация текста отчёта ———
-  const generateReportText = () => [
-  // Блок с местоположением
-  form.sector || form.subdivision || form.position
-    ? `П: ${[form.sector, form.subdivision, form.position].filter(Boolean).join(", ")}`
-    : null,
-  // Цель, сторона, номер и т.д.
-  `Ціль: ${[
-      ...goals,
+  const generateReportText = () => {
+  // Формируем список целей с учетом назвы БПЛА
+  const goalsForReport = form.selectedGoals.map(goal => {
+    if (goal === "БПЛА" && form.name) {
+      return `БПЛА (${form.name})`;
+    }
+    return goal;
+  });
+
+  return [
+    // Место, подразделение, позиция (если есть)
+    form.sector || form.subdivision || form.position
+      ? `П: ${[form.sector, form.subdivision, form.position].filter(Boolean).join(", ")}`
+      : null,
+    // Ціль (с учетом side, номера цели и "Без видачі")
+    `Ціль: ${[
+      ...goalsForReport,
       form.side,
       form.noIssue ? "Без видачі" : (form.targetNumber ? `по цілі ${form.targetNumber}` : "")
     ].filter(Boolean).join(", ")}`,
-  // Висота
-  form.height ? `Висота: ${form.height} м` : null,
-  // Відстань
-  form.distance ? `Відстань: ${form.distance} м` : null,
-  // Кількість
-  form.quantity ? `Кількість: ${form.quantity} од.` : null,
-  // Азимут
-  form.azimuth ? `А: ${form.azimuth}°` : null,
-  // Курс
-  form.course ? `К: ${form.course}°` : null,
-  // Локація
-  form.location ? `НП: ${form.location}` : null,
-  // Час
-  form.time ? `Ч: ${form.time}` : null,
-  // Вияв
-  form.detectionMethods.length ? `Вияв: ${form.detectionMethods.join(", ")}` : null,
-  // ======== Всегда отображать Результат ==========
-  `Результат: ${form.result === null ? "Виявлено" : form.result}`,
-  // Опис
-  form.description ? `Опис: ${form.description}` : null
-].filter(Boolean).join("\n");
+    // Висота
+    form.height ? `Висота: ${form.height} м` : null,
+    // Відстань
+    form.distance ? `Відстань: ${form.distance} м` : null,
+    // Кількість
+    form.quantity ? `Кількість: ${form.quantity} од.` : null,
+    // Азимут
+    form.azimuth ? `А: ${form.azimuth}°` : null,
+    // Курс
+    form.course ? `К: ${form.course}°` : null,
+    // Локація
+    form.location ? `НП: ${form.location}` : null,
+    // Час
+    form.time ? `Ч: ${form.time}` : null,
+    // Вияв
+    form.detectionMethods.length ? `Вияв: ${form.detectionMethods.join(", ")}` : null,
+    // Результат (всегда выводим, по умолчанию "Виявлено")
+    `Результат: ${form.result === null ? "Виявлено" : form.result}`,
+    // Опис (если есть)
+    form.description ? `Опис: ${form.description}` : null
+  ].filter(Boolean).join("\n");
+};
+
 
 
   // ——— Темы ———
