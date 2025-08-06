@@ -355,25 +355,64 @@ export default function Home() {
       )}
 
       {/* ——— Тип цілі ——— */}
-      <div style={cardStyle(theme)}>
-        <label style={labelStyle(theme)}>Ціль</label>
-        <div style={{ display: "flex", flexWrap: "wrap", gap: "0.6rem" }}>
-          {goalsList.map(goal => (
-            <button
-              key={goal}
-              onClick={() => toggleGoal(goal)}
-              style={{
-                ...buttonStyle(theme),
-                background: form.selectedGoals.includes(goal) ? theme.success : theme.secondary,
-                color: form.selectedGoals.includes(goal) ? "#fff" : theme.label,
-                fontWeight: form.selectedGoals.includes(goal) ? 600 : 500
-              }}
-            >
-              {goal}
-            </button>
-          ))}
-        </div>
-      </div>
+      <div style={{
+  ...cardStyle(theme),
+  padding: "1rem 0.7rem",
+  display: "flex",
+  flexDirection: "column"
+}}>
+  <label style={{
+    ...labelStyle(theme),
+    marginLeft: "0.3rem",
+    marginBottom: "0.8rem",
+    fontSize: "1.07rem"
+  }}>Ціль</label>
+  <div
+    style={{
+      display: "grid",
+      gridTemplateColumns: "1fr 1fr 1fr",
+      gap: "0.7rem",
+      width: "100%",
+    }}
+  >
+    {goalsList.map((goal) => (
+      <button
+        key={goal}
+        onClick={() => toggleGoal(goal)}
+        style={{
+          background: form.selectedGoals.includes(goal)
+            ? theme.success
+            : theme.secondary,
+          color: form.selectedGoals.includes(goal)
+            ? "#fff"
+            : theme.label,
+          fontWeight: form.selectedGoals.includes(goal) ? 600 : 500,
+          border: form.selectedGoals.includes(goal)
+            ? `2px solid ${theme.success}`
+            : `1px solid ${theme.inputBorder}`,
+          borderRadius: "14px",
+          boxShadow: form.selectedGoals.includes(goal)
+            ? "0 2px 8px rgba(50,215,75,0.14)"
+            : theme.shadow,
+          padding: "0.58rem 0.5rem",
+          marginBottom: "0.08rem",
+          fontSize: "0.98rem",
+          transition: "background .18s, border .18s, color .18s, box-shadow .18s",
+          cursor: "pointer",
+          whiteSpace: "nowrap",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          minWidth: 0,
+          width: "100%"
+        }}
+        title={goal} // Показывает полный текст при наведении
+      >
+        {goal}
+      </button>
+    ))}
+  </div>
+</div>
+
 
       {/* ——— Сторона ——— */}
       <div style={cardStyle(theme)}>
