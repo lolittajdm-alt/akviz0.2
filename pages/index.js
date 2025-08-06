@@ -210,43 +210,75 @@ const generateReportText = () => {
     detectionMethods, result, description, ammo
   } = form;
 
-  // ——— Генерация строки расхода БК ———
+  // ——— Вспомогательная функция для калибра ———
+  function extractCaliber(name) {
+    // Например: "АКМ - 7.62х39мм" => "7.62х39мм"
+    const parts = name.split("-");
+    if (parts.length > 1) return parts[parts.length - 1].trim();
+    return name.trim();
+  }
+
+  // ——— Вспомогательная функция для названия без калибра ———
+  function extractWeaponName(name) {
+    // Например: "АКМ - 7.62х39мм" => "АКМ"
+    return name.split("-")[0].trim();
+  }
+
+  // ——— Генерация строки расхода БК (только калибр) ———
   const ammoString = (ammo && Object.keys(ammo).length)
     ? 'Витрата БК: ' +
       Object.entries(ammo)
         .filter(([_, qty]) => qty && Number(qty) > 0)
-        .map(([name, qty]) => `${name} - ${qty} шт.`)
+        .map(([name, qty]) => `${extractCaliber(name)} - ${qty} шт.`)
         .join(', ')
     : '';
 
   // ——— Если результат "Обстріляно" или "Уражено" ———
   if (result === "Обстріляно" || result === "Уражено") {
+    // 1-я строка: Сектор «...», 19:11 - №... - ... (....)
+    let firstLineArr = [
+      sector ? `Сектор «${sector}»` : null,
+      time ? time : null,
+      targetNumber ? `- №${targetNumber}` : null,
+      subdivision ? `- ${subdivision}` : null,
+      position ? `(${position})` : null
+    ];
+    let firstLine = firstLineArr.filter(Boolean).join(", ");
+    firstLine = firstLine.replace(/, -/g, "-").replace(/, \(/g, " (");
+
+    // 2-я строка: район
+    const locationLine = location ? `в районі ${location}` : null;
+
+    // 3-я строка: используемое оружие (без калибра) + параметры
+    const usedWeapons = (ammo && Object.keys(ammo).length)
+      ? Object.keys(ammo).map(extractWeaponName).join(", ")
+      : null;
+    const paramArr = [
+      height ? `H-${height}` : null,
+      distance ? `D-${distance}` : null,
+      azimuth ? `A-${azimuth}` : null,
+      course ? `K-${course}` : null
+    ].filter(Boolean);
+    let thirdLine = null;
+    if (usedWeapons) {
+      thirdLine = `з ${usedWeapons}${paramArr.length ? " (" + paramArr.join(", ") + ")" : ""}`;
+    }
+
+    // 4-я строка: результат, цель, имя БПЛА
+    let fourthLine = [
+      result,
+      selectedGoals.length ? selectedGoals.join(", ") : null,
+      name ? name : null
+    ].filter(Boolean).join(" ") + ".";
+
+    // 5-я строка: Витрата БК (только калибр)
+    // (ammoString)
+
     return [
-      // 1-я строка: сектор, время, номер цели, подразделение, позиция
-      [
-        sector ? `Сектор «${sector}»` : null,
-        time ? time : null,
-        targetNumber ? `- №${targetNumber}` : null,
-        subdivision ? `- ${subdivision}` : null,
-        position ? `(${position})` : null
-      ].filter(Boolean).join(", "),
-      // 2-я строка: район
-      location ? `в районі ${location}` : null,
-      // 3-я строка: используемое оружие и параметры (если есть)
-      (ammo && Object.keys(ammo).length) ?
-        `з ${Object.keys(ammo).join(", ")}${[height, distance, azimuth, course].some(x => x) ? " (" : ""}${[
-          height ? `H-${height}` : null,
-          distance ? `D-${distance}` : null,
-          azimuth ? `A-${azimuth}` : null,
-          course ? `K-${course}` : null
-        ].filter(Boolean).join(", ")}${[height, distance, azimuth, course].some(x => x) ? ")" : ""}` : null,
-      // 4-я строка: факт обстрела, цель, имя БПЛА
-      [
-        result,
-        selectedGoals.length ? selectedGoals.join(", ") : null,
-        name ? name : null
-      ].filter(Boolean).join(" ") + ".",
-      // 5-я строка: Витрата БК (если есть)
+      firstLine,
+      locationLine,
+      thirdLine,
+      fourthLine,
       ammoString
     ].filter(Boolean).join("\n");
   }
@@ -301,6 +333,7 @@ const generateReportText = () => {
     description ? `Опис: ${description}` : null
   ].filter(Boolean).join("\n");
 };
+
 
 
 
