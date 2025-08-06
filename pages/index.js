@@ -193,24 +193,25 @@ export default function Home() {
 
   // ——— Темы ———
   const theme = {
-    bg: isDark ? "#17181c" : "#F2F2F7",
-    card: isDark ? "rgba(30,32,38,0.98)" : "rgba(255,255,255,0.95)",
-    label: isDark ? "#e3e3ea" : "#1C1C1E",
-    inputBg: isDark ? "#23242a" : "#ECECEC",
-    inputText: isDark ? "#f7f7fb" : "#1C1C1E",
-    inputBorder: isDark ? "#36374a" : "#cccccc",
-    button: isDark ? "#272a34" : "#0A84FF",
-    buttonText: isDark ? "#e5e6ea" : "#fff",
-    secondary: isDark ? "#27272b" : "#EBEBF5",
-    danger: "#FF375F",
-    success: "#32D74B",
-    shadow: isDark
-      ? "0 2px 12px rgba(0,0,0,0.38)"
-      : "0 4px 16px rgba(0,0,0,0.10)",
-    border: isDark ? "#23242a" : "#ededed",
-    textareaBg: isDark ? "#23242a" : "#ECECEC",
-    textareaText: isDark ? "#f7f7fb" : "#1C1C1E"
-  };
+  bg: isDark ? "#17181c" : "#F2F2F7",
+  card: isDark ? "rgba(30,32,38,0.98)" : "#fff",
+  label: isDark ? "#e3e3ea" : "#1C1C1E",
+  inputBg: isDark ? "#23242a" : "#fff",
+  inputText: isDark ? "#f7f7fb" : "#1C1C1E",
+  inputBorder: isDark ? "#36374a" : "#cccccc",
+  button: isDark ? "#272a34" : "#0A84FF",
+  buttonText: isDark ? "#e5e6ea" : "#fff",
+  secondary: isDark ? "#27272b" : "#EBEBF5",
+  danger: "#FF375F",
+  success: "#32D74B",
+  shadow: isDark
+    ? "0 2px 12px rgba(0,0,0,0.38)"
+    : "0 4px 16px rgba(0,0,0,0.10)",
+  border: isDark ? "#23242a" : "#ededed",
+  textareaBg: isDark ? "#23242a" : "#fff",
+  textareaText: isDark ? "#f7f7fb" : "#1C1C1E"
+};
+
 
   // ——— iOS Switch (большой) ———
   const Switch = (
