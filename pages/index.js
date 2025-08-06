@@ -369,11 +369,11 @@ export default function Home() {
   }}>Ціль</label>
   <div
     style={{
-      display: "flex",
-      flexWrap: "wrap",
-      gap: "0.6rem",
+      display: "grid",
+      gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
+      gap: "0.65rem",
       width: "100%",
-      alignItems: "flex-start"
+      alignItems: "stretch"
     }}
   >
     {goalsList.map((goal) => (
@@ -388,20 +388,21 @@ export default function Home() {
             ? "#fff"
             : theme.label,
           fontWeight: form.selectedGoals.includes(goal) ? 600 : 500,
-          border: form.selectedGoals.includes(goal)
-            ? `2px solid ${theme.success}`
-            : `1px solid ${theme.inputBorder}`,
+          border: "none", // <--- Убрал ободок
           borderRadius: "14px",
           boxShadow: form.selectedGoals.includes(goal)
             ? "0 2px 8px rgba(50,215,75,0.14)"
             : theme.shadow,
-          padding: "0.6rem 1.2rem",
-          fontSize: "0.98rem",
-          transition: "background .18s, border .18s, color .18s, box-shadow .18s",
+          padding: "0.62rem 0.7rem",
+          marginBottom: "0.02rem",
+          fontSize: "1.01rem",
+          transition: "background .18s, color .18s, box-shadow .18s",
           cursor: "pointer",
-          minWidth: "100px",
-          maxWidth: "100%",
-          whiteSpace: "nowrap"
+          minWidth: 0,
+          width: "100%",
+          whiteSpace: "nowrap",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
         }}
         title={goal}
       >
@@ -410,6 +411,7 @@ export default function Home() {
     ))}
   </div>
 </div>
+
 
 
       {/* ——— Сторона ——— */}
