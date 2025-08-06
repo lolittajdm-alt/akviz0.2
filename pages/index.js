@@ -437,44 +437,48 @@ export default function Home() {
 
       {/* ——— Номер цілі ——— */}
       <div style={cardStyle(theme)}>
-        <label style={labelStyle(theme)}>Номер цілі</label>
-        <div style={{ display: "flex", gap: "0.6rem", alignItems: "center" }}>
-          {!form.noIssue && (
-            <input
-              type="text"
-              name="targetNumber"
-              value={form.targetNumber}
-              onChange={onFieldNumeric("targetNumber", 999)}
-              placeholder="по цілі"
-              style={{
-                ...inputStyle(theme),
-                textAlign: "center",
-                flex: 1
-              }}
-            />
-          )}
-          <button
-            onClick={() =>
-              setForm(f => ({
-                ...f,
-                noIssue: !f.noIssue,
-                targetNumber: "",
-              }))
-            }
-            style={{
-              ...buttonStyle(theme),
-              height: 44,
-              backgroundColor: form.noIssue ? theme.danger : theme.secondary,
-              color: form.noIssue ? "#fff" : theme.label,
-              whiteSpace: "nowrap",
-              flex: form.noIssue ? 1 : "unset",
-              minWidth: 128
-            }}
-          >
-            {form.noIssue ? "Видати номер" : "Без видачі"}
-          </button>
-        </div>
-      </div>
+  <label style={labelStyle(theme)}>Номер цілі</label>
+  <div style={{ display: "flex", gap: "0.6rem", alignItems: "stretch" }}>
+    {!form.noIssue && (
+      <input
+        type="text"
+        name="targetNumber"
+        value={form.targetNumber}
+        onChange={onFieldNumeric("targetNumber", 999)}
+        placeholder="по цілі"
+        style={{
+          ...inputStyle(theme),
+          textAlign: "center",
+          flex: 1,
+          marginBottom: 0,
+          height: 44,
+          minWidth: 0
+        }}
+      />
+    )}
+    <button
+      onClick={() =>
+        setForm(f => ({
+          ...f,
+          noIssue: !f.noIssue,
+          targetNumber: "",
+        }))
+      }
+      style={{
+        ...buttonStyle(theme),
+        backgroundColor: form.noIssue ? theme.danger : theme.secondary,
+        color: form.noIssue ? "#fff" : theme.label,
+        height: 44,
+        minWidth: 128,
+        marginBottom: 0,
+        alignSelf: "stretch",
+        padding: "0 1.2rem"
+      }}
+    >
+      {form.noIssue ? "Видати номер" : "Без видачі"}
+    </button>
+  </div>
+</div>
 
       {/* ——— Назва (БПЛА) ——— */}
       {form.selectedGoals.includes("БПЛА") && (
