@@ -199,7 +199,6 @@ export default function Home() {
   ].filter(Boolean).join("\n");
 
   // ——— Стили iOS для светлой/тёмной темы ———
-  // Классные переменные для динамики
   const theme = {
     bg: isDark ? "#17181c" : "#F2F2F7",
     card: isDark ? "rgba(30,32,38,0.98)" : "rgba(255,255,255,0.95)",
@@ -220,7 +219,7 @@ export default function Home() {
     textareaText: isDark ? "#f7f7fb" : "#1C1C1E"
   };
 
-    // ——— iOS-переключатель темы (большой) ———
+  // ——— iOS-переключатель темы (большой) ———
   const Switch = (
     <button
       onClick={() => setIsDark(d => !d)}
