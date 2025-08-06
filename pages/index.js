@@ -11,7 +11,7 @@ export default function Home() {
     position: "",
     location: "",
     time: "",
-    selectedGoals: [],
+    selectedGoals: [], 
     side: null,
     targetNumber: "",
     noIssue: false,
@@ -138,9 +138,15 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Скрыть/показать поля */}
-      <div style={{...iosCard,display:"flex",justifyContent:"center"}}>
-        <button onClick={()=>setShowTopFields(prev=>!prev)} style={iosButton}>{showTopFields?"Приховати поля":"Показати поля"}</button>
+      {/* Toggle visibility of the first four fields (Sector, Subdivision, Position, Location) */}
+      {/* Скрыть/показати поля */}
+      <div style={{ ...iosCard }}>
+        <button
+          onClick={() => setShowTopFields(prev => !prev)}
+          style={{ ...iosButton, width: "100%" }}
+        >
+          {showTopFields ? "Приховати поля" : "Показати поля"}
+        </button>
       </div>
 
       {showTopFields&&(
@@ -179,9 +185,29 @@ export default function Home() {
       <div style={iosCard}>
         <label style={iosLabel}>Ціль</label>
         <div style={{display:"flex",flexWrap:"wrap",gap:"0.5rem"}}>
-          {goalsList.map(goal=>(
-            <button key={goal} onClick={()=>toggleGoal(goal)} style={{...iosButton,background: form.selectedGoals.includes(goal)?"#32D74B":"#EBEBF5",color:form.selectedGoals.includes(goal)?"#fff":"#1C1C1E",borderRadius:"8px"}}>{goal}</button>
-          ))}
+          {goalsList.map(goal => (
+          <button
+            key={goal}
+            onClick={() => toggleGoal(goal)}
+            style={{
+              ...iosButton,
+              width: "100%",
+              background: form.selectedGoals.includes(goal)
+                ? "#32D74B"
+                : isDarkMode
+                ? "#3A3A3C"
+                : "#EBEBF5",
+              color: form.selectedGoals.includes(goal)
+                ? "#fff"
+                : isDarkMode
+                ? "#F2F2F7"
+                : "#1C1C1E",
+              borderRadius: "8px",
+            }}
+          >
+            {goal}
+          </button>
+        ))}
         </div>
       </div>
 
