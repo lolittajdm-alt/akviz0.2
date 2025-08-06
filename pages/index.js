@@ -1,10 +1,9 @@
 import { useState, useEffect } from "react";
 
-// ——— Системный шрифт iOS ———
 const systemFont = `-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif`;
 
 export default function Home() {
-  // ——— Состояние темы (сохраняется в localStorage) ———
+  // ——— Тема ———
   const [isDark, setIsDark] = useState(
     typeof window !== "undefined"
       ? localStorage.getItem("theme") === "dark"
@@ -17,7 +16,7 @@ export default function Home() {
     }
   }, [isDark]);
 
-  // ——— Состояние формы ———
+  // ——— Стейты формы ———
   const [form, setForm] = useState({
     sector: "",
     subdivision: "",
@@ -46,12 +45,9 @@ export default function Home() {
     position: false,
     location: false,
   });
-
-  // ——— Стейт ошибок ———
   const [errors, setErrors] = useState({});
-  const [showWeaponModal, setShowWeaponModal] = useState(false);
 
-  // ——— Данные ———
+  // ——— Списки ———
   const goalsList = [
     "БПЛА", "Постріли(ЗУ,кулемет)", "Виходи(ПЗРК,ЗРК)", "Вибух", "КР",
     "Гелікоптер", "Літак малий", "Літак великий", "Квадрокоптер", "Зонд", "Інше (деталі в описі)"
@@ -67,7 +63,6 @@ export default function Home() {
     }));
   };
 
-  // ——— Эффекты ———
   useEffect(updateTime, []);
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -79,7 +74,6 @@ export default function Home() {
         const v = localStorage.getItem(`report_${key}`);
         if (v !== null) setForm(f => ({ ...f, [key]: v }));
       });
-      // theme при инициализации
       const themeLS = localStorage.getItem("theme");
       if (themeLS === "dark") setIsDark(true);
       if (themeLS === "light") setIsDark(false);
@@ -112,21 +106,6 @@ export default function Home() {
   const changeQuantity = d => setForm(f => ({ ...f, quantity: Math.max(1, f.quantity + d) }));
 
   // ——— Числовые поля ———
-  const validateNumeric = (v, max = null) => /^\d+$/.test(v) && (max === null || +v <= max);
-  const onFieldNumeric = (field, max) => e => {
-    const v = e.target.value.replace(/\D/g, "").slice(0, max ? String(max).length : undefined);
-    setForm(f => ({ ...f, [field]: v }));
-  };
-
-  // ——— Детекция ———
-  const toggleDetection = m => setForm(f => ({
-    ...f,
-    detectionMethods: f.detectionMethods.includes(m)
-      ? f.detectionMethods.filter(x => x !== m)
-      : [...f.detectionMethods, m]
-  }));
-
-  // ——— Валидация и обработка чисел ———
   const validateCourse = (v) => /^\d{1,3}$/.test(v) && +v >= 0 && +v <= 359;
   const onCourseChange = (e) => {
     const value = e.target.value.replace(/\D/g, "").slice(0, 3);
@@ -166,6 +145,20 @@ export default function Home() {
     setErrors(f => ({ ...f, height: !validateHeight(String(h)) }));
   };
 
+  // ——— Валидация по полю ———
+  const onFieldNumeric = (field, max) => e => {
+    const v = e.target.value.replace(/\D/g, "").slice(0, max ? String(max).length : undefined);
+    setForm(f => ({ ...f, [field]: v }));
+  };
+
+  // ——— Детекция ———
+  const toggleDetection = m => setForm(f => ({
+    ...f,
+    detectionMethods: f.detectionMethods.includes(m)
+      ? f.detectionMethods.filter(x => x !== m)
+      : [...f.detectionMethods, m]
+  }));
+
   // ——— Копирование и WhatsApp ———
   const copyReport = () => {
     const text = generateReportText().replace(/\n/g, "\r\n");
@@ -198,7 +191,7 @@ export default function Home() {
     form.description ? `Опис: ${form.description}` : null
   ].filter(Boolean).join("\n");
 
-  // ——— Стили iOS для светлой/тёмной темы ———
+  // ——— Темы ———
   const theme = {
     bg: isDark ? "#17181c" : "#F2F2F7",
     card: isDark ? "rgba(30,32,38,0.98)" : "rgba(255,255,255,0.95)",
@@ -219,7 +212,7 @@ export default function Home() {
     textareaText: isDark ? "#f7f7fb" : "#1C1C1E"
   };
 
-  // ——— iOS-переключатель темы (большой) ———
+  // ——— iOS Switch (большой) ———
   const Switch = (
     <button
       onClick={() => setIsDark(d => !d)}
@@ -276,6 +269,18 @@ export default function Home() {
     </button>
   );
 
+  // ——— Возврат JSX ———
+  return (
+    <div
+      style={{
+        fontFamily: systemFont,
+        background: theme.bg,
+        minHeight: "100vh",
+        padding: "1rem",
+        transition: "background 0.24s",
+        boxSizing: "border-box"
+      }}
+    >
       {/* ——— Шапка с названием и переключателем темы ——— */}
       <div style={{
         ...cardStyle(theme),
@@ -735,7 +740,7 @@ export default function Home() {
   );
 }
 
-// ——— Стили как функции ———
+// ——— Стили-функции ———
 function cardStyle(theme) {
   return {
     backgroundColor: theme.card,
