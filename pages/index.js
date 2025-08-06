@@ -202,74 +202,106 @@ const saveAmmo = (ammoObj) => {
   localStorage.setItem("akviz_ammo", JSON.stringify(ammoObj));
 };
 
-  // ——— Генерация текста отчёта ———
 const generateReportText = () => {
-  // Цели, при которых отображаем "Кількість"
+  const {
+    sector, subdivision, position, location, time,
+    selectedGoals, side, targetNumber, noIssue, name,
+    quantity, azimuth, course, distance, height,
+    detectionMethods, result, description, ammo
+  } = form;
+
+  // ——— Генерация строки расхода БК ———
+  const ammoString = (ammo && Object.keys(ammo).length)
+    ? 'Витрата БК: ' +
+      Object.entries(ammo)
+        .filter(([_, qty]) => qty && Number(qty) > 0)
+        .map(([name, qty]) => `${name} - ${qty} шт.`)
+        .join(', ')
+    : '';
+
+  // ——— Если результат "Обстріляно" или "Уражено" ———
+  if (result === "Обстріляно" || result === "Уражено") {
+    return [
+      // 1-я строка: сектор, время, номер цели, подразделение, позиция
+      [
+        sector ? `Сектор «${sector}»` : null,
+        time ? time : null,
+        targetNumber ? `- №${targetNumber}` : null,
+        subdivision ? `- ${subdivision}` : null,
+        position ? `(${position})` : null
+      ].filter(Boolean).join(", "),
+      // 2-я строка: район
+      location ? `в районі ${location}` : null,
+      // 3-я строка: используемое оружие и параметры (если есть)
+      (ammo && Object.keys(ammo).length) ?
+        `з ${Object.keys(ammo).join(", ")}${[height, distance, azimuth, course].some(x => x) ? " (" : ""}${[
+          height ? `H-${height}` : null,
+          distance ? `D-${distance}` : null,
+          azimuth ? `A-${azimuth}` : null,
+          course ? `K-${course}` : null
+        ].filter(Boolean).join(", ")}${[height, distance, azimuth, course].some(x => x) ? ")" : ""}` : null,
+      // 4-я строка: факт обстрела, цель, имя БПЛА
+      [
+        result,
+        selectedGoals.length ? selectedGoals.join(", ") : null,
+        name ? name : null
+      ].filter(Boolean).join(" ") + ".",
+      // 5-я строка: Витрата БК (если есть)
+      ammoString
+    ].filter(Boolean).join("\n");
+  }
+
+  // ——— Для всех остальных случаев — обычный развернутый отчёт ———
   const allowedGoals = [
-    "БПЛА",
-    "Вибух",
-    "КР",
-    "Гелікоптер",
-    "Літак Малий",
-    "Літак Великий",
-    "Квадрокоптер",
-    "Зонд"
+    "БПЛА", "Вибух", "КР", "Гелікоптер",
+    "Літак Малий", "Літак Великий", "Квадрокоптер", "Зонд"
   ];
 
-  // Цели для отчёта (учитываем название БПЛА)
-  const goalsForReport = form.selectedGoals.map(goal => {
-    if (goal === "БПЛА" && form.name) {
-      return `БПЛА (${form.name})`;
+  const goalsForReport = selectedGoals.map(goal => {
+    if (goal === "БПЛА" && name) {
+      return `БПЛА (${name})`;
     }
     return goal;
   });
 
-  // Проверка: выбрана ли хотя бы одна разрешённая цель
-  const hasAllowedGoal = form.selectedGoals.some(goal =>
+  const hasAllowedGoal = selectedGoals.some(goal =>
     allowedGoals.includes(goal)
   );
 
-  // Сборка отчёта
   return [
     // Место, подразделение, позиция (если есть)
-    form.sector || form.subdivision || form.position
-      ? `П: ${[form.sector, form.subdivision, form.position].filter(Boolean).join(", ")}`
+    sector || subdivision || position
+      ? `П: ${[sector, subdivision, position].filter(Boolean).join(", ")}`
       : null,
     // Ціль (с учетом side, номера цели и "Без видачі")
     `Ціль: ${[
       ...goalsForReport,
-      form.side,
-      form.noIssue ? "Без видачі" : (form.targetNumber ? `по цілі ${form.targetNumber}` : "")
+      side,
+      noIssue ? "Без видачі" : (targetNumber ? `по цілі ${targetNumber}` : "")
     ].filter(Boolean).join(", ")}`,
     // Висота
-    form.height ? `Висота: ${form.height} м` : null,
+    height ? `Висота: ${height} м` : null,
     // Відстань
-    form.distance ? `Відстань: ${form.distance} м` : null,
+    distance ? `Відстань: ${distance} м` : null,
     // Кількість — только если выбрана разрешённая цель
-    hasAllowedGoal && form.quantity ? `Кількість: ${form.quantity} од.` : null,
+    hasAllowedGoal && quantity ? `Кількість: ${quantity} од.` : null,
     // Азимут
-    form.azimuth ? `А: ${form.azimuth}°` : null,
+    azimuth ? `А: ${azimuth}°` : null,
     // Курс
-    form.course ? `К: ${form.course}°` : null,
+    course ? `К: ${course}°` : null,
     // Локація
-    form.location ? `НП: ${form.location}` : null,
+    location ? `НП: ${location}` : null,
     // Час
-    form.time ? `Ч: ${form.time}` : null,
+    time ? `Ч: ${time}` : null,
     // Вияв
-    form.detectionMethods.length ? `Вияв: ${form.detectionMethods.join(", ")}` : null,
+    detectionMethods.length ? `Вияв: ${detectionMethods.join(", ")}` : null,
     // Результат (всегда выводим, по умолчанию "Виявлено")
-    `ПП: ${form.result === null ? "Виявлено" : form.result}`,
-    // ——— Добавлено: Витрата БК (только если результат обстріляно/уражено и есть расход) ———
-    (form.result && (form.result === "Обстріляно" || form.result === "Уражено") && form.ammo && Object.keys(form.ammo).length
-      ? "Витрата БК: " +
-        Object.entries(form.ammo)
-          .filter(([_, qty]) => qty && Number(qty) > 0)
-          .map(([name, qty]) => `${name} - ${qty} шт.`).join(", ")
-      : null),
+    `ПП: ${result === null ? "Виявлено" : result}`,
     // Опис (если есть)
-    form.description ? `Опис: ${form.description}` : null
+    description ? `Опис: ${description}` : null
   ].filter(Boolean).join("\n");
 };
+
 
 
 
