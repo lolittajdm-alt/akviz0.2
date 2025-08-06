@@ -171,25 +171,38 @@ export default function Home() {
 
   // ——— Генерация текста отчёта ———
   const generateReportText = () => [
-    form.sector || form.subdivision || form.position
-      ? `П: ${[form.sector, form.subdivision, form.position].filter(Boolean).join(", ")}`
-      : null,
-    `Ціль: ${[
-      ...form.selectedGoals,
-      form.side,
-      form.noIssue ? "Без видачі" : (form.targetNumber ? `по цілі ${form.targetNumber}` : "")
-    ].filter(Boolean).join(", ")}`,
-    form.height ? `Висота: ${form.height} м` : null,
-    form.distance ? `Відстань: ${form.distance} м` : null,
-    form.quantity ? `Кількість: ${form.quantity} од.` : null,
-    form.azimuth ? `А: ${form.azimuth}°` : null,
-    form.course ? `К: ${form.course}°` : null,
-    form.location ? `НП: ${form.location}` : null,
-    form.time ? `Ч: ${form.time}` : null,
-    form.detectionMethods.length ? `Вияв: ${form.detectionMethods.join(", ")}` : null,
-    form.result ? `ПП: ${form.result}` : null,
-    form.description ? `Опис: ${form.description}` : null
-  ].filter(Boolean).join("\n");
+  // Блок с местоположением
+  form.sector || form.subdivision || form.position
+    ? `П: ${[form.sector, form.subdivision, form.position].filter(Boolean).join(", ")}`
+    : null,
+  // Цель, сторона, номер и т.д.
+  `Ціль: ${[
+    ...form.selectedGoals,
+    form.side,
+    form.noIssue ? "Без видачі" : (form.targetNumber ? `по цілі ${form.targetNumber}` : "")
+  ].filter(Boolean).join(", ")}`,
+  // Висота
+  form.height ? `Висота: ${form.height} м` : null,
+  // Відстань
+  form.distance ? `Відстань: ${form.distance} м` : null,
+  // Кількість
+  form.quantity ? `Кількість: ${form.quantity} од.` : null,
+  // Азимут
+  form.azimuth ? `А: ${form.azimuth}°` : null,
+  // Курс
+  form.course ? `К: ${form.course}°` : null,
+  // Локація
+  form.location ? `НП: ${form.location}` : null,
+  // Час
+  form.time ? `Ч: ${form.time}` : null,
+  // Вияв
+  form.detectionMethods.length ? `Вияв: ${form.detectionMethods.join(", ")}` : null,
+  // ======== Всегда отображать Результат ==========
+  `Результат: ${form.result === null ? "Виявлено" : form.result}`,
+  // Опис
+  form.description ? `Опис: ${form.description}` : null
+].filter(Boolean).join("\n");
+
 
   // ——— Темы ———
   const theme = {
