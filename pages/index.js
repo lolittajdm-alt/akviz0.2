@@ -210,21 +210,19 @@ const generateReportText = () => {
     detectionMethods, result, description, ammo
   } = form;
 
-  // ——— Вспомогательная функция для калибра ———
+  // Функция: только калибр
   function extractCaliber(name) {
-    // Например: "АКМ - 7.62х39мм" => "7.62х39мм"
     const parts = name.split("-");
     if (parts.length > 1) return parts[parts.length - 1].trim();
     return name.trim();
   }
 
-  // ——— Вспомогательная функция для названия без калибра ———
+  // Функция: только полное название (без калибра)
   function extractWeaponName(name) {
-    // Например: "АКМ - 7.62х39мм" => "АКМ"
     return name.split("-")[0].trim();
   }
 
-  // ——— Генерация строки расхода БК (только калибр) ———
+  // Генерация строки расхода БК (только калибр)
   const ammoString = (ammo && Object.keys(ammo).length)
     ? 'Витрата БК: ' +
       Object.entries(ammo)
@@ -233,9 +231,9 @@ const generateReportText = () => {
         .join(', ')
     : '';
 
-  // ——— Если результат "Обстріляно" или "Уражено" ———
+  // ——— Для "Обстріляно" / "Уражено" ———
   if (result === "Обстріляно" || result === "Уражено") {
-    // 1-я строка:  «...», 19:11 - №... - ... (....)
+    // Слово "Сектор" с названием только один раз в начале!
     let firstLineArr = [
       sector ? `Сектор «${sector}»` : null,
       time ? time : null,
@@ -246,33 +244,30 @@ const generateReportText = () => {
     let firstLine = firstLineArr.filter(Boolean).join(", ");
     firstLine = firstLine.replace(/, -/g, "-").replace(/, \(/g, " (");
 
-    // 2-я строка: район
     const locationLine = location ? `в районі ${location}` : null;
 
-    // 3-я строка: используемое оружие (без калибра) + параметры
+    // Оружие: только полные названия без калибра
     const usedWeapons = (ammo && Object.keys(ammo).length)
-      ? Object.keys(ammo).map(extractWeaponName).join(", ")
+      ? Object.keys(ammo).map(name => extractWeaponName(name)).join(", ")
       : null;
+
     const paramArr = [
       height ? `H-${height}` : null,
       distance ? `D-${distance}` : null,
       azimuth ? `A-${azimuth}` : null,
       course ? `K-${course}` : null
     ].filter(Boolean);
+
     let thirdLine = null;
     if (usedWeapons) {
       thirdLine = `з ${usedWeapons}${paramArr.length ? " (" + paramArr.join(", ") + ")" : ""}`;
     }
 
-    // 4-я строка: результат, цель, имя БПЛА
     let fourthLine = [
       result,
       selectedGoals.length ? selectedGoals.join(", ") : null,
       name ? name : null
     ].filter(Boolean).join(" ") + ".";
-
-    // 5-я строка: Витрата БК (только калибр)
-    // (ammoString)
 
     return [
       firstLine,
@@ -283,7 +278,7 @@ const generateReportText = () => {
     ].filter(Boolean).join("\n");
   }
 
-  // ——— Для всех остальных случаев — обычный развернутый отчёт ———
+  // ——— Для остальных случаев ———
   const allowedGoals = [
     "БПЛА", "Вибух", "КР", "Гелікоптер",
     "Літак Малий", "Літак Великий", "Квадрокоптер", "Зонд"
@@ -301,35 +296,23 @@ const generateReportText = () => {
   );
 
   return [
-    // Место, подразделение, позиция (если есть)
     sector || subdivision || position
       ? `П: ${[sector, subdivision, position].filter(Boolean).join(", ")}`
       : null,
-    // Ціль (с учетом side, номера цели и "Без видачі")
     `Ціль: ${[
       ...goalsForReport,
       side,
       noIssue ? "Без видачі" : (targetNumber ? `по цілі ${targetNumber}` : "")
     ].filter(Boolean).join(", ")}`,
-    // Висота
     height ? `Висота: ${height} м` : null,
-    // Відстань
     distance ? `Відстань: ${distance} м` : null,
-    // Кількість — только если выбрана разрешённая цель
     hasAllowedGoal && quantity ? `Кількість: ${quantity} од.` : null,
-    // Азимут
     azimuth ? `А: ${azimuth}°` : null,
-    // Курс
     course ? `К: ${course}°` : null,
-    // Локація
     location ? `НП: ${location}` : null,
-    // Час
     time ? `Ч: ${time}` : null,
-    // Вияв
     detectionMethods.length ? `Вияв: ${detectionMethods.join(", ")}` : null,
-    // Результат (всегда выводим, по умолчанию "Виявлено")
     `ПП: ${result === null ? "Виявлено" : result}`,
-    // Опис (если есть)
     description ? `Опис: ${description}` : null
   ].filter(Boolean).join("\n");
 };
