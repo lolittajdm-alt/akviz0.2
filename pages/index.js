@@ -699,7 +699,7 @@ export default function Home() {
 
       {/* ——— Відстань и Висота ——— */}
       <div style={{
-        border: `1px solid ${theme.inputBorder}`,
+        border: "none",
         borderRadius: "16px",
         padding: "1rem",
         marginBottom: "1rem",
