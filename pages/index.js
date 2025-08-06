@@ -220,16 +220,16 @@ export default function Home() {
     textareaText: isDark ? "#f7f7fb" : "#1C1C1E"
   };
 
-  // ——— iOS-переключатель темы ———
+    // ——— iOS-переключатель темы (большой) ———
   const Switch = (
     <button
       onClick={() => setIsDark(d => !d)}
       aria-label="Перемкнути тему"
       style={{
         position: "relative",
-        width: 52,
-        height: 32,
-        borderRadius: 16,
+        width: 68,
+        height: 42,
+        borderRadius: 21,
         border: "none",
         outline: "none",
         background: isDark ? "#23242a" : "#e5e5ea",
@@ -241,23 +241,23 @@ export default function Home() {
       <span
         style={{
           display: "block",
-          width: 24,
-          height: 24,
+          width: 32,
+          height: 32,
           borderRadius: "50%",
           background: isDark ? "#0A84FF" : "#fff",
-          boxShadow: "0 1px 4px rgba(0,0,0,0.18)",
+          boxShadow: "0 2px 8px rgba(0,0,0,0.16)",
           position: "absolute",
-          top: 4,
-          left: isDark ? 24 : 4,
+          top: 5,
+          left: isDark ? 31 : 5,
           transition: "left .22s cubic-bezier(.47,1.64,.41,.8), background .2s",
         }}
       />
       <span
         style={{
           position: "absolute",
-          left: 7,
-          top: 7,
-          fontSize: 16,
+          left: 10,
+          top: 10,
+          fontSize: 20,
           color: isDark ? "#fff" : "#b7b7b7",
           opacity: isDark ? 0 : 1,
           transition: "opacity .2s"
@@ -266,9 +266,9 @@ export default function Home() {
       <span
         style={{
           position: "absolute",
-          right: 7,
-          top: 7,
-          fontSize: 16,
+          right: 10,
+          top: 10,
+          fontSize: 20,
           color: isDark ? "#ffe200" : "#b7b7b7",
           opacity: isDark ? 1 : 0,
           transition: "opacity .2s"
@@ -276,17 +276,7 @@ export default function Home() {
       >☀️</span>
     </button>
   );
-  return (
-    <div
-      style={{
-        fontFamily: systemFont,
-        background: theme.bg,
-        minHeight: "100vh",
-        padding: "1rem",
-        transition: "background 0.24s",
-        boxSizing: "border-box"
-      }}
-    >
+
       {/* ——— Шапка с названием и переключателем темы ——— */}
       <div style={{
         ...cardStyle(theme),
