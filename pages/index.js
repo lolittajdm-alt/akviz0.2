@@ -232,7 +232,9 @@ export default function Home() {
   >
     <span
       style={{
-        display: "block",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
         width: 32,
         height: 32,
         borderRadius: "50%",
@@ -244,35 +246,21 @@ export default function Home() {
         transform: "translateY(-50%)",
         transition: "left .22s cubic-bezier(.47,1.64,.41,.8), background .2s"
       }}
-    />
-    {/* Луна (слева) */}
-    <span
-      style={{
-        position: "absolute",
-        left: 12,
-        top: "50%",
-        transform: "translateY(-50%)",
-        fontSize: 22,
-        color: isDark ? "#fff" : "#b7b7b7",
-        opacity: isDark ? 0 : 1,
-        transition: "opacity .2s"
-      }}
-    >🌙</span>
-    {/* Солнце (справа) */}
-    <span
-      style={{
-        position: "absolute",
-        right: 12,
-        top: "50%",
-        transform: "translateY(-50%)",
-        fontSize: 22,
-        color: isDark ? "#ffe200" : "#b7b7b7",
-        opacity: isDark ? 1 : 0,
-        transition: "opacity .2s"
-      }}
-    >☀️</span>
+    >
+      <span
+        style={{
+          fontSize: 22,
+          color: isDark ? "#ffe200" : "#b7b7b7",
+          opacity: 1,
+          transition: "color .2s"
+        }}
+      >
+        {isDark ? "☀️" : "🌙"}
+      </span>
+    </span>
   </button>
 );
+
 
 
   // ——— Возврат JSX ———
