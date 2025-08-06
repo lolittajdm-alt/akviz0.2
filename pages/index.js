@@ -449,29 +449,59 @@ export default function Home() {
       </div>
 
       {/* ——— Номер цілі ——— */}
-     <input
-  type="text"
-  name="targetNumber"
-  value={form.targetNumber}
-  onChange={onFieldNumeric("targetNumber", 999)}
-  placeholder="по цілі"
-  inputMode="numeric"
-  pattern="\d*"
-  style={{
-    ...inputStyle(theme),
-    textAlign: "center",
-    flex: 1,
-    marginBottom: 0,
-    height: 44,
-    lineHeight: "44px",
-    padding: "0 1.2rem",
-    border: `1px solid ${theme.inputBorder}`,
-    fontSize: "1rem",
-    boxShadow: "0 2px 8px rgba(0,0,0,0.14)",
-    backgroundColor: theme.inputBg,
-    verticalAlign: "middle",
-  }}
-/>
+     <div style={cardStyle(theme)}>
+  <label style={labelStyle(theme)}>Номер цілі</label>
+  <div style={{ display: "flex", gap: "0.6rem", alignItems: "center", marginBottom: 0 }}>
+    {!form.noIssue && (
+      <input
+        type="text"
+        name="targetNumber"
+        value={form.targetNumber}
+        onChange={onFieldNumeric("targetNumber", 999)}
+        placeholder="по цілі"
+        inputMode="numeric"
+        pattern="\d*"
+        style={{
+          ...inputStyle(theme),
+          textAlign: "center",
+          flex: 1,
+          marginBottom: 0,
+          height: 44,
+          lineHeight: "44px",
+          padding: "0 1.2rem",
+          border: `1px solid ${theme.inputBorder}`,
+          fontSize: "1rem",
+          boxShadow: "0 2px 8px rgba(0,0,0,0.14)",
+          backgroundColor: theme.inputBg,
+          verticalAlign: "middle",
+        }}
+      />
+    )}
+    <button
+      onClick={() =>
+        setForm(f => ({
+          ...f,
+          noIssue: !f.noIssue,
+          targetNumber: "",
+        }))
+      }
+      style={{
+        ...buttonStyle(theme),
+        backgroundColor: form.noIssue ? theme.danger : theme.secondary,
+        color: form.noIssue ? "#fff" : theme.label,
+        height: 44,
+        minWidth: 128,
+        marginBottom: 0,
+        alignSelf: "center",
+        padding: "0 1.2rem",
+        fontSize: "1rem"
+      }}
+    >
+      {form.noIssue ? "Видати номер" : "Без видачі"}
+    </button>
+  </div>
+</div>
+
 
 
 
