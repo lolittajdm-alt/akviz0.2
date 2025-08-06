@@ -177,10 +177,10 @@ export default function Home() {
     : null,
   // Цель, сторона, номер и т.д.
   `Ціль: ${[
-    ...form.selectedGoals,
-    form.side,
-    form.noIssue ? "Без видачі" : (form.targetNumber ? `по цілі ${form.targetNumber}` : "")
-  ].filter(Boolean).join(", ")}`,
+      ...goals,
+      form.side,
+      form.noIssue ? "Без видачі" : (form.targetNumber ? `по цілі ${form.targetNumber}` : "")
+    ].filter(Boolean).join(", ")}`,
   // Висота
   form.height ? `Висота: ${form.height} м` : null,
   // Відстань
