@@ -214,60 +214,66 @@ export default function Home() {
 
   // ——— iOS Switch (большой) ———
   const Switch = (
-    <button
-      onClick={() => setIsDark(d => !d)}
-      aria-label="Перемкнути тему"
+  <button
+    onClick={() => setIsDark(d => !d)}
+    aria-label="Перемкнути тему"
+    style={{
+      position: "relative",
+      width: 68,
+      height: 42,
+      borderRadius: 21,
+      border: "none",
+      outline: "none",
+      background: isDark ? "#23242a" : "#e5e5ea",
+      boxShadow: theme.shadow,
+      cursor: "pointer",
+      transition: "background .2s"
+    }}
+  >
+    <span
       style={{
-        position: "relative",
-        width: 68,
-        height: 42,
-        borderRadius: 21,
-        border: "none",
-        outline: "none",
-        background: isDark ? "#23242a" : "#e5e5ea",
-        boxShadow: theme.shadow,
-        cursor: "pointer",
-        transition: "background .2s"
+        display: "block",
+        width: 32,
+        height: 32,
+        borderRadius: "50%",
+        background: isDark ? "#0A84FF" : "#fff",
+        boxShadow: "0 2px 8px rgba(0,0,0,0.16)",
+        position: "absolute",
+        top: "50%",
+        left: isDark ? 31 : 5,
+        transform: "translateY(-50%)",
+        transition: "left .22s cubic-bezier(.47,1.64,.41,.8), background .2s"
       }}
-    >
-      <span
-        style={{
-          display: "block",
-          width: 32,
-          height: 32,
-          borderRadius: "50%",
-          background: isDark ? "#0A84FF" : "#fff",
-          boxShadow: "0 2px 8px rgba(0,0,0,0.16)",
-          position: "absolute",
-          top: 5,
-          left: isDark ? 31 : 5,
-          transition: "left .22s cubic-bezier(.47,1.64,.41,.8), background .2s",
-        }}
-      />
-      <span
-        style={{
-          position: "absolute",
-          left: 10,
-          top: 10,
-          fontSize: 20,
-          color: isDark ? "#fff" : "#b7b7b7",
-          opacity: isDark ? 0 : 1,
-          transition: "opacity .2s"
-        }}
-      >🌙</span>
-      <span
-        style={{
-          position: "absolute",
-          right: 10,
-          top: 10,
-          fontSize: 20,
-          color: isDark ? "#ffe200" : "#b7b7b7",
-          opacity: isDark ? 1 : 0,
-          transition: "opacity .2s"
-        }}
-      >☀️</span>
-    </button>
-  );
+    />
+    {/* Луна (слева) */}
+    <span
+      style={{
+        position: "absolute",
+        left: 12,
+        top: "50%",
+        transform: "translateY(-50%)",
+        fontSize: 22,
+        color: isDark ? "#fff" : "#b7b7b7",
+        opacity: isDark ? 0 : 1,
+        transition: "opacity .2s"
+      }}
+    >🌙</span>
+    {/* Солнце (справа) */}
+    <span
+      style={{
+        position: "absolute",
+        right: 12,
+        top: "50%",
+        transform: "translateY(-50%)",
+        fontSize: 22,
+        color: isDark ? "#ffe200" : "#b7b7b7",
+        opacity: isDark ? 1 : 0,
+        transition: "opacity .2s"
+      }}
+    >☀️</span>
+  </button>
+);
+
 
   // ——— Возврат JSX ———
   return (
