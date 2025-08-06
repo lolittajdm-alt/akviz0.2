@@ -171,13 +171,30 @@ export default function Home() {
 
   // ——— Генерация текста отчёта ———
   const generateReportText = () => {
-  // Формируем список целей с учетом назвы БПЛА
+  // Цели, при которых отображаем "Кількість"
+  const allowedGoals = [
+    "БПЛА",
+    "Вибух",
+    "КР",
+    "Гелікоптер",
+    "Літак Малий",
+    "Літак Великий",
+    "Квадрокоптер",
+    "Зонд"
+  ];
+
+  // Цели для отчёта (учитываем название БПЛА)
   const goalsForReport = form.selectedGoals.map(goal => {
     if (goal === "БПЛА" && form.name) {
       return `БПЛА (${form.name})`;
     }
     return goal;
   });
+
+  // Проверка: выбрана ли хотя бы одна разрешённая цель
+  const hasAllowedGoal = form.selectedGoals.some(goal =>
+    allowedGoals.includes(goal)
+  );
 
   return [
     // Место, подразделение, позиция (если есть)
@@ -194,8 +211,8 @@ export default function Home() {
     form.height ? `Висота: ${form.height} м` : null,
     // Відстань
     form.distance ? `Відстань: ${form.distance} м` : null,
-    // Кількість
-    form.quantity ? `Кількість: ${form.quantity} од.` : null,
+    // Кількість — только если выбрана разрешённая цель
+    hasAllowedGoal && form.quantity ? `Кількість: ${form.quantity} од.` : null,
     // Азимут
     form.azimuth ? `А: ${form.azimuth}°` : null,
     // Курс
@@ -207,11 +224,12 @@ export default function Home() {
     // Вияв
     form.detectionMethods.length ? `Вияв: ${form.detectionMethods.join(", ")}` : null,
     // Результат (всегда выводим, по умолчанию "Виявлено")
-    `Результат: ${form.result === null ? "Виявлено" : form.result}`,
+    `ПП: ${form.result === null ? "Виявлено" : form.result}`,
     // Опис (если есть)
     form.description ? `Опис: ${form.description}` : null
   ].filter(Boolean).join("\n");
 };
+
 
 
 
@@ -469,7 +487,7 @@ export default function Home() {
         type="text"
         name="targetNumber"
         value={form.targetNumber}
-        onChange={onFieldNumeric("targetNumber", 999)}
+        onChange={onFieldNumeric("targetNumber", 9999)}
         placeholder="по цілі"
         inputMode="numeric"
         pattern="\d*"
