@@ -572,14 +572,16 @@ export default function Home() {
     marginBottom: 0
   }}>
     <input
-      type="number"
+      type="text" // ← чтобы не было стрелочек, только цифры!
       value={form.quantity}
       onChange={(e) =>
         setForm((f) => ({
           ...f,
-          quantity: Math.max(1, +e.target.value),
+          quantity: Math.max(1, +e.target.value.replace(/\D/g, "")),
         }))
       }
+      inputMode="numeric"
+      pattern="\d*"
       style={{
         ...inputStyle(theme),
         textAlign: "center",
@@ -630,6 +632,7 @@ export default function Home() {
     </button>
   </div>
 </div>
+
 
 
       {/* ——— Азимут и Курс ——— */}
