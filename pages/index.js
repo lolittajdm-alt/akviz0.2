@@ -3,26 +3,23 @@ import { useState, useEffect } from "react";
 const systemFont = `-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif`;
 
 export default function Home() {
-  // ——— Тема ———
-const [isDark, setIsDark] = useState(false);
+  // ——— Тема с сохранением ———
+  const [isDark, setIsDark] = useState(false);
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const themeLS = localStorage.getItem("theme");
+      if (themeLS === "dark") setIsDark(true);
+      if (themeLS === "light") setIsDark(false);
+    }
+  }, []);
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("theme", isDark ? "dark" : "light");
+      document.body.style.background = isDark ? "#17181c" : "#F2F2F7";
+    }
+  }, [isDark]);
 
-useEffect(() => {
-  if (typeof window !== "undefined") {
-    const themeLS = localStorage.getItem("theme");
-    if (themeLS === "dark") setIsDark(true);
-    if (themeLS === "light") setIsDark(false);
-  }
-}, []);
-
-useEffect(() => {
-  if (typeof window !== "undefined") {
-    localStorage.setItem("theme", isDark ? "dark" : "light");
-    document.body.style.background = isDark ? "#17181c" : "#F2F2F7";
-  }
-}, [isDark]);
-
-
-  // ——— Стейты формы ———
+  // ——— Состояния формы ———
   const [form, setForm] = useState({
     sector: "",
     subdivision: "",
@@ -80,9 +77,6 @@ useEffect(() => {
         const v = localStorage.getItem(`report_${key}`);
         if (v !== null) setForm(f => ({ ...f, [key]: v }));
       });
-      const themeLS = localStorage.getItem("theme");
-      if (themeLS === "dark") setIsDark(true);
-      if (themeLS === "light") setIsDark(false);
     }
   }, []);
 
@@ -199,25 +193,24 @@ useEffect(() => {
 
   // ——— Темы ———
   const theme = {
-  bg: isDark ? "#17181c" : "#F2F2F7",
-  card: isDark ? "rgba(30,32,38,0.98)" : "#fff",
-  label: isDark ? "#e3e3ea" : "#1C1C1E",
-  inputBg: isDark ? "#23242a" : "#fff",
-  inputText: isDark ? "#f7f7fb" : "#1C1C1E",
-  inputBorder: isDark ? "#36374a" : "#cccccc",
-  button: isDark ? "#272a34" : "#0A84FF",
-  buttonText: isDark ? "#e5e6ea" : "#fff",
-  secondary: isDark ? "#27272b" : "#EBEBF5",
-  danger: "#FF375F",
-  success: "#32D74B",
-  shadow: isDark
-    ? "0 2px 12px rgba(0,0,0,0.38)"
-    : "0 4px 16px rgba(0,0,0,0.10)",
-  border: isDark ? "#23242a" : "#ededed",
-  textareaBg: isDark ? "#23242a" : "#fff",
-  textareaText: isDark ? "#f7f7fb" : "#1C1C1E"
-};
-
+    bg: isDark ? "#17181c" : "#F2F2F7",
+    card: isDark ? "rgba(30,32,38,0.98)" : "#fff",
+    label: isDark ? "#e3e3ea" : "#1C1C1E",
+    inputBg: isDark ? "#23242a" : "#fff",
+    inputText: isDark ? "#f7f7fb" : "#1C1C1E",
+    inputBorder: isDark ? "#36374a" : "#cccccc",
+    button: isDark ? "#272a34" : "#0A84FF",
+    buttonText: isDark ? "#e5e6ea" : "#fff",
+    secondary: isDark ? "#27272b" : "#EBEBF5",
+    danger: "#FF375F",
+    success: "#32D74B",
+    shadow: isDark
+      ? "0 2px 12px rgba(0,0,0,0.38)"
+      : "0 4px 16px rgba(0,0,0,0.10)",
+    border: isDark ? "#23242a" : "#ededed",
+    textareaBg: isDark ? "#23242a" : "#fff",
+    textareaText: isDark ? "#f7f7fb" : "#1C1C1E"
+  };
 
   // ——— iOS Switch (большой) ———
   const Switch = (
