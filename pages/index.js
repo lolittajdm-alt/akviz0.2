@@ -33,19 +33,17 @@ export default function Home() {
 
   // ——— Эффекты ———
   useEffect(() => {
-    console.log('theme init');
-    if (typeof window !== "undefined") {
-      const saved = localStorage.getItem("theme");
-      if (saved) setIsDarkMode(saved === "dark");
-      else if (window.matchMedia("(prefers-color-scheme: dark)").matches) setIsDarkMode(true);
-    }
-  }, []);
-  useEffect(() => {
     console.log('theme change', isDarkMode);
     if (typeof window !== "undefined") {
       localStorage.setItem("theme", isDarkMode ? "dark" : "light");
     }
   }, [isDarkMode]);
+
+  // Переключатель темы
+  const toggleTheme = () => {
+    console.log('toggleTheme', isDarkMode);
+    setIsDarkMode(v => !v);
+  };
 
   // Установка текущего времени
   const updateTime = () => {
