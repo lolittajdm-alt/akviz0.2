@@ -536,60 +536,39 @@ export default function Home() {
 
 
       {/* ——— Назва (БПЛА) ——— */}
-      {form.selectedGoals.includes("БПЛА") && (
-  <div style={{
-    ...cardStyle(theme),
-    padding: "1rem 0.7rem",
-    display: "flex",
-    flexDirection: "column"
-  }}>
-    <label style={{
-      ...labelStyle(theme),
-      marginLeft: "0.3rem",
-      marginBottom: "0.8rem",
-      fontSize: "1.07rem"
-    }}>Назва</label>
-    <div
-      style={{
-        display: "grid",
-        gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
-        gap: "0.65rem",
-        width: "100%",
-        alignItems: "stretch"
-      }}
-    >
       {namesList.map((n) => (
-        <button
-          key={n}
-          onClick={() => selectName(n)}
-          style={{
-            background: form.name === n ? theme.button : theme.secondary,
-            color: form.name === n ? "#fff" : theme.label,
-            fontWeight: form.name === n ? 600 : 500,
-            border: "none",
-            borderRadius: "14px",
-            boxShadow: form.name === n
-              ? "0 2px 8px rgba(10,132,255,0.14)"
-              : theme.shadow,
-            padding: "0.62rem 0.7rem",
-            marginBottom: "0.02rem",
-            fontSize: "1.01rem",
-            transition: "background .18s, color .18s, box-shadow .18s",
-            cursor: "pointer",
-            minWidth: 0,
-            width: "100%",
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis"
-          }}
-          title={n}
-        >
-          {n}
-        </button>
-      ))}
-    </div>
-  </div>
-)}
+  <button
+    key={n}
+    onClick={() => selectName(n)}
+    style={{
+      background: form.name === n
+        ? (isDark ? theme.success : theme.button) // В темной теме зелёная, в светлой синяя
+        : theme.secondary,
+      color: form.name === n ? "#fff" : theme.label,
+      fontWeight: form.name === n ? 600 : 500,
+      border: "none",
+      borderRadius: "14px",
+      boxShadow: form.name === n
+        ? (isDark
+            ? "0 2px 8px rgba(50,215,75,0.14)"
+            : "0 2px 8px rgba(10,132,255,0.14)")
+        : theme.shadow,
+      padding: "0.62rem 0.7rem",
+      marginBottom: "0.02rem",
+      fontSize: "1.01rem",
+      transition: "background .18s, color .18s, box-shadow .18s",
+      cursor: "pointer",
+      minWidth: 0,
+      width: "100%",
+      whiteSpace: "nowrap",
+      overflow: "hidden",
+      textOverflow: "ellipsis"
+    }}
+    title={n}
+  >
+    {n}
+  </button>
+))}
 
 
       {/* ——— Кількість ——— */}
