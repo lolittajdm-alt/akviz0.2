@@ -380,16 +380,19 @@ export default function Home() {
     marginBottom: "0.8rem",
     fontSize: "1.07rem"
   }}>Ціль</label>
+
+  {/* Основные цели без Зонд и Інше */}
   <div
     style={{
       display: "grid",
       gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
       gap: "0.65rem",
       width: "100%",
-      alignItems: "stretch"
+      alignItems: "stretch",
+      marginBottom: "0.65rem"
     }}
   >
-    {goalsList.map((goal) => (
+    {goalsList.filter(goal => goal !== "Зонд" && goal !== "Інше").map((goal) => (
       <button
         key={goal}
         onClick={() => toggleGoal(goal)}
@@ -401,13 +404,12 @@ export default function Home() {
             ? "#fff"
             : theme.label,
           fontWeight: form.selectedGoals.includes(goal) ? 600 : 500,
-          border: "none", // <--- Убрал ободок
+          border: "none",
           borderRadius: "14px",
           boxShadow: form.selectedGoals.includes(goal)
             ? "0 2px 8px rgba(50,215,75,0.14)"
             : theme.shadow,
           padding: "0.62rem 0.7rem",
-          marginBottom: "0.02rem",
           fontSize: "1.01rem",
           transition: "background .18s, color .18s, box-shadow .18s",
           cursor: "pointer",
@@ -415,13 +417,76 @@ export default function Home() {
           width: "100%",
           whiteSpace: "nowrap",
           overflow: "hidden",
-          textOverflow: "ellipsis",
+          textOverflow: "ellipsis"
         }}
         title={goal}
       >
         {goal}
       </button>
     ))}
+  </div>
+
+  {/* Зонд и Інше на отдельной строке */}
+  <div style={{ display: "grid", gridTemplateColumns: "min-content 1fr", gap: "0.65rem" }}>
+    {/* Зонд обычная кнопка */}
+    <button
+      onClick={() => toggleGoal("Зонд")}
+      style={{
+        background: form.selectedGoals.includes("Зонд")
+          ? theme.success
+          : theme.secondary,
+        color: form.selectedGoals.includes("Зонд")
+          ? "#fff"
+          : theme.label,
+        fontWeight: form.selectedGoals.includes("Зонд") ? 600 : 500,
+        border: "none",
+        borderRadius: "14px",
+        boxShadow: form.selectedGoals.includes("Зонд")
+          ? "0 2px 8px rgba(50,215,75,0.14)"
+          : theme.shadow,
+        padding: "0.62rem 0.7rem",
+        fontSize: "1.01rem",
+        transition: "background .18s, color .18s, box-shadow .18s",
+        cursor: "pointer",
+        minWidth: 0,
+        whiteSpace: "nowrap",
+        overflow: "hidden",
+        textOverflow: "ellipsis"
+      }}
+      title="Зонд"
+    >
+      Зонд
+    </button>
+    {/* Інше занимает всё остальное */}
+    <button
+      onClick={() => toggleGoal("Інше")}
+      style={{
+        background: form.selectedGoals.includes("Інше")
+          ? theme.success
+          : theme.secondary,
+        color: form.selectedGoals.includes("Інше")
+          ? "#fff"
+          : theme.label,
+        fontWeight: form.selectedGoals.includes("Інше") ? 600 : 500,
+        border: "none",
+        borderRadius: "14px",
+        boxShadow: form.selectedGoals.includes("Інше")
+          ? "0 2px 8px rgba(50,215,75,0.14)"
+          : theme.shadow,
+        padding: "0.62rem 0.7rem",
+        fontSize: "1.01rem",
+        transition: "background .18s, color .18s, box-shadow .18s",
+        cursor: "pointer",
+        minWidth: 0,
+        width: "100%",
+        whiteSpace: "nowrap",
+        overflow: "hidden",
+        textOverflow: "ellipsis"
+      }}
+      title="Інше"
+    >
+      Інше
+    </button>
   </div>
 </div>
 
