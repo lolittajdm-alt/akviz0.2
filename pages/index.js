@@ -921,7 +921,7 @@ export default function Home() {
     width: "100%",
     alignItems: "stretch"
   }}>
-    {/* Виявлено — всегда активна если не выбран другой результат */}
+    {/* Виявлено — активна если не выбран другой результат */}
     <button
       onClick={() => setForm(f => ({ ...f, result: null }))}
       style={{
@@ -953,13 +953,13 @@ export default function Home() {
         key={r}
         onClick={() => setForm(f => ({ ...f, result: r }))}
         style={{
-          background: form.result === r ? theme.button : theme.secondary,
+          background: form.result === r ? theme.success : theme.secondary, // <-- всегда зеленый при выборе
           color: form.result === r ? "#fff" : theme.label,
           fontWeight: form.result === r ? 600 : 500,
           border: "none",
           borderRadius: "14px",
           boxShadow: form.result === r
-            ? "0 2px 8px rgba(10,132,255,0.14)"
+            ? "0 2px 8px rgba(50,215,75,0.14)"
             : theme.shadow,
           padding: "0.62rem 0.7rem",
           marginBottom: "0.02rem",
@@ -979,6 +979,7 @@ export default function Home() {
     ))}
   </div>
 </div>
+
 
 
       {/* ——— Опис ——— */}
