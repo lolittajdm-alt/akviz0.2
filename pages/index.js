@@ -210,14 +210,14 @@ const generateReportText = () => {
     detectionMethods, result, description, ammo
   } = form;
 
-  // Только калибр
+  // Функція: тільки калибр
   function extractCaliber(name) {
     const parts = name.split("-");
     if (parts.length > 1) return parts[parts.length - 1].trim();
     return name.trim();
   }
 
-  // Только ПОЛНОЕ название оружия (всё до последнего " - ")
+  // Функція: повна назва без калибра
   function extractWeaponName(name) {
     const parts = name.split(" - ");
     if (parts.length > 1) {
@@ -226,7 +226,7 @@ const generateReportText = () => {
     return name.trim();
   }
 
-  // Витрата БК — только калибр
+  // Витрата БК (тільки калибр)
   const ammoString = (ammo && Object.keys(ammo).length)
     ? 'Витрата БК: ' +
       Object.entries(ammo)
@@ -235,37 +235,46 @@ const generateReportText = () => {
         .join(', ')
     : '';
 
-  // ——— Для "Обстріляно" / "Уражено" ———
+  // ===== Для "Обстріляно" / "Уражено" =====
   if (result === "Обстріляно" || result === "Уражено") {
+    // Номер цілі або "Без видачі"
+    let targetNumText = null;
+    if (noIssue) {
+      targetNumText = "Без видачі";
+    } else if (targetNumber) {
+      targetNumText = `№${targetNumber}`;
+    }
+
+    // 1-й рядок
     let firstLineArr = [
       sector ? `Сектор «${sector}»` : null,
       time ? time : null,
-      targetNumber ? `- №${targetNumber}` : null,
+      targetNumText ? `- ${targetNumText}` : null,
       subdivision ? `- ${subdivision}` : null,
       position ? `(${position})` : null
     ];
     let firstLine = firstLineArr.filter(Boolean).join(", ");
     firstLine = firstLine.replace(/, -/g, "-").replace(/, \(/g, " (");
 
+    // 2-й рядок
     const locationLine = location ? `в районі ${location}` : null;
 
-    // Используем extractWeaponName!
+    // 3-й рядок: зброя (повне ім’я без калибра) + параметри
     const usedWeapons = (ammo && Object.keys(ammo).length)
       ? Object.keys(ammo).map(extractWeaponName).join(", ")
       : null;
-
     const paramArr = [
       height ? `H-${height}` : null,
       distance ? `D-${distance}` : null,
       azimuth ? `A-${azimuth}` : null,
       course ? `K-${course}` : null
     ].filter(Boolean);
-
     let thirdLine = null;
     if (usedWeapons) {
       thirdLine = `з ${usedWeapons}${paramArr.length ? " (" + paramArr.join(", ") + ")" : ""}`;
     }
 
+    // 4-й рядок
     let fourthLine = [
       result,
       selectedGoals.length ? selectedGoals.join(", ") : null,
@@ -281,7 +290,7 @@ const generateReportText = () => {
     ].filter(Boolean).join("\n");
   }
 
-  // ——— Обычный отчёт для остальных случаев ———
+  // ===== Для всіх інших випадків =====
   const allowedGoals = [
     "БПЛА", "Вибух", "КР", "Гелікоптер",
     "Літак Малий", "Літак Великий", "Квадрокоптер", "Зонд"
