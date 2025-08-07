@@ -210,19 +210,23 @@ const generateReportText = () => {
     detectionMethods, result, description, ammo
   } = form;
 
-  // Функция: только калибр
+  // Только калибр
   function extractCaliber(name) {
     const parts = name.split("-");
     if (parts.length > 1) return parts[parts.length - 1].trim();
     return name.trim();
   }
 
-  // Функция: только полное название (без калибра)
+  // Только ПОЛНОЕ название оружия (всё до последнего " - ")
   function extractWeaponName(name) {
-    return name.split("-")[0].trim();
+    const parts = name.split(" - ");
+    if (parts.length > 1) {
+      return parts.slice(0, -1).join(" - ").trim();
+    }
+    return name.trim();
   }
 
-  // Генерация строки расхода БК (только калибр)
+  // Витрата БК — только калибр
   const ammoString = (ammo && Object.keys(ammo).length)
     ? 'Витрата БК: ' +
       Object.entries(ammo)
@@ -233,7 +237,6 @@ const generateReportText = () => {
 
   // ——— Для "Обстріляно" / "Уражено" ———
   if (result === "Обстріляно" || result === "Уражено") {
-    // Слово "Сектор" с названием только один раз в начале!
     let firstLineArr = [
       sector ? `Сектор «${sector}»` : null,
       time ? time : null,
@@ -246,9 +249,9 @@ const generateReportText = () => {
 
     const locationLine = location ? `в районі ${location}` : null;
 
-    // Оружие: только полные названия без калибра
+    // Используем extractWeaponName!
     const usedWeapons = (ammo && Object.keys(ammo).length)
-      ? Object.keys(ammo).map(name => extractWeaponName(name)).join(", ")
+      ? Object.keys(ammo).map(extractWeaponName).join(", ")
       : null;
 
     const paramArr = [
@@ -278,7 +281,7 @@ const generateReportText = () => {
     ].filter(Boolean).join("\n");
   }
 
-  // ——— Для остальных случаев ———
+  // ——— Обычный отчёт для остальных случаев ———
   const allowedGoals = [
     "БПЛА", "Вибух", "КР", "Гелікоптер",
     "Літак Малий", "Літак Великий", "Квадрокоптер", "Зонд"
@@ -316,6 +319,7 @@ const generateReportText = () => {
     description ? `Опис: ${description}` : null
   ].filter(Boolean).join("\n");
 };
+
 
 
 
