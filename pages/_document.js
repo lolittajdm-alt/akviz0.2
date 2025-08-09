@@ -4,10 +4,10 @@ export default function Document() {
   return (
     <Html lang="uk">
       <Head>
-        {/* Favicon — положи свой файл favicon.png или favicon.ico в папку /public */}
+        {/* Favicon для современных браузеров */}
         <link rel="icon" type="image/png" href="/favicon.png" />
-        {/* Если используешь .ico: */}
-        {/* <link rel="icon" href="/favicon.ico" /> */}
+        {/* Favicon для старых браузеров */}
+        <link rel="icon" type="image/x-icon" href="/favicon.ico" />
       </Head>
       <body>
         <Main />
