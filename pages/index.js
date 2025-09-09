@@ -314,7 +314,7 @@ const generateReportText = () => {
     `Ціль: ${[
       ...goalsForReport,
       side,
-      noIssue ? "Без видачі" : (targetNumber ? `по цілі ${targetNumber}` : "")
+      noIssue ? "Без видачі" : (targetNumber ? `${targetNumber}` : "")
     ].filter(Boolean).join(", ")}`,
     height ? `Висота: ${height} м` : null,
     distance ? `Відстань: ${distance} м` : null,
