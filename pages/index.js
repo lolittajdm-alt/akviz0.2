@@ -1,7 +1,6 @@
 import { useMemo, useState } from "react";
 
-// ← ВСТАВ СВІЙ НОМЕР без + (наприклад 380671112233)
-const WHATSAPP_NUMBER = "380XXXXXXXXX";
+const WHATSAPP_NUMBER = "380XXXXXXXXX"; // ← ВСТАВ СВІЙ НОМЕР без +
 
 const CATEGORIES = [
   { id: "coffee", label: "Кава" },
@@ -88,7 +87,7 @@ const PRODUCTS = [
     id: "tea-herbal",
     category: "tea",
     name: "Трав'яний збiр Relax 80 г",
-    description: "М'ята, меліса та iншi трави для вечiрнього вiдпочинку.",
+    description: "М'ята, меліса та інші трави — ідеальні для вечора.",
     price: 110,
   },
 ];
@@ -194,93 +193,64 @@ export default function Home() {
     }
   };
 
-  const scrollToId = (id) => {
-    if (typeof document === "undefined") return;
-    const el = document.getElementById(id);
-    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
-  };
-
   return (
     <div className="page-root">
       <div className="coffee-container">
+        
         {/* HERO */}
         <header className="hero">
           <div className="hero-inner">
             <div className="hero-content">
-              <span className="hero-badge">Кава та чай</span>
+              <span className="hero-badge">Кавовий магазин</span>
               <h1 className="hero-title">
                 Смачна кава
                 <br />
                 для кожного дня
               </h1>
               <p className="hero-text">
-                Обирай зернову, мелену або розчинну каву, а також чай. Додай
-                позиції в замовлення та надішли його в WhatsApp одним кліком.
+                Обирайте зернову, мелену або розчинну каву, а також чай. Додавайте у кошик та оформлюйте замовлення в WhatsApp.
               </p>
-              <div className="hero-buttons">
-                <button
-                  className="hero-btn hero-btn-primary"
-                  onClick={() => scrollToId("menu-section")}
-                >
-                  Перейти до меню
-                </button>
-                <button
-                  className="hero-btn hero-btn-secondary"
-                  onClick={() => scrollToId("order-section")}
-                >
-                  Оформити замовлення
-                </button>
-              </div>
             </div>
           </div>
         </header>
 
         {/* ABOUT */}
-        <section className="about" id="about-section">
+        <section className="about">
           <div className="about-content">
             <h2 className="section-label">Про нас</h2>
-            <h3 className="section-title">Наша кава</h3>
+            <h3 className="section-title">Ми готуємо якісно</h3>
             <p className="section-text">
-              Ми працюємо з відбірними зернами, обсмаженими невеликими
-              партіями, щоб кава завжди була свіжою та ароматною.
+              Ми працюємо з найкращими сортами кави та чаїв, щоб ви могли насолоджуватися улюбленим смаком щодня.
             </p>
             <p className="section-text">
-              У нас можна замовити зернову, мелену й розчинну каву, а також декілька
-              видів чаю. Просто оберіть товари, заповніть контактні дані та
-              відправте замовлення в WhatsApp.
+              Наше завдання — зробити процес замовлення максимально простим, зручним і швидким.
             </p>
           </div>
         </section>
 
-        {/* МЕНЮ */}
+        {/* MENU */}
         <section className="menu" id="menu-section">
           <div className="menu-header">
             <h2 className="section-label">Меню</h2>
             <h3 className="section-title">Кава та чай</h3>
           </div>
 
-          {/* Розділи: кава / чай */}
+          {/* Категорії */}
           <nav className="category-bar">
             {CATEGORIES.map((cat) => (
               <button
                 key={cat.id}
                 className={
-                  "category-chip" +
-                  (activeCategory === cat.id ? " category-chip-active" : "")
+                  "category-chip" + (activeCategory === cat.id ? " category-chip-active" : "")
                 }
-                onClick={() => {
-                  setActiveCategory(cat.id);
-                  if (cat.id === "coffee" && !activeCoffeeSubcategory) {
-                    setActiveCoffeeSubcategory("beans");
-                  }
-                }}
+                onClick={() => setActiveCategory(cat.id)}
               >
                 {cat.label}
               </button>
             ))}
           </nav>
 
-          {/* Підрозділи тільки для кави */}
+          {/* Підкатегорії кави */}
           {activeCategory === "coffee" && (
             <nav className="category-bar coffee-subbar">
               {COFFEE_SUBCATEGORIES.map((sub) => (
@@ -288,9 +258,7 @@ export default function Home() {
                   key={sub.id}
                   className={
                     "category-chip" +
-                    (activeCoffeeSubcategory === sub.id
-                      ? " category-chip-active"
-                      : "")
+                    (activeCoffeeSubcategory === sub.id ? " category-chip-active" : "")
                   }
                   onClick={() => setActiveCoffeeSubcategory(sub.id)}
                 >
@@ -300,6 +268,7 @@ export default function Home() {
             </nav>
           )}
 
+          {/* Товари */}
           <main className="product-grid">
             {filteredProducts.map((p) => {
               const qty = cart[p.id] || 0;
@@ -312,17 +281,11 @@ export default function Home() {
                   <div className="product-bottom">
                     <div className="product-price">{p.price} грн</div>
                     <div className="qty-controls">
-                      <button
-                        className="qty-btn"
-                        onClick={() => handleQtyChange(p.id, -1)}
-                      >
+                      <button className="qty-btn" onClick={() => handleQtyChange(p.id, -1)}>
                         –
                       </button>
                       <span className="qty-number">{qty || 0}</span>
-                      <button
-                        className="qty-btn"
-                        onClick={() => handleQtyChange(p.id, 1)}
-                      >
+                      <button className="qty-btn" onClick={() => handleQtyChange(p.id, 1)}>
                         +
                       </button>
                     </div>
@@ -333,18 +296,17 @@ export default function Home() {
           </main>
         </section>
 
-        {/* ОФОРМЛЕННЯ ЗАМОВЛЕННЯ */}
+        {/* ORDER */}
         <section className="order-section" id="order-section">
           <h2 className="section-label">Замовлення</h2>
           <h3 className="section-title">Оформлення замовлення</h3>
           <p className="section-text">
-            Вкажіть свої контакти та спосіб отримання — ми підтвердимо
-            замовлення у WhatsApp.
+            Вкажіть контактні дані та спосіб отримання — ми відповімо вам у WhatsApp.
           </p>
 
           <input
             className="order-input"
-            placeholder="Iм'я"
+            placeholder="Ім'я"
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
@@ -358,19 +320,13 @@ export default function Home() {
 
           <div className="delivery-toggle">
             <button
-              className={
-                "toggle-btn" +
-                (deliveryMethod === "pickup" ? " toggle-active" : "")
-              }
+              className={"toggle-btn" + (deliveryMethod === "pickup" ? " toggle-active" : "")}
               onClick={() => setDeliveryMethod("pickup")}
             >
-              Самовивiз
+              Самовивіз
             </button>
             <button
-              className={
-                "toggle-btn" +
-                (deliveryMethod === "delivery" ? " toggle-active" : "")
-              }
+              className={"toggle-btn" + (deliveryMethod === "delivery" ? " toggle-active" : "")}
               onClick={() => setDeliveryMethod("delivery")}
             >
               Доставка
@@ -380,7 +336,7 @@ export default function Home() {
           {deliveryMethod === "delivery" && (
             <input
               className="order-input"
-              placeholder="Адреса доставки"
+              placeholder="Адреса"
               value={address}
               onChange={(e) => setAddress(e.target.value)}
             />
@@ -388,18 +344,18 @@ export default function Home() {
 
           <textarea
             className="order-textarea"
-            placeholder="Коментар до замовлення (час, побажання тощо)"
+            placeholder="Коментар"
             value={comment}
             onChange={(e) => setComment(e.target.value)}
           />
 
           <p className="order-summary">
-            Позицiй у замовленнi: <strong>{totalItems}</strong>. Сума:{" "}
+            Позицій: <strong>{totalItems}</strong>. Сума:{" "}
             <strong>{totalPrice} грн</strong>.
           </p>
 
           <button className="order-button" onClick={handleOrder}>
-            Вiдправити в WhatsApp
+            Відправити в WhatsApp
           </button>
         </section>
 
