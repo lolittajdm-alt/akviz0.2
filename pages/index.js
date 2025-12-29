@@ -308,21 +308,23 @@ const generateReportText = () => {
   );
 
   return [
-    sector || subdivision || position
-      ? `П: ${[sector, subdivision, position].filter(Boolean).join(", ")}`
-      : null,
+    time ? `Ч: ${time}` : null,
     `Ціль: ${[
       ...goalsForReport,
       side,
       noIssue ? "Без видачі" : (targetNumber ? `${targetNumber}` : "")
     ].filter(Boolean).join(", ")}`,
+    sector || subdivision || position
+      ? `П: ${[sector, subdivision, position].filter(Boolean).join(", ")}`
+      : null,
+    
     height ? `Висота: ${height} м` : null,
     distance ? `Відстань: ${distance} м` : null,
     hasAllowedGoal && quantity ? `Кількість: ${quantity} од.` : null,
     azimuth ? `А: ${azimuth}°` : null,
     course ? `К: ${course}°` : null,
     location ? `НП: ${location}` : null,
-    time ? `Ч: ${time}` : null,
+    
     detectionMethods.length ? `Вияв: ${detectionMethods.join(", ")}` : null,
     `ПП: ${result === null ? "Виявлено" : result}`,
     description ? `Опис: ${description}` : null
