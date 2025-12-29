@@ -463,13 +463,13 @@ const generateReportText = () => {
       {/* ——— Первые 4 поля ——— */}
       {showTopFields && (
         <div style={cardStyle(theme)}>
-          {["Сектор", "Підрозділ", "Позиція", "Населений пункт"].map((fieldLabel, idx) => {
+          {["Підрозділ", "Позивний", "Населений пункт"].map((fieldLabel, idx) => {
             const field = ["sector", "subdivision", "position", "location"][idx];
             const placeholderArr = [
-              "Сектор Центр",
+            
               "напр. ____ зрап, зрадн ___ омбр",
               "Наприклад МВГ Халк",
-              "Наприклад м.Кривий Ріг,Дніпропетровська обл."
+              "Наприклад ДИМЕР"
             ];
             return (
               <div key={field} style={{ marginBottom: 16 }}>
