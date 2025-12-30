@@ -398,8 +398,9 @@ export default function Home() {
         side,
         noIssue ? "б/н" : (targetNumber ? `${targetNumber}` : "")
       ].filter(Boolean).join(", ")}`,
+      `Результат: ${result === null ? "Виявлено" : result}`,
       location ? `НП: ${location}` : null,
-      region ? `Область: ${region}` : null,
+      region ? `Обл.: ${region}` : null,
       subdivision ? `Підрозділ: ${subdivision}` : null,
       fullCallsign ? `Позивний: ${fullCallsign}` : null,
       weaponsString ? `Зброя: ${weaponsString}` : null,
@@ -417,9 +418,9 @@ export default function Home() {
       azimuth ? `А: ${azimuth}°` : null,
       course ? `К: ${course}°` : null,
       detectionMethods.length ? `Вияв: ${detectionMethods.join(", ")}` : null,
-      `ПП: ${result === null ? "Виявлено" : result}`,
       
-      description ? `Опис: ${description}` : null , personnelString ? `О/С: ${personnelString}` : null,
+      
+      description ? `Коментар: ${description}` : null , personnelString ? `О/С: ${personnelString}` : null,
     ].filter(Boolean).join("\n");
   };
 
