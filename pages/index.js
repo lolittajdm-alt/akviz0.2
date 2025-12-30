@@ -511,7 +511,7 @@ export default function Home() {
     return [
       date ? `Дата: ${date}` : null,
       time ? `Ч: ${time}` : null,
-      `Ціль: ${[...goalsForReport, side, noIssue ? "б/н" : targetNumber ? `${targetNumber}` : ""]
+      `№ Цілі: ${[...goalsForReport, side, noIssue ? "б/н" : targetNumber ? `${targetNumber}` : ""]
         .filter(Boolean)
         .join(", ")}`,
       subdivision || call || pers ? `П: ${[subdivision, call, pers].filter(Boolean).join(", ")}` : null,
