@@ -1495,30 +1495,7 @@ export default function Home() {
             }}
           >
             <h3 style={{ margin: 0, marginBottom: 12, fontSize: "1.09rem", color: theme.label, fontWeight: 600, textAlign: "center" }}>Оберіть підрозділ</h3>
-
-            <div style={{ display: "flex", gap: 10, marginBottom: 12 }}>
-              <input
-                value={newSubdivision}
-                onChange={(e) => setNewSubdivision(e.target.value)}
-                placeholder="Додати новий підрозділ"
-                style={{ ...inputStyle(theme), marginBottom: 0, flex: 1 }}
-              />
-              <button
-                onClick={() => {
-                  const v = newSubdivision.trim();
-                  if (!v) return;
-                  const next = Array.from(new Set([v, ...subdivisionsList]));
-                  setSubdivisionsList(next);
-                  localStorage.setItem("akviz_subdivisions_list", JSON.stringify(next));
-                  setNewSubdivision("");
-                }}
-                style={{ ...buttonStyle(theme), background: theme.success, color: "#fff", minWidth: 90, margin: 0, flex: "0 0 auto" }}
-              >
-                Додати
-              </button>
-            </div>
-
-            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
               {subdivisionsList.map((item) => (
                 <button
                   key={item}
@@ -1680,24 +1657,6 @@ export default function Home() {
             }}
           >
             <h3 style={{ margin: 0, marginBottom: 12, fontSize: "1.09rem", color: theme.label, fontWeight: 600, textAlign: "center" }}>Оберіть область</h3>
-
-            <div style={{ display: "flex", gap: 10, marginBottom: 12 }}>
-              <input value={newRegion} onChange={(e) => setNewRegion(e.target.value)} placeholder="Додати область" style={{ ...inputStyle(theme), marginBottom: 0, flex: 1 }} />
-              <button
-                onClick={() => {
-                  const v = newRegion.trim();
-                  if (!v) return;
-                  const next = Array.from(new Set([v, ...regionsList]));
-                  setRegionsList(next);
-                  localStorage.setItem("akviz_regions_list", JSON.stringify(next));
-                  setNewRegion("");
-                }}
-                style={{ ...buttonStyle(theme), background: theme.success, color: "#fff", minWidth: 90, margin: 0, flex: "0 0 auto" }}
-              >
-                Додати
-              </button>
-            </div>
-
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
               {regionsList.map((item) => (
                 <button
