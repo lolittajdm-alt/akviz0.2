@@ -52,6 +52,17 @@ export default function Home() {
   const [errors, setErrors] = useState({});
 
   // ——— Списки ———
+  
+  // ——— Список підрозділів ———
+  const subdivisionsList = [
+  "1020 зрап",
+  "зрадн 60 омбр",
+  "МВГ «Халк»",
+  ];
+
+  // ——— Модалка выбора підрозділу ———
+  const [showSubdivisionModal, setShowSubdivisionModal] = useState(false);
+  
   const goalsList = [
     "БПЛА", "Постріли", "Виходи(ПЗРК,ЗРК)", "Вибух", "КР",
     "Гелікоптер", "Літак М.", "Літак В.", "Квадрокоптер", "Зонд", "Інше (деталі в описі)"
@@ -461,45 +472,101 @@ const generateReportText = () => {
       </div>
 
       {/* ——— Первые 4 поля ——— */}
-      {showTopFields && (
-        <div style={cardStyle(theme)}>
-          {["Підрозділ", "Позивний", "Населений пункт"].map((fieldLabel, idx) => {
-            const field = ["sector", "subdivision", "position", "location"][idx];
-            const placeholderArr = [
-            
-              "напр. ____ зрап, зрадн ___ омбр",
-              "Наприклад МВГ Халк",
-              "Наприклад ДИМЕР"
-            ];
-            return (
-              <div key={field} style={{ marginBottom: 16 }}>
-                <label style={labelStyle(theme)}>{fieldLabel}</label>
-                <div style={{ display: "flex", gap: "0.6rem" }}>
-                  <input
-                    name={field}
-                    value={form[field]}
-                    onChange={handleChange}
-                    style={inputStyle(theme)}
-                    placeholder={placeholderArr[idx]}
-                  />
-                  <button
-                    onClick={() => toggleLock(field)}
-                    style={{
-                      ...buttonStyle(theme),
-                      background: locks[field] ? theme.danger : theme.secondary,
-                      color: locks[field] ? "#fff" : theme.label,
-                      minWidth: 44
-                    }}
-                  >
-                    {locks[field] ? "🔒" : "✏️"}
-                  </button>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      )}
+    {showTopFields && (
+    <div style={cardStyle(theme)}>
 
+    {/* Підрозділ (кликабельное поле, открывает модалку) */}
+    <div style={{ marginBottom: 16 }}>
+      <label style={labelStyle(theme)}>Підрозділ</label>
+      <div style={{ display: "flex", gap: "0.6rem" }}>
+        <button
+          type="button"
+          onClick={() => setShowSubdivisionModal(true)}
+          disabled={locks.subdivision}
+          style={{
+            ...inputStyle(theme),
+            marginBottom: 0,
+            textAlign: "left",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            cursor: locks.subdivision ? "not-allowed" : "pointer",
+            opacity: locks.subdivision ? 0.6 : 1
+          }}
+          title={locks.subdivision ? "Розблокуйте поле" : "Вибрати підрозділ"}
+        >
+          <span style={{ opacity: form.subdivision ? 1 : 0.6 }}>
+            {form.subdivision || "Оберіть підрозділ"}
+          </span>
+          <span style={{ opacity: 0.6, fontSize: 18 }}>›</span>
+        </button>
+
+        <button
+          onClick={() => toggleLock("subdivision")}
+          style={{
+            ...buttonStyle(theme),
+            background: locks.subdivision ? theme.danger : theme.secondary,
+            color: locks.subdivision ? "#fff" : theme.label,
+            minWidth: 44
+          }}
+        >
+          {locks.subdivision ? "🔒" : "✏️"}
+        </button>
+      </div>
+    </div>
+
+    {/* Позивний (это твой "position", просто новое имя в UI) */}
+    <div style={{ marginBottom: 16 }}>
+      <label style={labelStyle(theme)}>Позивний</label>
+      <div style={{ display: "flex", gap: "0.6rem" }}>
+        <input
+          name="position"
+          value={form.position}
+          onChange={handleChange}
+          style={{ ...inputStyle(theme), marginBottom: 0 }}
+          placeholder='Наприклад МВГ «Халк»'
+        />
+        <button
+          onClick={() => toggleLock("position")}
+          style={{
+            ...buttonStyle(theme),
+            background: locks.position ? theme.danger : theme.secondary,
+            color: locks.position ? "#fff" : theme.label,
+            minWidth: 44
+          }}
+        >
+          {locks.position ? "🔒" : "✏️"}
+        </button>
+      </div>
+    </div>
+
+    {/* Населений пункт */}
+    <div style={{ marginBottom: 0 }}>
+      <label style={labelStyle(theme)}>Населений пункт</label>
+      <div style={{ display: "flex", gap: "0.6rem" }}>
+        <input
+          name="location"
+          value={form.location}
+          onChange={handleChange}
+          style={{ ...inputStyle(theme), marginBottom: 0 }}
+          placeholder="Наприклад м. Кривий Ріг, Дніпропетровська обл."
+        />
+        <button
+          onClick={() => toggleLock("location")}
+          style={{
+            ...buttonStyle(theme),
+            background: locks.location ? theme.danger : theme.secondary,
+            color: locks.location ? "#fff" : theme.label,
+            minWidth: 44
+          }}
+        >
+          {locks.location ? "🔒" : "✏️"}
+        </button>
+      </div>
+    </div>
+
+  </div>
+)}
       {/* ——— Тип цілі ——— */}
       <div style={{
   ...cardStyle(theme),
@@ -1314,6 +1381,96 @@ const generateReportText = () => {
     </div>
   );
 }
+
+{/* ——— Модалка выбора підрозділу ——— */}
+{showSubdivisionModal && (
+  <div style={{
+    position: "fixed",
+    zIndex: 10000,
+    left: 0, top: 0, width: "100vw", height: "100vh",
+    background: "rgba(0,0,0,0.24)",
+    display: "flex", alignItems: "center", justifyContent: "center",
+    padding: 12
+  }}>
+    <div style={{
+      background: theme.card,
+      borderRadius: 18,
+      boxShadow: theme.shadow,
+      padding: 16,
+      maxWidth: 420,
+      width: "95vw",
+      maxHeight: "75vh",
+      overflowY: "auto",
+      position: "relative"
+    }}>
+      <h3 style={{
+        margin: 0, marginBottom: 12,
+        fontSize: "1.09rem",
+        color: theme.label,
+        fontWeight: 600,
+        textAlign: "center"
+      }}>
+        Оберіть підрозділ
+      </h3>
+
+      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+        {subdivisionsList.map((item) => (
+          <button
+            key={item}
+            onClick={() => {
+              setForm(f => ({ ...f, subdivision: item }));
+              localStorage.setItem("report_subdivision", item);
+              setShowSubdivisionModal(false);
+            }}
+            style={{
+              ...buttonStyle(theme),
+              width: "100%",
+              background: form.subdivision === item ? theme.success : theme.secondary,
+              color: form.subdivision === item ? "#fff" : theme.label,
+              fontWeight: form.subdivision === item ? 600 : 500,
+              margin: 0
+            }}
+          >
+            {item}
+          </button>
+        ))}
+      </div>
+
+      <div style={{ display: "flex", gap: 10, marginTop: 14 }}>
+        <button
+          onClick={() => {
+            setForm(f => ({ ...f, subdivision: "" }));
+            localStorage.setItem("report_subdivision", "");
+            setShowSubdivisionModal(false);
+          }}
+          style={{ ...buttonStyle(theme), background: theme.danger, margin: 0 }}
+        >
+          Очистити
+        </button>
+        <button
+          onClick={() => setShowSubdivisionModal(false)}
+          style={{ ...buttonStyle(theme), background: theme.button, margin: 0 }}
+        >
+          Закрити
+        </button>
+      </div>
+
+      <button
+        style={{
+          position: "absolute",
+          top: 8, right: 10,
+          background: "none", border: "none",
+          color: theme.danger,
+          fontSize: 24, fontWeight: 800, cursor: "pointer"
+        }}
+        onClick={() => setShowSubdivisionModal(false)}
+        title="Закрити"
+      >
+        ×
+      </button>
+    </div>
+  </div>
+)}
 
 // ——— Стили-функции ———
 function cardStyle(theme) {
