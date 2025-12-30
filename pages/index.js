@@ -1021,34 +1021,26 @@ export default function Home() {
       </div>
 
       {/* Результат */}
-      <div style={cardStyle(theme)}>
-        <label style={labelStyle(theme)}>Результат</label>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: "0.65rem" }}>
-          <button
-            onClick={() => setForm((f) => ({ ...f, result: null }))}
-            style={{
-              ...buttonStyle(theme),
-              background: form.result === null ? theme.success : theme.secondary,
-              color: form.result === null ? "#fff" : theme.label
-            }}
-          >
-            Виявлено
-          </button>
-          {["Обстріляно", "Уражено"].map((r) => (
-            <button
-              key={r}
-              onClick={() => setForm((f) => ({ ...f, result: r }))}
-              style={{
-                ...buttonStyle(theme),
-                background: form.result === r ? theme.success : theme.secondary,
-                color: form.result === r ? "#fff" : theme.label
-              }}
-            >
-              {r}
-            </button>
-          ))}
-        </div>
-      </div>
+<div style={cardStyle(theme)}>
+  <label style={labelStyle(theme)}>Результат</label>
+
+  <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: "0.65rem" }}>
+    {["не застосовувались", "не знищено", "ЗНИЩЕНО"].map((r) => (
+      <button
+        key={r}
+        onClick={() => setForm((f) => ({ ...f, result: r }))}
+        style={{
+          ...buttonStyle(theme),
+          background: form.result === r ? theme.success : theme.secondary,
+          color: form.result === r ? "#fff" : theme.label,
+          fontWeight: form.result === r ? 700 : 500
+        }}
+      >
+        {r}
+      </button>
+    ))}
+  </div>
+</div>
 
       {/* Розхід БК */}
       {["Обстріляно", "Уражено"].includes(form.result) && (
