@@ -393,17 +393,24 @@ export default function Home() {
     return [
       date ? `Дата: ${date}` : null,
       time ? `Час: ${time}` : null,
-      subdivision ? `Підрозділ: ${subdivision}` : null,
-      fullCallsign ? `Позивний: ${fullCallsign}` : null,
-      personnelString ? `О/С: ${personnelString}` : null,
-      weaponsString ? `Зброя: ${weaponsString}` : null,
-      `Ціль: ${[
+      `№ цілі: ${[
         ...goalsForReport,
         side,
-        noIssue ? "Без видачі" : (targetNumber ? `${targetNumber}` : "")
+        noIssue ? "б/н" : (targetNumber ? `${targetNumber}` : "")
       ].filter(Boolean).join(", ")}`,
       location ? `НП: ${location}` : null,
       region ? `Область: ${region}` : null,
+      subdivision ? `Підрозділ: ${subdivision}` : null,
+      fullCallsign ? `Позивний: ${fullCallsign}` : null,
+      weaponsString ? `Зброя: ${weaponsString}` : null,
+
+
+      
+      
+      
+      
+      
+      
       height ? `Висота: ${height} м` : null,
       distance ? `Відстань: ${distance} м` : null,
       hasAllowedGoal && quantity ? `Кількість: ${quantity} од.` : null,
@@ -411,7 +418,8 @@ export default function Home() {
       course ? `К: ${course}°` : null,
       detectionMethods.length ? `Вияв: ${detectionMethods.join(", ")}` : null,
       `ПП: ${result === null ? "Виявлено" : result}`,
-      description ? `Опис: ${description}` : null
+      
+      description ? `Опис: ${description}` : null , personnelString ? `О/С: ${personnelString}` : null,
     ].filter(Boolean).join("\n");
   };
 
