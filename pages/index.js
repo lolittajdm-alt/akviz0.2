@@ -68,6 +68,11 @@ export default function Home() {
     callsignText: "",
     location: "",
     region: "",
+
+    // ✅ НОВОЕ: Зброя в первом блоке
+    weaponsSelected: [],     // выбранные в модалке
+    weaponsManual: "",       // доп. вручную (через кому)
+
     date: "",
     time: "",
     selectedGoals: [],
@@ -98,6 +103,9 @@ export default function Home() {
   const [showAmmoModal, setShowAmmoModal] = useState(false);
   const [showRankModal, setShowRankModal] = useState(false);
   const [activePersonnelIndex, setActivePersonnelIndex] = useState(0);
+
+  // ✅ НОВОЕ: модалка "Зброя" (в первом блоке)
+  const [showWeaponsModal, setShowWeaponsModal] = useState(false);
 
   // ——— Время/дата ———
   const updateTime = () => {
@@ -298,7 +306,8 @@ export default function Home() {
       if (noIssue) targetNumText = "Без видачі";
       else if (targetNumber) targetNumText = `№${targetNumber}`;
 
-      const usedWeapons = ammo && Object.keys(ammo).length ? Object.keys(ammo).map(extractWeaponName).join(", ") : null;
+      const usedWeapons =
+        ammo && Object.keys(ammo).length ? Object.keys(ammo).map(extractWeaponName).join(", ") : null;
 
       const paramArr = [height ? `H-${height}` : null, distance ? `D-${distance}` : null, azimuth ? `A-${azimuth}` : null, course ? `K-${course}` : null].filter(Boolean);
 
@@ -319,7 +328,10 @@ export default function Home() {
         ? `Парам.: ${paramArr.join(", ")}`
         : "";
 
-      const goalLine = [result, selectedGoals.length ? selectedGoals.join(", ") : null, name ? name : null, side ? `(${side})` : null].filter(Boolean).join(" ") + ".";
+      const goalLine =
+        [result, selectedGoals.length ? selectedGoals.join(", ") : null, name ? name : null, side ? `(${side})` : null]
+          .filter(Boolean)
+          .join(" ") + ".";
 
       return [
         ...firstLineArr,
@@ -422,6 +434,16 @@ export default function Home() {
       </span>
     </button>
   );
+
+  // ✅ НОВОЕ: собрать все выбранные "Зброя" (модалка + вручную)
+  const getWeaponsAll = () => {
+    const manual = (form.weaponsManual || "")
+      .split(",")
+      .map((s) => s.trim())
+      .filter(Boolean);
+    const all = [...(form.weaponsSelected || []), ...manual];
+    return Array.from(new Set(all));
+  };
 
   // ——— JSX ———
   return (
@@ -546,11 +568,10 @@ export default function Home() {
             </button>
           </div>
 
-          {/* Позивний — 2 поля: модалка (как есть), ввод растянуть */}
+          {/* Позивний — 2 поля */}
           <div style={{ marginBottom: 16 }}>
             <label style={labelStyle(theme)}>Позивний</label>
             <div style={{ display: "flex", gap: "0.6rem" }}>
-              {/* Prefix modal — оставить как было по длине */}
               <button
                 type="button"
                 onClick={() => setShowCallsignPrefixModal(true)}
@@ -571,7 +592,6 @@ export default function Home() {
                 <span style={{ opacity: 0.6, fontSize: 14 }}>⌄</span>
               </button>
 
-              {/* Ввод — растянуть на оставшуюся длину блока */}
               <input
                 name="callsignText"
                 value={form.callsignText}
@@ -595,7 +615,7 @@ export default function Home() {
           </div>
 
           {/* Область — 2 строка */}
-          <div style={{ marginBottom: 0 }}>
+          <div style={{ marginBottom: 16 }}>
             <label style={labelStyle(theme)}>Область</label>
             <button
               type="button"
@@ -614,10 +634,75 @@ export default function Home() {
               <span style={{ opacity: 0.6, fontSize: 18 }}>›</span>
             </button>
           </div>
+
+          {/* ✅ НОВОЕ: Зброя (модалка) + следующее поле для добавления нескольких вручную */}
+          <div style={{ marginBottom: 0 }}>
+            <label style={labelStyle(theme)}>Зброя</label>
+
+            {/* 1) выбор в модалке */}
+            <button
+              type="button"
+              onClick={() => setShowWeaponsModal(true)}
+              style={{
+                ...inputStyle(theme),
+                marginBottom: "0.6rem",
+                textAlign: "left",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                cursor: "pointer",
+              }}
+            >
+              <span style={{ opacity: getWeaponsAll().length ? 1 : 0.6 }}>
+                {getWeaponsAll().length ? `Обрано: ${getWeaponsAll().length}` : "Оберіть зброю"}
+              </span>
+              <span style={{ opacity: 0.6, fontSize: 18 }}>›</span>
+            </button>
+
+            {/* 2) следующее поле: добавить несколько видов вручную */}
+            <input
+              name="weaponsManual"
+              value={form.weaponsManual}
+              onChange={(e) => setForm((f) => ({ ...f, weaponsManual: e.target.value }))}
+              style={{ ...inputStyle(theme), marginBottom: 0 }}
+              placeholder="Додайте ще (через кому)"
+            />
+
+            {/* мини-подсказка/превью выбранного */}
+            {getWeaponsAll().length > 0 && (
+              <div style={{ marginTop: 10, display: "flex", flexWrap: "wrap", gap: 8 }}>
+                {getWeaponsAll().slice(0, 12).map((w) => (
+                  <span
+                    key={w}
+                    style={{
+                      padding: "6px 10px",
+                      borderRadius: 999,
+                      background: theme.secondary,
+                      color: theme.label,
+                      fontSize: 13,
+                      lineHeight: 1,
+                      maxWidth: "100%",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
+                    }}
+                    title={w}
+                  >
+                    {w}
+                  </span>
+                ))}
+                {getWeaponsAll().length > 12 && (
+                  <span style={{ padding: "6px 10px", borderRadius: 999, background: theme.secondary, color: theme.label, fontSize: 13 }}>
+                    +{getWeaponsAll().length - 12}
+                  </span>
+                )}
+              </div>
+            )}
+          </div>
         </div>
       )}
 
-      {/* Ціль (фикс текста внутри кнопок) */}
+      {/* Ціль */}
       <div style={{ ...cardStyle(theme), padding: "1rem 0.7rem", display: "flex", flexDirection: "column" }}>
         <label style={{ ...labelStyle(theme), marginLeft: "0.3rem", marginBottom: "0.8rem", fontSize: "1.07rem" }}>Ціль</label>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: "0.65rem", width: "100%" }}>
@@ -637,7 +722,6 @@ export default function Home() {
                 cursor: "pointer",
                 width: "100%",
                 minWidth: 0,
-                // главное: текст НЕ вылазит
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -904,7 +988,7 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Вияв (убрал Радіолокаційно, третю кнопку в 2 рядку — на всю ширину) */}
+      {/* Вияв */}
       <div style={{ ...cardStyle(theme), padding: "1rem 0.7rem" }}>
         <label style={{ ...labelStyle(theme), marginLeft: "0.3rem", marginBottom: "0.8rem", fontSize: "1.07rem" }}>Вияв</label>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: "0.65rem" }}>
@@ -921,16 +1005,7 @@ export default function Home() {
               }}
               title={m}
             >
-              <span
-                style={{
-                  width: "100%",
-                  display: "block",
-                  textAlign: "center",
-                  whiteSpace: "nowrap",
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                }}
-              >
+              <span style={{ width: "100%", display: "block", textAlign: "center", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                 {m}
               </span>
             </button>
@@ -1024,17 +1099,15 @@ export default function Home() {
 
       {/* Кнопки */}
       <div style={{ display: "flex", gap: "0.6rem", marginBottom: "2rem" }}>
-        <button onClick={copyReport} style={buttonStyle(theme)}>
-          Копіювати
-        </button>
-        <button onClick={openWhatsApp} style={{ ...buttonStyle(theme), background: theme.success, color: "#fff" }}>
-          WhatsApp
-        </button>
+        <button onClick={copyReport} style={buttonStyle(theme)}>Копіювати</button>
+        <button onClick={openWhatsApp} style={{ ...buttonStyle(theme), background: theme.success, color: "#fff" }}>WhatsApp</button>
       </div>
 
       {/* Отчёт */}
       <div style={cardStyle(theme)}>
-        <pre style={{ whiteSpace: "pre-wrap", fontSize: "1rem", color: theme.label, margin: 0, background: "none" }}>{generateReportText()}</pre>
+        <pre style={{ whiteSpace: "pre-wrap", fontSize: "1rem", color: theme.label, margin: 0, background: "none" }}>
+          {generateReportText()}
+        </pre>
       </div>
 
       {/* =================== МОДАЛКИ =================== */}
@@ -1129,7 +1202,60 @@ export default function Home() {
         </ModalShell>
       )}
 
-      {/* Оружие */}
+      {/* ✅ НОВОЕ: Зброя (мультивыбор) */}
+      {showWeaponsModal && (
+        <ModalShell theme={theme} onClose={() => setShowWeaponsModal(false)} title="Оберіть зброю">
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.6rem", marginBottom: 12 }}>
+            {ammoList.map((w) => {
+              const active = (form.weaponsSelected || []).includes(w);
+              return (
+                <button
+                  key={w}
+                  onClick={() => {
+                    setForm((f) => {
+                      const curr = f.weaponsSelected || [];
+                      const next = curr.includes(w) ? curr.filter((x) => x !== w) : [...curr, w];
+                      return { ...f, weaponsSelected: next };
+                    });
+                  }}
+                  style={{
+                    ...buttonStyle(theme),
+                    background: active ? theme.success : theme.secondary,
+                    color: active ? "#fff" : theme.label,
+                    fontWeight: active ? 600 : 500,
+                    fontSize: "0.95rem",
+                    padding: "0.48rem 0.2rem",
+                  }}
+                  title={w}
+                >
+                  <span style={{ display: "block", width: "100%", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                    {w}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+
+          <div style={{ display: "flex", gap: 10 }}>
+            <button
+              onClick={() => {
+                setForm((f) => ({ ...f, weaponsSelected: [] }));
+              }}
+              style={{ ...buttonStyle(theme), background: theme.danger, color: "#fff", flex: 1 }}
+            >
+              Очистити
+            </button>
+            <button
+              onClick={() => setShowWeaponsModal(false)}
+              style={{ ...buttonStyle(theme), background: theme.button, color: "#fff", flex: 1 }}
+            >
+              OK
+            </button>
+          </div>
+        </ModalShell>
+      )}
+
+      {/* Оружие (старое) */}
       {showAmmoModal && (
         <ModalShell theme={theme} onClose={() => setShowAmmoModal(false)} title="Оберіть типи зброї">
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.6rem", marginBottom: 12 }}>
@@ -1155,7 +1281,9 @@ export default function Home() {
                 }}
                 title={w}
               >
-                <span style={{ display: "block", width: "100%", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{w}</span>
+                <span style={{ display: "block", width: "100%", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                  {w}
+                </span>
               </button>
             ))}
           </div>
@@ -1233,7 +1361,9 @@ function ModalShell({ theme, title, children, onClose }) {
           position: "relative",
         }}
       >
-        <h3 style={{ margin: 0, marginBottom: 12, fontSize: "1.09rem", color: theme.label, fontWeight: 600, textAlign: "center" }}>{title}</h3>
+        <h3 style={{ margin: 0, marginBottom: 12, fontSize: "1.09rem", color: theme.label, fontWeight: 600, textAlign: "center" }}>
+          {title}
+        </h3>
 
         {children}
 
@@ -1305,7 +1435,7 @@ function buttonStyle(theme) {
     fontSize: "1rem",
     color: theme.buttonText,
     background: theme.button,
-    margin: 0, // важно: чтобы сетки/поля были ровные
+    margin: 0,
     cursor: "pointer",
     fontWeight: 500,
     boxShadow: theme.shadow,
