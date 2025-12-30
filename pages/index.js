@@ -59,32 +59,17 @@ export default function Home() {
   const [errors, setErrors] = useState({});
 
   // ——— Списки (редактируемые, сохраняются) ———
-  const defaultSubdivisions = ["1020 зрап", "зрадн 60 омбр", "МВГ «Халк»"];
-  const defaultCallsignPrefixes = ["МВГ", "СПИС", "ПОСТ", "ГРУПА", "ЕКІПАЖ"];
+  const defaultSubdivisions = ["ПВК Центр", "138 ртбр", "96 зрбр", "156 зрп", "39 брта", "40 брта", "831 брта", "31 опз та ртз", "110 ак", "21 ак", "121 ак", "1163 бо", "1129 зрп", "39 зрп", "223 зрп", "225 зрп", "201 зрбр", "302 зрбр", "540 зрбр", "164 ртбр", "114 брта", "25 брТра", "1 брОП НГУ", "2 обр НГУ", "4 бр НГУ", "16 оабр НГУ", "19 об НГУ", "21 обр НГУ", "22 обр НГУ", "27 обр НГУ", "28 п НГУ", "31 п НГУ", "36 п НГУ", "37 п НГУ", "38 п НГУ", "40 п НГУ", "45 п НГУ", "ОПБр", "101 обро ГШ", "125 овмбр", "172 брез", "178 брез", "72 омбр", "210 ОШП", "229 оцз", "3343 оцз втм", "13 озкб", "630 озкб", "631 озкб", "635 озкб", "637 озкб", "638 озкб", "642 озкб", "643 озкб", "644 озкб", "645 озкб", "646 озкб", "650 озкб", "1020 зрап", "1025 зрап", "1027 зрап", "1121 зрап", "1021 зап", "1 обр ТРО", "102 обр ТРО", "103 обр ТРО", "104 обр ТРО", "105 обр ТРО", "106 обр ТРО", "112 обр ТРО", "114 обр ТРО", "115 обр ТРО", "116 обр ТРО", "117 обр ТРО", "118 обр ТРО", "119 обр ТРО", "120 обр ТРО", "121 обр ТРО", "127 обр ТРО", "168 обр ТРО", "105 Прик3", "3 Прик3","9 Прик3", "ДФТГ", "ДПСУ", "НГУ", "НПУ", "ГУР"];
+  const defaultCallsignPrefixes = ["МВГ", "ВГ"];
   const defaultRegions = [
     "Вінницька",
-    "Волинська",
-    "Дніпропетровська",
-    "Донецька",
     "Житомирська",
-    "Закарпатська",
-    "Запорізька",
-    "Івано-Франківська",
-    "Київська",
     "Кіровоградська",
-    "Луганська",
-    "Львівська",
-    "Миколаївська",
+    "Київська",
     "Одеська",
     "Полтавська",
-    "Рівненська",
     "Сумська",
-    "Тернопільська",
-    "Харківська",
-    "Херсонська",
-    "Хмельницька",
     "Черкаська",
-    "Чернівецька",
     "Чернігівська",
   ];
 
@@ -1614,28 +1599,6 @@ export default function Home() {
             }}
           >
             <h3 style={{ margin: 0, marginBottom: 12, fontSize: "1.09rem", color: theme.label, fontWeight: 600, textAlign: "center" }}>Оберіть (лівий список)</h3>
-
-            <div style={{ display: "flex", gap: 10, marginBottom: 12 }}>
-              <input
-                value={newCallsignPrefix}
-                onChange={(e) => setNewCallsignPrefix(e.target.value)}
-                placeholder="Додати в список"
-                style={{ ...inputStyle(theme), marginBottom: 0, flex: 1 }}
-              />
-              <button
-                onClick={() => {
-                  const v = newCallsignPrefix.trim();
-                  if (!v) return;
-                  const next = Array.from(new Set([v, ...callsignPrefixesList]));
-                  setCallsignPrefixesList(next);
-                  localStorage.setItem("akviz_callsign_prefixes_list", JSON.stringify(next));
-                  setNewCallsignPrefix("");
-                }}
-                style={{ ...buttonStyle(theme), background: theme.success, color: "#fff", minWidth: 90, margin: 0, flex: "0 0 auto" }}
-              >
-                Додати
-              </button>
-            </div>
 
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
               {callsignPrefixesList.map((item) => (
