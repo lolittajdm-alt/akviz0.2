@@ -662,84 +662,78 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Населений пункт (Область + НП) */}
-          <div style={{ marginBottom: 0 }}>
-            <label style={labelStyle(theme)}>Населений пункт</label>
+          {/* Населений пункт (2 строки: НП / Область) */}
+<div style={{ marginBottom: 0 }}>
+  <label style={labelStyle(theme)}>Населений пункт</label>
 
-            <div style={{ display: "flex", gap: "0.7rem", alignItems: "center" }}>
-              {/* область (модалка) */}
-              <button
-                type="button"
-                onClick={() => setShowRegionModal(true)}
-                disabled={locks.region}
-                style={{
-                  ...inputStyle(theme),
-                  marginBottom: 0,
-                  width: 170,
-                  minWidth: 170,
-                  maxWidth: 170,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  cursor: locks.region ? "not-allowed" : "pointer",
-                  opacity: locks.region ? 0.6 : 1,
-                  padding: "0.7rem 0.8rem",
-                }}
-                title={locks.region ? "Розблокуйте поле" : "Вибрати область"}
-              >
-                <span style={{ opacity: form.region ? 1 : 0.6 }}>
-                  {form.region ? `${form.region} обл.` : "Область"}
-                </span>
-                <span style={{ opacity: 0.6, fontSize: 18 }}>⌄</span>
-              </button>
+  {/* 1-я строка: НП (ввод) + лок справа */}
+  <div style={{ display: "flex", gap: "0.6rem", alignItems: "center", marginBottom: 10 }}>
+    <input
+      name="location"
+      value={form.location}
+      onChange={handleChange}
+      style={{ ...inputStyle(theme), marginBottom: 0, flex: 1 }}
+      placeholder="Наприклад: м. Кривий Ріг"
+      disabled={locks.location}
+    />
 
-              {/* НП (ввод) */}
-              <input
-                name="location"
-                value={form.location}
-                onChange={handleChange}
-                style={{
-                  ...inputStyle(theme),
-                  marginBottom: 0,
-                  flex: 1,
-                  padding: "0.7rem 0.8rem",
-                }}
-                placeholder="Наприклад: м. Кривий Ріг"
-              />
+    <button
+      onClick={() => toggleLock("location")}
+      style={{
+        ...buttonStyle(theme),
+        background: locks.location ? theme.danger : theme.secondary,
+        color: locks.location ? "#fff" : theme.label,
+        minWidth: 44,
+        flex: "0 0 auto",
+        margin: 0
+      }}
+      title="Заблокувати/Редагувати НП"
+    >
+      {locks.location ? "🔒" : "✏️"}
+    </button>
+  </div>
 
-              {/* лок области */}
-              <button
-                onClick={() => toggleLock("region")}
-                style={{
-                  ...buttonStyle(theme),
-                  background: locks.region ? theme.danger : theme.secondary,
-                  color: locks.region ? "#fff" : theme.label,
-                  minWidth: 44,
-                  flex: "0 0 auto",
-                }}
-                title="Заблокувати/Редагувати область"
-              >
-                {locks.region ? "🔒" : "✏️"}
-              </button>
+  {/* 2-я строка: Область (модалка) + лок справа */}
+  <div style={{ display: "flex", gap: "0.6rem", alignItems: "center" }}>
+    <button
+      type="button"
+      onClick={() => setShowRegionModal(true)}
+      disabled={locks.region}
+      style={{
+        ...inputStyle(theme),
+        marginBottom: 0,
+        textAlign: "left",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        cursor: locks.region ? "not-allowed" : "pointer",
+        opacity: locks.region ? 0.6 : 1,
+        flex: 1
+      }}
+      title={locks.region ? "Розблокуйте поле" : "Вибрати область"}
+    >
+      <span style={{ opacity: form.region ? 1 : 0.6 }}>
+        {form.region ? `${form.region} обл.` : "Область"}
+      </span>
+      <span style={{ opacity: 0.6, fontSize: 18 }}>⌄</span>
+    </button>
 
-              {/* лок НП */}
-              <button
-                onClick={() => toggleLock("location")}
-                style={{
-                  ...buttonStyle(theme),
-                  background: locks.location ? theme.danger : theme.secondary,
-                  color: locks.location ? "#fff" : theme.label,
-                  minWidth: 44,
-                  flex: "0 0 auto",
-                }}
-                title="Заблокувати/Редагувати НП"
-              >
-                {locks.location ? "🔒" : "✏️"}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+    <button
+      onClick={() => toggleLock("region")}
+      style={{
+        ...buttonStyle(theme),
+        background: locks.region ? theme.danger : theme.secondary,
+        color: locks.region ? "#fff" : theme.label,
+        minWidth: 44,
+        flex: "0 0 auto",
+        margin: 0
+      }}
+      title="Заблокувати/Редагувати область"
+    >
+      {locks.region ? "🔒" : "✏️"}
+    </button>
+  </div>
+</div>
 
       {/* ——— Ціль ——— */}
       <div
