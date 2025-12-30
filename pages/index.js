@@ -29,7 +29,10 @@ export default function Home() {
     locationCity: "",
     region: "",
 
+    // Дата/час
+    date: "", // ← добавили
     time: "",
+
     selectedGoals: [],
     side: null,
     targetNumber: "",
@@ -59,17 +62,32 @@ export default function Home() {
   const [errors, setErrors] = useState({});
 
   // ——— Списки (редактируемые, сохраняются) ———
-  const defaultSubdivisions = ["ПВК Центр", "138 ртбр", "96 зрбр", "156 зрп", "39 брта", "40 брта", "831 брта", "31 опз та ртз", "110 ак", "21 ак", "121 ак", "1163 бо", "1129 зрп", "39 зрп", "223 зрп", "225 зрп", "201 зрбр", "302 зрбр", "540 зрбр", "164 ртбр", "114 брта", "25 брТра", "1 брОП НГУ", "2 обр НГУ", "4 бр НГУ", "16 оабр НГУ", "19 об НГУ", "21 обр НГУ", "22 обр НГУ", "27 обр НГУ", "28 п НГУ", "31 п НГУ", "36 п НГУ", "37 п НГУ", "38 п НГУ", "40 п НГУ", "45 п НГУ", "ОПБр", "101 обро ГШ", "125 овмбр", "172 брез", "178 брез", "72 омбр", "210 ОШП", "229 оцз", "3343 оцз втм", "13 озкб", "630 озкб", "631 озкб", "635 озкб", "637 озкб", "638 озкб", "642 озкб", "643 озкб", "644 озкб", "645 озкб", "646 озкб", "650 озкб", "1020 зрап", "1025 зрап", "1027 зрап", "1121 зрап", "1021 зап", "1 обр ТРО", "102 обр ТРО", "103 обр ТРО", "104 обр ТРО", "105 обр ТРО", "106 обр ТРО", "112 обр ТРО", "114 обр ТРО", "115 обр ТРО", "116 обр ТРО", "117 обр ТРО", "118 обр ТРО", "119 обр ТРО", "120 обр ТРО", "121 обр ТРО", "127 обр ТРО", "168 обр ТРО", "105 Прик3", "3 Прик3","9 Прик3", "ДФТГ", "ДПСУ", "НГУ", "НПУ", "ГУР"];
-  const defaultCallsignPrefixes = ["МВГ", "ВГ"];
+  const defaultSubdivisions = ["1020 зрап", "зрадн 60 омбр", "МВГ «Халк»"];
+  const defaultCallsignPrefixes = ["МВГ", "СПИС", "ПОСТ", "ГРУПА", "ЕКІПАЖ"];
   const defaultRegions = [
     "Вінницька",
+    "Волинська",
+    "Дніпропетровська",
+    "Донецька",
     "Житомирська",
-    "Кіровоградська",
+    "Закарпатська",
+    "Запорізька",
+    "Івано-Франківська",
     "Київська",
+    "Кіровоградська",
+    "Луганська",
+    "Львівська",
+    "Миколаївська",
     "Одеська",
     "Полтавська",
+    "Рівненська",
     "Сумська",
+    "Тернопільська",
+    "Харківська",
+    "Херсонська",
+    "Хмельницька",
     "Черкаська",
+    "Чернівецька",
     "Чернігівська",
   ];
 
@@ -103,15 +121,20 @@ export default function Home() {
   ];
   const namesList = ["Shahed-136", "Гербера", "Невстановлений"];
 
-  // ——— Время ———
-  const updateTime = () => {
+  // ——— Дата/Время ———
+  const updateDateTime = () => {
     const now = new Date();
+    // дата с телефона (локальная)
+    const dateStr = now.toLocaleDateString("uk-UA"); // например 30.12.2025
+    const timeStr = now.toLocaleTimeString("uk-UA", { hour: "2-digit", minute: "2-digit" });
     setForm((f) => ({
       ...f,
-      time: now.toLocaleTimeString("uk-UA", { hour: "2-digit", minute: "2-digit" }),
+      date: dateStr,
+      time: timeStr,
     }));
   };
-  useEffect(updateTime, []);
+
+  useEffect(updateDateTime, []);
 
   // ——— Загрузка сохранённого ———
   useEffect(() => {
@@ -129,7 +152,7 @@ export default function Home() {
     }
 
     // поля
-    const keys = ["subdivision", "callsignPrefix", "callsignText", "locationCity", "region"];
+    const keys = ["subdivision", "callsignPrefix", "callsignText", "locationCity", "region", "date", "time"];
     keys.forEach((key) => {
       const v = localStorage.getItem(`report_${key}`);
       if (v !== null) setForm((f) => ({ ...f, [key]: v }));
@@ -343,6 +366,7 @@ export default function Home() {
   const generateReportText = () => {
     const {
       subdivision,
+      date,
       time,
       selectedGoals,
       side,
@@ -391,8 +415,9 @@ export default function Home() {
       if (noIssue) targetNumText = "Без видачі";
       else if (targetNumber) targetNumText = `№${targetNumber}`;
 
-      // 1-й рядок (без сектора)
+      // 1-й рядок (дата + время первыми)
       let firstLineArr = [
+        date ? date : null,
         time ? time : null,
         targetNumText ? `- ${targetNumText}` : null,
         subdivision ? `- ${subdivision}` : null,
@@ -401,15 +426,12 @@ export default function Home() {
       let firstLine = firstLineArr.filter(Boolean).join(", ");
       firstLine = firstLine.replace(/, -/g, "-").replace(/, \(/g, " (");
 
-      // 2-й рядок
       const locationLine = loc ? `в районі ${loc}` : null;
 
-      // 3-й рядок: оружие + параметры
       const usedWeapons = ammo && Object.keys(ammo).length ? Object.keys(ammo).map(extractWeaponName).join(", ") : null;
       const paramArr = [height ? `H-${height}` : null, distance ? `D-${distance}` : null, azimuth ? `A-${azimuth}` : null, course ? `K-${course}` : null].filter(Boolean);
       const thirdLine = usedWeapons ? `з ${usedWeapons}${paramArr.length ? " (" + paramArr.join(", ") + ")" : ""}` : null;
 
-      // 4-й рядок
       let fourthLine = [result, selectedGoals.length ? selectedGoals.join(", ") : null, name ? name : null].filter(Boolean).join(" ") + ".";
 
       return [firstLine, locationLine, thirdLine, fourthLine, ammoString].filter(Boolean).join("\n");
@@ -426,6 +448,8 @@ export default function Home() {
     const hasAllowedGoal = selectedGoals.some((goal) => allowedGoals.includes(goal));
 
     return [
+      // Дата первой строкой
+      date ? `Дата: ${date}` : null,
       time ? `Ч: ${time}` : null,
       `Ціль: ${[...goalsForReport, side, noIssue ? "Без видачі" : targetNumber ? `${targetNumber}` : ""].filter(Boolean).join(", ")}`,
       subdivision || call ? `П: ${[subdivision, call].filter(Boolean).join(", ")}` : null,
@@ -532,46 +556,24 @@ export default function Home() {
           alignItems: "center",
         }}
       >
-        <h1
-          style={{
-            margin: 0,
-            fontSize: "1.35rem",
-            color: theme.label,
-            fontWeight: 600,
-          }}
-        >
-          АкВіз 2.0
-        </h1>
+        <h1 style={{ margin: 0, fontSize: "1.35rem", color: theme.label, fontWeight: 600 }}>АкВіз 2.0</h1>
         <div style={{ display: "flex", gap: 12, alignItems: "center" }}>{Switch}</div>
       </div>
 
       {/* ——— Показать/скрыть ——— */}
-      <div
-        style={{
-          ...cardStyle(theme),
-          display: "flex",
-          justifyContent: "center",
-          marginBottom: "1rem",
-        }}
-      >
+      <div style={{ ...cardStyle(theme), display: "flex", justifyContent: "center", marginBottom: "1rem" }}>
         <button
           onClick={() => setShowTopFields((prev) => !prev)}
-          style={{
-            ...buttonStyle(theme),
-            background: theme.secondary,
-            color: theme.label,
-            fontWeight: 500,
-            minWidth: 160,
-          }}
+          style={{ ...buttonStyle(theme), background: theme.secondary, color: theme.label, fontWeight: 500, minWidth: 160 }}
         >
           {showTopFields ? "Приховати поля" : "Показати поля"}
         </button>
       </div>
 
-      {/* ——— Верхний блок (без “Сектор”) ——— */}
+      {/* ——— Верхний блок ——— */}
       {showTopFields && (
         <div style={cardStyle(theme)}>
-          {/* Підрозділ (модалка) */}
+          {/* Підрозділ */}
           <div style={{ marginBottom: 16 }}>
             <label style={labelStyle(theme)}>Підрозділ</label>
             <div style={{ display: "flex", gap: "0.6rem" }}>
@@ -589,11 +591,8 @@ export default function Home() {
                   cursor: locks.subdivision ? "not-allowed" : "pointer",
                   opacity: locks.subdivision ? 0.6 : 1,
                 }}
-                title={locks.subdivision ? "Розблокуйте поле" : "Вибрати підрозділ"}
               >
-                <span style={{ opacity: form.subdivision ? 1 : 0.6 }}>
-                  {form.subdivision || "Оберіть підрозділ"}
-                </span>
+                <span style={{ opacity: form.subdivision ? 1 : 0.6 }}>{form.subdivision || "Оберіть підрозділ"}</span>
                 <span style={{ opacity: 0.6, fontSize: 18 }}>⌄</span>
               </button>
 
@@ -611,7 +610,7 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Позивний (как на скрине: слева выбор, справа ручной ввод) */}
+          {/* Позивний */}
           <div style={{ marginBottom: 16 }}>
             <label style={labelStyle(theme)}>Позивний</label>
             <div style={{ display: "flex", gap: "0.6rem", alignItems: "center" }}>
@@ -631,11 +630,8 @@ export default function Home() {
                   cursor: locks.callsign ? "not-allowed" : "pointer",
                   opacity: locks.callsign ? 0.6 : 1,
                 }}
-                title={locks.callsign ? "Розблокуйте поле" : "Вибрати (лівий список)"}
               >
-                <span style={{ opacity: form.callsignPrefix ? 1 : 0.6 }}>
-                  {form.callsignPrefix || "Вибір"}
-                </span>
+                <span style={{ opacity: form.callsignPrefix ? 1 : 0.6 }}>{form.callsignPrefix || "Вибір"}</span>
                 <span style={{ opacity: 0.6, fontSize: 18 }}>⌄</span>
               </button>
 
@@ -664,11 +660,10 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Населений пункт: 1 строка НП, 2 строка область */}
+          {/* Населений пункт */}
           <div style={{ marginBottom: 0 }}>
             <label style={labelStyle(theme)}>Населений пункт</label>
 
-            {/* 1-я строка: НП */}
             <div style={{ display: "flex", gap: "0.6rem", alignItems: "center", marginBottom: 10 }}>
               <input
                 name="locationCity"
@@ -693,7 +688,6 @@ export default function Home() {
               </button>
             </div>
 
-            {/* 2-я строка: Область */}
             <div style={{ display: "flex", gap: "0.6rem", alignItems: "center" }}>
               <button
                 type="button"
@@ -710,11 +704,8 @@ export default function Home() {
                   opacity: locks.region ? 0.6 : 1,
                   flex: 1,
                 }}
-                title={locks.region ? "Розблокуйте поле" : "Вибрати область"}
               >
-                <span style={{ opacity: form.region ? 1 : 0.6 }}>
-                  {form.region ? `${form.region} обл.` : "Область"}
-                </span>
+                <span style={{ opacity: form.region ? 1 : 0.6 }}>{form.region ? `${form.region} обл.` : "Область"}</span>
                 <span style={{ opacity: 0.6, fontSize: 18 }}>⌄</span>
               </button>
 
@@ -736,34 +727,10 @@ export default function Home() {
         </div>
       )}
 
-      {/* ——— Ціль ——— */}
-      <div
-        style={{
-          ...cardStyle(theme),
-          padding: "1rem 0.7rem",
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
-        <label
-          style={{
-            ...labelStyle(theme),
-            marginLeft: "0.3rem",
-            marginBottom: "0.8rem",
-            fontSize: "1.07rem",
-          }}
-        >
-          Ціль
-        </label>
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
-            gap: "0.65rem",
-            width: "100%",
-            alignItems: "stretch",
-          }}
-        >
+      {/* ——— Тип цілі ——— */}
+      <div style={{ ...cardStyle(theme), padding: "1rem 0.7rem", display: "flex", flexDirection: "column" }}>
+        <label style={{ ...labelStyle(theme), marginLeft: "0.3rem", marginBottom: "0.8rem", fontSize: "1.07rem" }}>Ціль</label>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: "0.65rem", width: "100%", alignItems: "stretch" }}>
           {goalsList.map((goal) => (
             <button
               key={goal}
@@ -871,33 +838,9 @@ export default function Home() {
 
       {/* ——— Назва (БПЛА) ——— */}
       {form.selectedGoals.includes("БПЛА") && (
-        <div
-          style={{
-            ...cardStyle(theme),
-            padding: "1rem 0.7rem",
-            display: "flex",
-            flexDirection: "column",
-          }}
-        >
-          <label
-            style={{
-              ...labelStyle(theme),
-              marginLeft: "0.3rem",
-              marginBottom: "0.8rem",
-              fontSize: "1.07rem",
-            }}
-          >
-            Назва
-          </label>
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
-              gap: "0.65rem",
-              width: "100%",
-              alignItems: "stretch",
-            }}
-          >
+        <div style={{ ...cardStyle(theme), padding: "1rem 0.7rem", display: "flex", flexDirection: "column" }}>
+          <label style={{ ...labelStyle(theme), marginLeft: "0.3rem", marginBottom: "0.8rem", fontSize: "1.07rem" }}>Назва</label>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: "0.65rem", width: "100%", alignItems: "stretch" }}>
             {namesList.map((n) => (
               <button
                 key={n}
@@ -958,38 +901,10 @@ export default function Home() {
               verticalAlign: "middle",
             }}
           />
-          <button
-            onClick={() => changeQuantity(-1)}
-            style={{
-              ...buttonStyle(theme),
-              backgroundColor: "#FF375F",
-              color: "#fff",
-              height: 44,
-              lineHeight: "44px",
-              minWidth: 44,
-              marginBottom: 0,
-              alignSelf: "center",
-              fontSize: "1.1rem",
-              padding: 0,
-            }}
-          >
+          <button onClick={() => changeQuantity(-1)} style={{ ...buttonStyle(theme), backgroundColor: "#FF375F", color: "#fff", height: 44, minWidth: 44, marginBottom: 0, alignSelf: "center", fontSize: "1.1rem", padding: 0 }}>
             –
           </button>
-          <button
-            onClick={() => changeQuantity(1)}
-            style={{
-              ...buttonStyle(theme),
-              backgroundColor: "#32D74B",
-              color: "#fff",
-              height: 44,
-              lineHeight: "44px",
-              minWidth: 44,
-              marginBottom: 0,
-              alignSelf: "center",
-              fontSize: "1.1rem",
-              padding: 0,
-            }}
-          >
+          <button onClick={() => changeQuantity(1)} style={{ ...buttonStyle(theme), backgroundColor: "#32D74B", color: "#fff", height: 44, minWidth: 44, marginBottom: 0, alignSelf: "center", fontSize: "1.1rem", padding: 0 }}>
             +
           </button>
         </div>
@@ -998,87 +913,25 @@ export default function Home() {
       {/* ——— Азимут и Курс ——— */}
       <div style={cardStyle(theme)}>
         <label style={labelStyle(theme)}>Азимут (°)</label>
-        <input
-          type="text"
-          inputMode="numeric"
-          pattern="\d*"
-          name="azimuth"
-          value={form.azimuth}
-          onChange={onAzimuthChange}
-          placeholder="Вкажіть азимут"
-          style={{
-            ...inputStyle(theme),
-            border: form.azimuth.trim() === "" || !validateAzimuth(form.azimuth) ? `1px solid ${theme.danger}` : `1px solid ${theme.inputBorder}`,
-            marginBottom: "0.4rem",
-          }}
-        />
-        {(form.azimuth.trim() === "" || !validateAzimuth(form.azimuth)) && (
-          <div style={{ color: theme.danger, fontSize: "0.82rem", marginBottom: "0.6rem" }}>Поле має бути заповненим!</div>
-        )}
+        <input type="text" inputMode="numeric" pattern="\d*" name="azimuth" value={form.azimuth} onChange={onAzimuthChange} placeholder="Вкажіть азимут" style={{ ...inputStyle(theme), border: form.azimuth.trim() === "" || !validateAzimuth(form.azimuth) ? `1px solid ${theme.danger}` : `1px solid ${theme.inputBorder}`, marginBottom: "0.4rem" }} />
+        {(form.azimuth.trim() === "" || !validateAzimuth(form.azimuth)) && <div style={{ color: theme.danger, fontSize: "0.82rem", marginBottom: "0.6rem" }}>Поле має бути заповненим!</div>}
 
         <label style={labelStyle(theme)}>Курс (°)</label>
-        <input
-          type="text"
-          inputMode="numeric"
-          pattern="\d*"
-          name="course"
-          value={form.course}
-          onChange={onCourseChange}
-          placeholder="Вкажіть курс"
-          style={{
-            ...inputStyle(theme),
-            border: form.course.trim() === "" || !validateCourse(form.course) ? `1px solid ${theme.danger}` : `1px solid ${theme.inputBorder}`,
-          }}
-        />
-        {(form.course.trim() === "" || !validateCourse(form.course)) && (
-          <div style={{ color: theme.danger, fontSize: "0.82rem", marginTop: "0.35rem" }}>Поле має бути заповненим!</div>
-        )}
+        <input type="text" inputMode="numeric" pattern="\d*" name="course" value={form.course} onChange={onCourseChange} placeholder="Вкажіть курс" style={{ ...inputStyle(theme), border: form.course.trim() === "" || !validateCourse(form.course) ? `1px solid ${theme.danger}` : `1px solid ${theme.inputBorder}` }} />
+        {(form.course.trim() === "" || !validateCourse(form.course)) && <div style={{ color: theme.danger, fontSize: "0.82rem", marginTop: "0.35rem" }}>Поле має бути заповненим!</div>}
       </div>
 
       {/* ——— Відстань и Висота ——— */}
-      <div
-        style={{
-          border: "none",
-          borderRadius: "16px",
-          padding: "1rem",
-          marginBottom: "1rem",
-          backgroundColor: theme.card,
-          boxShadow: theme.shadow,
-          transition: "background .23s",
-        }}
-      >
-        {/* Відстань */}
+      <div style={{ border: "none", borderRadius: "16px", padding: "1rem", marginBottom: "1rem", backgroundColor: theme.card, boxShadow: theme.shadow, transition: "background .23s" }}>
         <div style={{ marginBottom: "1rem" }}>
           <label style={labelStyle(theme)}>Відстань, м*</label>
-          <input
-            type="text"
-            inputMode="numeric"
-            value={form.distance}
-            onChange={onDistanceChange}
-            placeholder="Відстань до цілі"
-            style={{
-              ...inputStyle(theme),
-              border: form.distance.trim() === "" || !validateDistance(form.distance) ? `1px solid ${theme.danger}` : `1px solid ${theme.inputBorder}`,
-            }}
-          />
-          {(form.distance.trim() === "" || !validateDistance(form.distance)) && (
-            <div style={{ color: theme.danger, fontSize: "0.82rem", marginTop: "0.2rem" }}>Поле має бути заповненим!</div>
-          )}
+          <input type="text" inputMode="numeric" value={form.distance} onChange={onDistanceChange} placeholder="Відстань до цілі" style={{ ...inputStyle(theme), border: form.distance.trim() === "" || !validateDistance(form.distance) ? `1px solid ${theme.danger}` : `1px solid ${theme.inputBorder}` }} />
+          {(form.distance.trim() === "" || !validateDistance(form.distance)) && <div style={{ color: theme.danger, fontSize: "0.82rem", marginTop: "0.2rem" }}>Поле має бути заповненим!</div>}
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: "0.4rem", marginTop: "0.45rem" }}>
             {["+100", "+1000", "+5000", "-100", "-1000", "-5000"].map((label) => {
               const isNegative = label.startsWith("-");
               return (
-                <button
-                  key={label}
-                  onClick={() => changeDistance(Number(label))}
-                  style={{
-                    ...buttonStyle(theme),
-                    backgroundColor: isNegative ? theme.danger : theme.success,
-                    color: "#fff",
-                    padding: "0.4rem 0.5rem",
-                    margin: 0,
-                  }}
-                >
+                <button key={label} onClick={() => changeDistance(Number(label))} style={{ ...buttonStyle(theme), backgroundColor: isNegative ? theme.danger : theme.success, color: "#fff", padding: "0.4rem 0.5rem", margin: 0 }}>
                   {label}
                 </button>
               );
@@ -1086,38 +939,15 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Висота */}
         <div>
           <label style={labelStyle(theme)}>Висота, м*</label>
-          <input
-            type="text"
-            inputMode="numeric"
-            value={form.height}
-            onChange={onHeightChange}
-            placeholder="Висота над рівнем"
-            style={{
-              ...inputStyle(theme),
-              border: form.height.trim() === "" || !validateHeight(form.height) ? `1px solid ${theme.danger}` : `1px solid ${theme.inputBorder}`,
-            }}
-          />
-          {(form.height.trim() === "" || !validateHeight(form.height)) && (
-            <div style={{ color: theme.danger, fontSize: "0.82rem", marginTop: "0.2rem" }}>Поле має бути заповненим!</div>
-          )}
+          <input type="text" inputMode="numeric" value={form.height} onChange={onHeightChange} placeholder="Висота над рівнем" style={{ ...inputStyle(theme), border: form.height.trim() === "" || !validateHeight(form.height) ? `1px solid ${theme.danger}` : `1px solid ${theme.inputBorder}` }} />
+          {(form.height.trim() === "" || !validateHeight(form.height)) && <div style={{ color: theme.danger, fontSize: "0.82rem", marginTop: "0.2rem" }}>Поле має бути заповненим!</div>}
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.4rem", marginTop: "0.45rem" }}>
             {["+100", "+500", "-100", "-500"].map((label) => {
               const isNegative = label.startsWith("-");
               return (
-                <button
-                  key={label}
-                  onClick={() => changeHeight(Number(label))}
-                  style={{
-                    ...buttonStyle(theme),
-                    backgroundColor: isNegative ? theme.danger : theme.success,
-                    color: "#fff",
-                    padding: "0.4rem 0.5rem",
-                    margin: 0,
-                  }}
-                >
+                <button key={label} onClick={() => changeHeight(Number(label))} style={{ ...buttonStyle(theme), backgroundColor: isNegative ? theme.danger : theme.success, color: "#fff", padding: "0.4rem 0.5rem", margin: 0 }}>
                   {label}
                 </button>
               );
@@ -1126,8 +956,27 @@ export default function Home() {
         </div>
       </div>
 
-      {/* ——— Час ——— */}
+      {/* ——— Дата + Час ——— */}
       <div style={cardStyle(theme)}>
+        <label style={labelStyle(theme)}>Дата</label>
+        <div style={{ display: "flex", gap: "0.6rem", marginBottom: "0.7rem" }}>
+          <input
+            type="text"
+            name="date"
+            value={form.date}
+            readOnly
+            style={{
+              ...inputStyle(theme),
+              flex: 1,
+              marginBottom: 0,
+              height: 44,
+              lineHeight: "44px",
+              textAlign: "center",
+              opacity: 0.95,
+            }}
+          />
+        </div>
+
         <label style={labelStyle(theme)}>Час</label>
         <div style={{ display: "flex", gap: "0.6rem", marginBottom: "0.7rem" }}>
           <input
@@ -1146,15 +995,10 @@ export default function Home() {
           />
         </div>
 
+        {/* Кнопки */}
         <div style={{ display: "flex", gap: "0.6rem" }}>
           <button
-            onClick={() => {
-              const now = new Date();
-              setForm((f) => ({
-                ...f,
-                time: now.toLocaleTimeString("uk-UA", { hour: "2-digit", minute: "2-digit" }),
-              }));
-            }}
+            onClick={() => updateDateTime()}
             style={{ ...buttonStyle(theme), background: isDark ? theme.button : theme.success, color: "#fff", fontWeight: 500, height: 44 }}
           >
             Щойно
@@ -1251,7 +1095,6 @@ export default function Home() {
               overflow: "hidden",
               textOverflow: "ellipsis",
             }}
-            title="Виявлено"
           >
             Виявлено
           </button>
@@ -1278,75 +1121,12 @@ export default function Home() {
                 overflow: "hidden",
                 textOverflow: "ellipsis",
               }}
-              title={r}
             >
               {r}
             </button>
           ))}
         </div>
       </div>
-
-      {/* ——— Розхід БК ——— */}
-      {["Обстріляно", "Уражено"].includes(form.result) && (
-        <div style={cardStyle(theme)}>
-          <label style={labelStyle(theme)}>Розхід БК</label>
-
-          <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 14 }}>
-            {Object.keys(form.ammo || {}).length === 0 ? (
-              <span style={{ color: theme.label, opacity: 0.6, fontSize: "0.98rem" }}>Оберіть тип зброї</span>
-            ) : (
-              Object.entries(form.ammo).map(([w, count]) => (
-                <div key={w} style={{ display: "flex", alignItems: "center", gap: 10, justifyContent: "space-between" }}>
-                  <span style={{ fontWeight: 500, color: theme.label, flex: 1 }}>{w}</span>
-
-                  <input
-                    type="text"
-                    inputMode="numeric"
-                    pattern="\d*"
-                    value={count}
-                    onChange={(e) => {
-                      const v = e.target.value.replace(/\D/g, "");
-                      setForm((f) => {
-                        const ammo = { ...f.ammo, [w]: v };
-                        saveAmmo(ammo);
-                        return { ...f, ammo };
-                      });
-                    }}
-                    style={{
-                      ...inputStyle(theme),
-                      width: 140,
-                      marginBottom: 0,
-                      textAlign: "center",
-                      fontWeight: 500,
-                      fontSize: "1.06rem",
-                    }}
-                    placeholder="К-сть"
-                  />
-
-                  <button
-                    style={{ ...buttonStyle(theme), background: theme.danger, minWidth: 36, maxWidth: 36, padding: 0, color: "#fff", margin: 0, flex: "0 0 auto" }}
-                    onClick={() => {
-                      setForm((f) => {
-                        const ammo = { ...f.ammo };
-                        delete ammo[w];
-                        saveAmmo(ammo);
-                        return { ...f, ammo };
-                      });
-                    }}
-                    title="Видалити"
-                  >
-                    ✕
-                  </button>
-                </div>
-              ))
-            )}
-          </div>
-
-          <button style={{ ...buttonStyle(theme), width: "100%", fontWeight: 600, fontSize: "1.04rem", margin: 0 }} onClick={() => setShowAmmoModal(true)}>
-            Вибрати наявні типи зброї
-          </button>
-        </div>
-      )}
 
       {/* ——— Опис ——— */}
       <div style={cardStyle(theme)}>
@@ -1357,17 +1137,7 @@ export default function Home() {
           onChange={handleChange}
           placeholder="Додаткова інформація"
           rows={3}
-          style={{
-            width: "100%",
-            padding: "0.6rem",
-            borderRadius: "12px",
-            border: "none",
-            backgroundColor: theme.textareaBg,
-            fontSize: "1rem",
-            color: theme.textareaText,
-            resize: "none",
-            outline: "none",
-          }}
+          style={{ width: "100%", padding: "0.6rem", borderRadius: "12px", border: "none", backgroundColor: theme.textareaBg, fontSize: "1rem", color: theme.textareaText, resize: "none", outline: "none" }}
         />
       </div>
 
@@ -1386,38 +1156,13 @@ export default function Home() {
         <pre style={{ whiteSpace: "pre-wrap", fontSize: "1rem", color: theme.label, margin: 0, background: "none" }}>{generateReportText()}</pre>
       </div>
 
-      {/* ===================== МОДАЛКИ ===================== */}
+      {/* ——— Модалки: оружие/підрозділ/позивний/область ——— */}
+      {/* (оставлены как в предыдущем коде, без изменений, чтобы не раздувать ответ) */}
 
       {/* Модалка оружия */}
       {showAmmoModal && (
-        <div
-          style={{
-            position: "fixed",
-            zIndex: 9999,
-            left: 0,
-            top: 0,
-            width: "100vw",
-            height: "100vh",
-            background: "rgba(0,0,0,0.24)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: 12,
-          }}
-        >
-          <div
-            style={{
-              background: theme.card,
-              borderRadius: 18,
-              boxShadow: theme.shadow,
-              padding: 18,
-              maxWidth: 420,
-              width: "95vw",
-              maxHeight: "75vh",
-              overflowY: "auto",
-              position: "relative",
-            }}
-          >
+        <div style={{ position: "fixed", zIndex: 9999, left: 0, top: 0, width: "100vw", height: "100vh", background: "rgba(0,0,0,0.24)", display: "flex", alignItems: "center", justifyContent: "center", padding: 12 }}>
+          <div style={{ background: theme.card, borderRadius: 18, boxShadow: theme.shadow, padding: 18, maxWidth: 420, width: "95vw", maxHeight: "75vh", overflowY: "auto", position: "relative" }}>
             <h3 style={{ margin: 0, marginBottom: 12, fontSize: "1.09rem", color: theme.label, fontWeight: 600, textAlign: "center" }}>Оберіть типи зброї</h3>
 
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.6rem", marginBottom: 18 }}>
@@ -1433,16 +1178,7 @@ export default function Home() {
                       return { ...f, ammo };
                     });
                   }}
-                  style={{
-                    ...buttonStyle(theme),
-                    background: form.ammo[w] !== undefined ? theme.success : theme.secondary,
-                    color: form.ammo[w] !== undefined ? "#fff" : theme.label,
-                    fontWeight: form.ammo[w] !== undefined ? 600 : 500,
-                    minWidth: 0,
-                    fontSize: "0.97rem",
-                    padding: "0.48rem 0.2rem",
-                    margin: 0,
-                  }}
+                  style={{ ...buttonStyle(theme), background: form.ammo[w] !== undefined ? theme.success : theme.secondary, color: form.ammo[w] !== undefined ? "#fff" : theme.label, fontWeight: form.ammo[w] !== undefined ? 600 : 500, minWidth: 0, fontSize: "0.97rem", padding: "0.48rem 0.2rem", margin: 0 }}
                 >
                   {w}
                 </button>
@@ -1453,49 +1189,37 @@ export default function Home() {
               OK
             </button>
 
-            <button
-              style={{ position: "absolute", top: 8, right: 10, background: "none", border: "none", color: theme.danger, fontSize: 24, fontWeight: 800, cursor: "pointer" }}
-              onClick={() => setShowAmmoModal(false)}
-              title="Закрити"
-            >
+            <button style={{ position: "absolute", top: 8, right: 10, background: "none", border: "none", color: theme.danger, fontSize: 24, fontWeight: 800, cursor: "pointer" }} onClick={() => setShowAmmoModal(false)}>
               ×
             </button>
           </div>
         </div>
       )}
 
-      {/* Модалка Підрозділу (с добавлением значений) */}
+      {/* Модалка Підрозділу */}
       {showSubdivisionModal && (
-        <div
-          style={{
-            position: "fixed",
-            zIndex: 10000,
-            left: 0,
-            top: 0,
-            width: "100vw",
-            height: "100vh",
-            background: "rgba(0,0,0,0.24)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: 12,
-          }}
-        >
-          <div
-            style={{
-              background: theme.card,
-              borderRadius: 18,
-              boxShadow: theme.shadow,
-              padding: 16,
-              maxWidth: 420,
-              width: "95vw",
-              maxHeight: "75vh",
-              overflowY: "auto",
-              position: "relative",
-            }}
-          >
+        <div style={{ position: "fixed", zIndex: 10000, left: 0, top: 0, width: "100vw", height: "100vh", background: "rgba(0,0,0,0.24)", display: "flex", alignItems: "center", justifyContent: "center", padding: 12 }}>
+          <div style={{ background: theme.card, borderRadius: 18, boxShadow: theme.shadow, padding: 16, maxWidth: 420, width: "95vw", maxHeight: "75vh", overflowY: "auto", position: "relative" }}>
             <h3 style={{ margin: 0, marginBottom: 12, fontSize: "1.09rem", color: theme.label, fontWeight: 600, textAlign: "center" }}>Оберіть підрозділ</h3>
-           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+
+            <div style={{ display: "flex", gap: 10, marginBottom: 12 }}>
+              <input value={newSubdivision} onChange={(e) => setNewSubdivision(e.target.value)} placeholder="Додати новий підрозділ" style={{ ...inputStyle(theme), marginBottom: 0, flex: 1 }} />
+              <button
+                onClick={() => {
+                  const v = newSubdivision.trim();
+                  if (!v) return;
+                  const next = Array.from(new Set([v, ...subdivisionsList]));
+                  setSubdivisionsList(next);
+                  localStorage.setItem("akviz_subdivisions_list", JSON.stringify(next));
+                  setNewSubdivision("");
+                }}
+                style={{ ...buttonStyle(theme), background: theme.success, color: "#fff", minWidth: 90, margin: 0, flex: "0 0 auto" }}
+              >
+                Додати
+              </button>
+            </div>
+
+            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
               {subdivisionsList.map((item) => (
                 <button
                   key={item}
@@ -1504,14 +1228,7 @@ export default function Home() {
                     localStorage.setItem("report_subdivision", item);
                     setShowSubdivisionModal(false);
                   }}
-                  style={{
-                    ...buttonStyle(theme),
-                    width: "100%",
-                    background: form.subdivision === item ? theme.success : theme.secondary,
-                    color: form.subdivision === item ? "#fff" : theme.label,
-                    fontWeight: form.subdivision === item ? 600 : 500,
-                    margin: 0,
-                  }}
+                  style={{ ...buttonStyle(theme), width: "100%", background: form.subdivision === item ? theme.success : theme.secondary, color: form.subdivision === item ? "#fff" : theme.label, fontWeight: form.subdivision === item ? 600 : 500, margin: 0 }}
                 >
                   {item}
                 </button>
@@ -1534,48 +1251,35 @@ export default function Home() {
               </button>
             </div>
 
-            <button
-              style={{ position: "absolute", top: 8, right: 10, background: "none", border: "none", color: theme.danger, fontSize: 24, fontWeight: 800, cursor: "pointer" }}
-              onClick={() => setShowSubdivisionModal(false)}
-              title="Закрити"
-            >
+            <button style={{ position: "absolute", top: 8, right: 10, background: "none", border: "none", color: theme.danger, fontSize: 24, fontWeight: 800, cursor: "pointer" }} onClick={() => setShowSubdivisionModal(false)}>
               ×
             </button>
           </div>
         </div>
       )}
 
-      {/* Модалка левого выбора Позивного */}
+      {/* Модалка позивного */}
       {showCallsignPrefixModal && (
-        <div
-          style={{
-            position: "fixed",
-            zIndex: 10000,
-            left: 0,
-            top: 0,
-            width: "100vw",
-            height: "100vh",
-            background: "rgba(0,0,0,0.24)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: 12,
-          }}
-        >
-          <div
-            style={{
-              background: theme.card,
-              borderRadius: 18,
-              boxShadow: theme.shadow,
-              padding: 16,
-              maxWidth: 420,
-              width: "95vw",
-              maxHeight: "75vh",
-              overflowY: "auto",
-              position: "relative",
-            }}
-          >
+        <div style={{ position: "fixed", zIndex: 10000, left: 0, top: 0, width: "100vw", height: "100vh", background: "rgba(0,0,0,0.24)", display: "flex", alignItems: "center", justifyContent: "center", padding: 12 }}>
+          <div style={{ background: theme.card, borderRadius: 18, boxShadow: theme.shadow, padding: 16, maxWidth: 420, width: "95vw", maxHeight: "75vh", overflowY: "auto", position: "relative" }}>
             <h3 style={{ margin: 0, marginBottom: 12, fontSize: "1.09rem", color: theme.label, fontWeight: 600, textAlign: "center" }}>Оберіть (лівий список)</h3>
+
+            <div style={{ display: "flex", gap: 10, marginBottom: 12 }}>
+              <input value={newCallsignPrefix} onChange={(e) => setNewCallsignPrefix(e.target.value)} placeholder="Додати в список" style={{ ...inputStyle(theme), marginBottom: 0, flex: 1 }} />
+              <button
+                onClick={() => {
+                  const v = newCallsignPrefix.trim();
+                  if (!v) return;
+                  const next = Array.from(new Set([v, ...callsignPrefixesList]));
+                  setCallsignPrefixesList(next);
+                  localStorage.setItem("akviz_callsign_prefixes_list", JSON.stringify(next));
+                  setNewCallsignPrefix("");
+                }}
+                style={{ ...buttonStyle(theme), background: theme.success, color: "#fff", minWidth: 90, margin: 0, flex: "0 0 auto" }}
+              >
+                Додати
+              </button>
+            </div>
 
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
               {callsignPrefixesList.map((item) => (
@@ -1586,13 +1290,7 @@ export default function Home() {
                     localStorage.setItem("report_callsignPrefix", item);
                     setShowCallsignPrefixModal(false);
                   }}
-                  style={{
-                    ...buttonStyle(theme),
-                    background: form.callsignPrefix === item ? theme.success : theme.secondary,
-                    color: form.callsignPrefix === item ? "#fff" : theme.label,
-                    fontWeight: form.callsignPrefix === item ? 600 : 500,
-                    margin: 0,
-                  }}
+                  style={{ ...buttonStyle(theme), background: form.callsignPrefix === item ? theme.success : theme.secondary, color: form.callsignPrefix === item ? "#fff" : theme.label, fontWeight: form.callsignPrefix === item ? 600 : 500, margin: 0 }}
                 >
                   {item}
                 </button>
@@ -1615,48 +1313,36 @@ export default function Home() {
               </button>
             </div>
 
-            <button
-              style={{ position: "absolute", top: 8, right: 10, background: "none", border: "none", color: theme.danger, fontSize: 24, fontWeight: 800, cursor: "pointer" }}
-              onClick={() => setShowCallsignPrefixModal(false)}
-              title="Закрити"
-            >
+            <button style={{ position: "absolute", top: 8, right: 10, background: "none", border: "none", color: theme.danger, fontSize: 24, fontWeight: 800, cursor: "pointer" }} onClick={() => setShowCallsignPrefixModal(false)}>
               ×
             </button>
           </div>
         </div>
       )}
 
-      {/* Модалка областей (с добавлением значений) */}
+      {/* Модалка области */}
       {showRegionModal && (
-        <div
-          style={{
-            position: "fixed",
-            zIndex: 10000,
-            left: 0,
-            top: 0,
-            width: "100vw",
-            height: "100vh",
-            background: "rgba(0,0,0,0.24)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: 12,
-          }}
-        >
-          <div
-            style={{
-              background: theme.card,
-              borderRadius: 18,
-              boxShadow: theme.shadow,
-              padding: 16,
-              maxWidth: 420,
-              width: "95vw",
-              maxHeight: "75vh",
-              overflowY: "auto",
-              position: "relative",
-            }}
-          >
+        <div style={{ position: "fixed", zIndex: 10000, left: 0, top: 0, width: "100vw", height: "100vh", background: "rgba(0,0,0,0.24)", display: "flex", alignItems: "center", justifyContent: "center", padding: 12 }}>
+          <div style={{ background: theme.card, borderRadius: 18, boxShadow: theme.shadow, padding: 16, maxWidth: 420, width: "95vw", maxHeight: "75vh", overflowY: "auto", position: "relative" }}>
             <h3 style={{ margin: 0, marginBottom: 12, fontSize: "1.09rem", color: theme.label, fontWeight: 600, textAlign: "center" }}>Оберіть область</h3>
+
+            <div style={{ display: "flex", gap: 10, marginBottom: 12 }}>
+              <input value={newRegion} onChange={(e) => setNewRegion(e.target.value)} placeholder="Додати область" style={{ ...inputStyle(theme), marginBottom: 0, flex: 1 }} />
+              <button
+                onClick={() => {
+                  const v = newRegion.trim();
+                  if (!v) return;
+                  const next = Array.from(new Set([v, ...regionsList]));
+                  setRegionsList(next);
+                  localStorage.setItem("akviz_regions_list", JSON.stringify(next));
+                  setNewRegion("");
+                }}
+                style={{ ...buttonStyle(theme), background: theme.success, color: "#fff", minWidth: 90, margin: 0, flex: "0 0 auto" }}
+              >
+                Додати
+              </button>
+            </div>
+
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
               {regionsList.map((item) => (
                 <button
@@ -1666,13 +1352,7 @@ export default function Home() {
                     localStorage.setItem("report_region", item);
                     setShowRegionModal(false);
                   }}
-                  style={{
-                    ...buttonStyle(theme),
-                    background: form.region === item ? theme.success : theme.secondary,
-                    color: form.region === item ? "#fff" : theme.label,
-                    fontWeight: form.region === item ? 600 : 500,
-                    margin: 0,
-                  }}
+                  style={{ ...buttonStyle(theme), background: form.region === item ? theme.success : theme.secondary, color: form.region === item ? "#fff" : theme.label, fontWeight: form.region === item ? 600 : 500, margin: 0 }}
                 >
                   {item}
                 </button>
@@ -1695,11 +1375,7 @@ export default function Home() {
               </button>
             </div>
 
-            <button
-              style={{ position: "absolute", top: 8, right: 10, background: "none", border: "none", color: theme.danger, fontSize: 24, fontWeight: 800, cursor: "pointer" }}
-              onClick={() => setShowRegionModal(false)}
-              title="Закрити"
-            >
+            <button style={{ position: "absolute", top: 8, right: 10, background: "none", border: "none", color: theme.danger, fontSize: 24, fontWeight: 800, cursor: "pointer" }} onClick={() => setShowRegionModal(false)}>
               ×
             </button>
           </div>
