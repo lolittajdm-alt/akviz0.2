@@ -22,15 +22,21 @@ export default function Home() {
   // ——— Состояния формы ———
   const [form, setForm] = useState({
     subdivision: "",
+
+    // Особовий склад
+    rank: "",
+    personName: "",
+
     // Позивний: слева выбор, справа текст
     callsignPrefix: "",
     callsignText: "",
+
     // Населений пункт: 1 строка (город/НП), 2 строка (область)
     locationCity: "",
     region: "",
 
     // Дата/час
-    date: "", // ← добавили
+    date: "",
     time: "",
 
     selectedGoals: [],
@@ -54,6 +60,8 @@ export default function Home() {
 
   const [locks, setLocks] = useState({
     subdivision: false,
+    rank: false,
+    personName: false,
     callsign: false,
     location: false,
     region: false,
@@ -63,6 +71,23 @@ export default function Home() {
 
   // ——— Списки (редактируемые, сохраняются) ———
   const defaultSubdivisions = ["1020 зрап", "зрадн 60 омбр", "МВГ «Халк»"];
+  const defaultRanks = [
+    "солдат",
+    "старший солдат",
+    "молодший сержант",
+    "сержант",
+    "старший сержант",
+    "головний сержант",
+    "прапорщик",
+    "старший прапорщик",
+    "молодший лейтенант",
+    "лейтенант",
+    "старший лейтенант",
+    "капітан",
+    "майор",
+    "підполковник",
+    "полковник",
+  ];
   const defaultCallsignPrefixes = ["МВГ", "СПИС", "ПОСТ", "ГРУПА", "ЕКІПАЖ"];
   const defaultRegions = [
     "Вінницька",
@@ -92,16 +117,19 @@ export default function Home() {
   ];
 
   const [subdivisionsList, setSubdivisionsList] = useState(defaultSubdivisions);
+  const [ranksList, setRanksList] = useState(defaultRanks);
   const [callsignPrefixesList, setCallsignPrefixesList] = useState(defaultCallsignPrefixes);
   const [regionsList, setRegionsList] = useState(defaultRegions);
 
   // ——— Модалки ———
   const [showSubdivisionModal, setShowSubdivisionModal] = useState(false);
+  const [showRankModal, setShowRankModal] = useState(false);
   const [showCallsignPrefixModal, setShowCallsignPrefixModal] = useState(false);
   const [showRegionModal, setShowRegionModal] = useState(false);
 
   // ——— Поля добавления в списки ———
   const [newSubdivision, setNewSubdivision] = useState("");
+  const [newRank, setNewRank] = useState("");
   const [newCallsignPrefix, setNewCallsignPrefix] = useState("");
   const [newRegion, setNewRegion] = useState("");
 
@@ -124,8 +152,7 @@ export default function Home() {
   // ——— Дата/Время ———
   const updateDateTime = () => {
     const now = new Date();
-    // дата с телефона (локальная)
-    const dateStr = now.toLocaleDateString("uk-UA"); // например 30.12.2025
+    const dateStr = now.toLocaleDateString("uk-UA");
     const timeStr = now.toLocaleTimeString("uk-UA", { hour: "2-digit", minute: "2-digit" });
     setForm((f) => ({
       ...f,
@@ -133,7 +160,6 @@ export default function Home() {
       time: timeStr,
     }));
   };
-
   useEffect(updateDateTime, []);
 
   // ——— Загрузка сохранённого ———
@@ -151,8 +177,17 @@ export default function Home() {
       } catch {}
     }
 
-    // поля
-    const keys = ["subdivision", "callsignPrefix", "callsignText", "locationCity", "region", "date", "time"];
+    const keys = [
+      "subdivision",
+      "rank",
+      "personName",
+      "callsignPrefix",
+      "callsignText",
+      "locationCity",
+      "region",
+      "date",
+      "time",
+    ];
     keys.forEach((key) => {
       const v = localStorage.getItem(`report_${key}`);
       if (v !== null) setForm((f) => ({ ...f, [key]: v }));
@@ -164,6 +199,14 @@ export default function Home() {
       try {
         const arr = JSON.parse(sSub);
         if (Array.isArray(arr) && arr.length) setSubdivisionsList(arr);
+      } catch {}
+    }
+
+    const sRanks = localStorage.getItem("akviz_ranks_list");
+    if (sRanks) {
+      try {
+        const arr = JSON.parse(sRanks);
+        if (Array.isArray(arr) && arr.length) setRanksList(arr);
       } catch {}
     }
 
@@ -203,8 +246,9 @@ export default function Home() {
   const handleChange = (e) => {
     const { name, value } = e.target;
 
-    // блокировки
     if (name === "subdivision" && locks.subdivision) return;
+    if (name === "rank" && locks.rank) return;
+    if (name === "personName" && locks.personName) return;
     if ((name === "callsignPrefix" || name === "callsignText") && locks.callsign) return;
     if (name === "locationCity" && locks.location) return;
     if (name === "region" && locks.region) return;
@@ -363,6 +407,15 @@ export default function Home() {
     return "";
   };
 
+  const personnelForReport = () => {
+    const r = (form.rank || "").trim();
+    const n = (form.personName || "").trim();
+    if (r && n) return `${r} ${n}`;
+    if (n) return n;
+    if (r) return r;
+    return "";
+  };
+
   const generateReportText = () => {
     const {
       subdivision,
@@ -384,13 +437,11 @@ export default function Home() {
       ammo,
     } = form;
 
-    // только калибр
     function extractCaliber(nm) {
       const parts = nm.split("-");
       if (parts.length > 1) return parts[parts.length - 1].trim();
       return nm.trim();
     }
-    // полное имя без калибра
     function extractWeaponName(nm) {
       const parts = nm.split(" - ");
       if (parts.length > 1) return parts.slice(0, -1).join(" - ").trim();
@@ -408,36 +459,46 @@ export default function Home() {
 
     const loc = locationForReport();
     const call = callsignForReport();
+    const pers = personnelForReport();
 
-    // ===== Обстріляно / Уражено =====
     if (result === "Обстріляно" || result === "Уражено") {
       let targetNumText = null;
       if (noIssue) targetNumText = "Без видачі";
       else if (targetNumber) targetNumText = `№${targetNumber}`;
 
-      // 1-й рядок (дата + время первыми)
       let firstLineArr = [
         date ? date : null,
         time ? time : null,
         targetNumText ? `- ${targetNumText}` : null,
         subdivision ? `- ${subdivision}` : null,
         call ? `(${call})` : null,
+        pers ? `[${pers}]` : null,
       ];
       let firstLine = firstLineArr.filter(Boolean).join(", ");
       firstLine = firstLine.replace(/, -/g, "-").replace(/, \(/g, " (");
 
       const locationLine = loc ? `в районі ${loc}` : null;
 
-      const usedWeapons = ammo && Object.keys(ammo).length ? Object.keys(ammo).map(extractWeaponName).join(", ") : null;
-      const paramArr = [height ? `H-${height}` : null, distance ? `D-${distance}` : null, azimuth ? `A-${azimuth}` : null, course ? `K-${course}` : null].filter(Boolean);
-      const thirdLine = usedWeapons ? `з ${usedWeapons}${paramArr.length ? " (" + paramArr.join(", ") + ")" : ""}` : null;
+      const usedWeapons =
+        ammo && Object.keys(ammo).length ? Object.keys(ammo).map(extractWeaponName).join(", ") : null;
+      const paramArr = [
+        height ? `H-${height}` : null,
+        distance ? `D-${distance}` : null,
+        azimuth ? `A-${azimuth}` : null,
+        course ? `K-${course}` : null,
+      ].filter(Boolean);
+      const thirdLine = usedWeapons
+        ? `з ${usedWeapons}${paramArr.length ? " (" + paramArr.join(", ") + ")" : ""}`
+        : null;
 
-      let fourthLine = [result, selectedGoals.length ? selectedGoals.join(", ") : null, name ? name : null].filter(Boolean).join(" ") + ".";
+      let fourthLine =
+        [result, selectedGoals.length ? selectedGoals.join(", ") : null, name ? name : null]
+          .filter(Boolean)
+          .join(" ") + ".";
 
       return [firstLine, locationLine, thirdLine, fourthLine, ammoString].filter(Boolean).join("\n");
     }
 
-    // ===== Остальные =====
     const allowedGoals = ["БПЛА", "Вибух", "КР", "Гелікоптер", "Літак Малий", "Літак Великий", "Квадрокоптер", "Зонд"];
 
     const goalsForReport = selectedGoals.map((goal) => {
@@ -448,11 +509,12 @@ export default function Home() {
     const hasAllowedGoal = selectedGoals.some((goal) => allowedGoals.includes(goal));
 
     return [
-      // Дата первой строкой
       date ? `Дата: ${date}` : null,
       time ? `Ч: ${time}` : null,
-      `Ціль: ${[...goalsForReport, side, noIssue ? "Без видачі" : targetNumber ? `${targetNumber}` : ""].filter(Boolean).join(", ")}`,
-      subdivision || call ? `П: ${[subdivision, call].filter(Boolean).join(", ")}` : null,
+      `Ціль: ${[...goalsForReport, side, noIssue ? "Без видачі" : targetNumber ? `${targetNumber}` : ""]
+        .filter(Boolean)
+        .join(", ")}`,
+      subdivision || call || pers ? `П: ${[subdivision, call, pers].filter(Boolean).join(", ")}` : null,
       height ? `Висота: ${height} м` : null,
       distance ? `Відстань: ${distance} м` : null,
       hasAllowedGoal && quantity ? `Кількість: ${quantity} од.` : null,
@@ -521,14 +583,7 @@ export default function Home() {
           transition: "left .22s cubic-bezier(.47,1.64,.41,.8), background .2s",
         }}
       >
-        <span
-          style={{
-            fontSize: 22,
-            color: isDark ? "#ffe200" : "#b7b7b7",
-            opacity: 1,
-            transition: "color .2s",
-          }}
-        >
+        <span style={{ fontSize: 22, color: isDark ? "#ffe200" : "#b7b7b7", transition: "color .2s" }}>
           {isDark ? "☀️" : "🌙"}
         </span>
       </span>
@@ -548,14 +603,7 @@ export default function Home() {
       }}
     >
       {/* ——— Шапка ——— */}
-      <div
-        style={{
-          ...cardStyle(theme),
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
+      <div style={{ ...cardStyle(theme), display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <h1 style={{ margin: 0, fontSize: "1.35rem", color: theme.label, fontWeight: 600 }}>АкВіз 2.0</h1>
         <div style={{ display: "flex", gap: 12, alignItems: "center" }}>{Switch}</div>
       </div>
@@ -606,6 +654,75 @@ export default function Home() {
                 }}
               >
                 {locks.subdivision ? "🔒" : "✏️"}
+              </button>
+            </div>
+          </div>
+
+          {/* Особовий склад */}
+          <div style={{ marginBottom: 16 }}>
+            <label style={labelStyle(theme)}>Особовий склад</label>
+
+            {/* 1 поле: Звання (модалка) */}
+            <div style={{ display: "flex", gap: "0.6rem", alignItems: "center", marginBottom: 10 }}>
+              <button
+                type="button"
+                onClick={() => setShowRankModal(true)}
+                disabled={locks.rank}
+                style={{
+                  ...inputStyle(theme),
+                  marginBottom: 0,
+                  textAlign: "left",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  cursor: locks.rank ? "not-allowed" : "pointer",
+                  opacity: locks.rank ? 0.6 : 1,
+                  flex: 1,
+                }}
+                title={locks.rank ? "Розблокуйте поле" : "Вибрати звання"}
+              >
+                <span style={{ opacity: form.rank ? 1 : 0.6 }}>{form.rank || "Звання"}</span>
+                <span style={{ opacity: 0.6, fontSize: 18 }}>⌄</span>
+              </button>
+
+              <button
+                onClick={() => toggleLock("rank")}
+                style={{
+                  ...buttonStyle(theme),
+                  background: locks.rank ? theme.danger : theme.secondary,
+                  color: locks.rank ? "#fff" : theme.label,
+                  minWidth: 44,
+                  flex: "0 0 auto",
+                  margin: 0,
+                }}
+              >
+                {locks.rank ? "🔒" : "✏️"}
+              </button>
+            </div>
+
+            {/* 2 поле: ПІБ/позначення */}
+            <div style={{ display: "flex", gap: "0.6rem", alignItems: "center" }}>
+              <input
+                name="personName"
+                value={form.personName}
+                onChange={handleChange}
+                disabled={locks.personName}
+                style={{ ...inputStyle(theme), marginBottom: 0, flex: 1 }}
+                placeholder="Залужний В.Ф."
+              />
+
+              <button
+                onClick={() => toggleLock("personName")}
+                style={{
+                  ...buttonStyle(theme),
+                  background: locks.personName ? theme.danger : theme.secondary,
+                  color: locks.personName ? "#fff" : theme.label,
+                  minWidth: 44,
+                  flex: "0 0 auto",
+                  margin: 0,
+                }}
+              >
+                {locks.personName ? "🔒" : "✏️"}
               </button>
             </div>
           </div>
@@ -913,20 +1030,61 @@ export default function Home() {
       {/* ——— Азимут и Курс ——— */}
       <div style={cardStyle(theme)}>
         <label style={labelStyle(theme)}>Азимут (°)</label>
-        <input type="text" inputMode="numeric" pattern="\d*" name="azimuth" value={form.azimuth} onChange={onAzimuthChange} placeholder="Вкажіть азимут" style={{ ...inputStyle(theme), border: form.azimuth.trim() === "" || !validateAzimuth(form.azimuth) ? `1px solid ${theme.danger}` : `1px solid ${theme.inputBorder}`, marginBottom: "0.4rem" }} />
-        {(form.azimuth.trim() === "" || !validateAzimuth(form.azimuth)) && <div style={{ color: theme.danger, fontSize: "0.82rem", marginBottom: "0.6rem" }}>Поле має бути заповненим!</div>}
+        <input
+          type="text"
+          inputMode="numeric"
+          pattern="\d*"
+          name="azimuth"
+          value={form.azimuth}
+          onChange={onAzimuthChange}
+          placeholder="Вкажіть азимут"
+          style={{
+            ...inputStyle(theme),
+            border: form.azimuth.trim() === "" || !validateAzimuth(form.azimuth) ? `1px solid ${theme.danger}` : `1px solid ${theme.inputBorder}`,
+            marginBottom: "0.4rem",
+          }}
+        />
+        {(form.azimuth.trim() === "" || !validateAzimuth(form.azimuth)) && (
+          <div style={{ color: theme.danger, fontSize: "0.82rem", marginBottom: "0.6rem" }}>Поле має бути заповненим!</div>
+        )}
 
         <label style={labelStyle(theme)}>Курс (°)</label>
-        <input type="text" inputMode="numeric" pattern="\d*" name="course" value={form.course} onChange={onCourseChange} placeholder="Вкажіть курс" style={{ ...inputStyle(theme), border: form.course.trim() === "" || !validateCourse(form.course) ? `1px solid ${theme.danger}` : `1px solid ${theme.inputBorder}` }} />
-        {(form.course.trim() === "" || !validateCourse(form.course)) && <div style={{ color: theme.danger, fontSize: "0.82rem", marginTop: "0.35rem" }}>Поле має бути заповненим!</div>}
+        <input
+          type="text"
+          inputMode="numeric"
+          pattern="\d*"
+          name="course"
+          value={form.course}
+          onChange={onCourseChange}
+          placeholder="Вкажіть курс"
+          style={{
+            ...inputStyle(theme),
+            border: form.course.trim() === "" || !validateCourse(form.course) ? `1px solid ${theme.danger}` : `1px solid ${theme.inputBorder}`,
+          }}
+        />
+        {(form.course.trim() === "" || !validateCourse(form.course)) && (
+          <div style={{ color: theme.danger, fontSize: "0.82rem", marginTop: "0.35rem" }}>Поле має бути заповненим!</div>
+        )}
       </div>
 
       {/* ——— Відстань и Висота ——— */}
       <div style={{ border: "none", borderRadius: "16px", padding: "1rem", marginBottom: "1rem", backgroundColor: theme.card, boxShadow: theme.shadow, transition: "background .23s" }}>
         <div style={{ marginBottom: "1rem" }}>
           <label style={labelStyle(theme)}>Відстань, м*</label>
-          <input type="text" inputMode="numeric" value={form.distance} onChange={onDistanceChange} placeholder="Відстань до цілі" style={{ ...inputStyle(theme), border: form.distance.trim() === "" || !validateDistance(form.distance) ? `1px solid ${theme.danger}` : `1px solid ${theme.inputBorder}` }} />
-          {(form.distance.trim() === "" || !validateDistance(form.distance)) && <div style={{ color: theme.danger, fontSize: "0.82rem", marginTop: "0.2rem" }}>Поле має бути заповненим!</div>}
+          <input
+            type="text"
+            inputMode="numeric"
+            value={form.distance}
+            onChange={onDistanceChange}
+            placeholder="Відстань до цілі"
+            style={{
+              ...inputStyle(theme),
+              border: form.distance.trim() === "" || !validateDistance(form.distance) ? `1px solid ${theme.danger}` : `1px solid ${theme.inputBorder}`,
+            }}
+          />
+          {(form.distance.trim() === "" || !validateDistance(form.distance)) && (
+            <div style={{ color: theme.danger, fontSize: "0.82rem", marginTop: "0.2rem" }}>Поле має бути заповненим!</div>
+          )}
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: "0.4rem", marginTop: "0.45rem" }}>
             {["+100", "+1000", "+5000", "-100", "-1000", "-5000"].map((label) => {
               const isNegative = label.startsWith("-");
@@ -941,8 +1099,20 @@ export default function Home() {
 
         <div>
           <label style={labelStyle(theme)}>Висота, м*</label>
-          <input type="text" inputMode="numeric" value={form.height} onChange={onHeightChange} placeholder="Висота над рівнем" style={{ ...inputStyle(theme), border: form.height.trim() === "" || !validateHeight(form.height) ? `1px solid ${theme.danger}` : `1px solid ${theme.inputBorder}` }} />
-          {(form.height.trim() === "" || !validateHeight(form.height)) && <div style={{ color: theme.danger, fontSize: "0.82rem", marginTop: "0.2rem" }}>Поле має бути заповненим!</div>}
+          <input
+            type="text"
+            inputMode="numeric"
+            value={form.height}
+            onChange={onHeightChange}
+            placeholder="Висота над рівнем"
+            style={{
+              ...inputStyle(theme),
+              border: form.height.trim() === "" || !validateHeight(form.height) ? `1px solid ${theme.danger}` : `1px solid ${theme.inputBorder}`,
+            }}
+          />
+          {(form.height.trim() === "" || !validateHeight(form.height)) && (
+            <div style={{ color: theme.danger, fontSize: "0.82rem", marginTop: "0.2rem" }}>Поле має бути заповненим!</div>
+          )}
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.4rem", marginTop: "0.45rem" }}>
             {["+100", "+500", "-100", "-500"].map((label) => {
               const isNegative = label.startsWith("-");
@@ -960,47 +1130,16 @@ export default function Home() {
       <div style={cardStyle(theme)}>
         <label style={labelStyle(theme)}>Дата</label>
         <div style={{ display: "flex", gap: "0.6rem", marginBottom: "0.7rem" }}>
-          <input
-            type="text"
-            name="date"
-            value={form.date}
-            readOnly
-            style={{
-              ...inputStyle(theme),
-              flex: 1,
-              marginBottom: 0,
-              height: 44,
-              lineHeight: "44px",
-              textAlign: "center",
-              opacity: 0.95,
-            }}
-          />
+          <input type="text" name="date" value={form.date} readOnly style={{ ...inputStyle(theme), flex: 1, marginBottom: 0, height: 44, lineHeight: "44px", textAlign: "center", opacity: 0.95 }} />
         </div>
 
         <label style={labelStyle(theme)}>Час</label>
         <div style={{ display: "flex", gap: "0.6rem", marginBottom: "0.7rem" }}>
-          <input
-            type="text"
-            name="time"
-            value={form.time}
-            onChange={handleChange}
-            style={{
-              ...inputStyle(theme),
-              flex: 1,
-              marginBottom: 0,
-              height: 44,
-              lineHeight: "44px",
-              textAlign: "center",
-            }}
-          />
+          <input type="text" name="time" value={form.time} onChange={handleChange} style={{ ...inputStyle(theme), flex: 1, marginBottom: 0, height: 44, lineHeight: "44px", textAlign: "center" }} />
         </div>
 
-        {/* Кнопки */}
         <div style={{ display: "flex", gap: "0.6rem" }}>
-          <button
-            onClick={() => updateDateTime()}
-            style={{ ...buttonStyle(theme), background: isDark ? theme.button : theme.success, color: "#fff", fontWeight: 500, height: 44 }}
-          >
+          <button onClick={() => updateDateTime()} style={{ ...buttonStyle(theme), background: isDark ? theme.button : theme.success, color: "#fff", fontWeight: 500, height: 44 }}>
             Щойно
           </button>
 
@@ -1013,6 +1152,7 @@ export default function Home() {
                 h = (h + 1) % 24;
               }
               setForm((f) => ({ ...f, time: `${h.toString().padStart(2, "0")}:${m.toString().padStart(2, "0")}` }));
+              localStorage.setItem("report_time", `${h.toString().padStart(2, "0")}:${m.toString().padStart(2, "0")}`);
             }}
             style={{ ...buttonStyle(theme), background: isDark ? theme.button : theme.success, color: "#fff", fontWeight: 500, height: 44 }}
           >
@@ -1029,6 +1169,7 @@ export default function Home() {
                 if (h < 0) h = 23;
               }
               setForm((f) => ({ ...f, time: `${h.toString().padStart(2, "0")}:${m.toString().padStart(2, "0")}` }));
+              localStorage.setItem("report_time", `${h.toString().padStart(2, "0")}:${m.toString().padStart(2, "0")}`);
             }}
             style={{ ...buttonStyle(theme), background: isDark ? theme.button : theme.danger, color: "#fff", fontWeight: 500, height: 44 }}
           >
@@ -1137,7 +1278,17 @@ export default function Home() {
           onChange={handleChange}
           placeholder="Додаткова інформація"
           rows={3}
-          style={{ width: "100%", padding: "0.6rem", borderRadius: "12px", border: "none", backgroundColor: theme.textareaBg, fontSize: "1rem", color: theme.textareaText, resize: "none", outline: "none" }}
+          style={{
+            width: "100%",
+            padding: "0.6rem",
+            borderRadius: "12px",
+            border: "none",
+            backgroundColor: theme.textareaBg,
+            fontSize: "1rem",
+            color: theme.textareaText,
+            resize: "none",
+            outline: "none",
+          }}
         />
       </div>
 
@@ -1153,50 +1304,112 @@ export default function Home() {
 
       {/* ——— Отчёт ——— */}
       <div style={cardStyle(theme)}>
-        <pre style={{ whiteSpace: "pre-wrap", fontSize: "1rem", color: theme.label, margin: 0, background: "none" }}>{generateReportText()}</pre>
+        <pre style={{ whiteSpace: "pre-wrap", fontSize: "1rem", color: theme.label, margin: 0, background: "none" }}>
+          {generateReportText()}
+        </pre>
       </div>
 
-      {/* ——— Модалки: оружие/підрозділ/позивний/область ——— */}
-      {/* (оставлены как в предыдущем коде, без изменений, чтобы не раздувать ответ) */}
+      {/* ——— Модалка выбора звания ——— */}
+      {showRankModal && (
+        <div
+          style={{
+            position: "fixed",
+            zIndex: 10000,
+            left: 0,
+            top: 0,
+            width: "100vw",
+            height: "100vh",
+            background: "rgba(0,0,0,0.24)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: 12,
+          }}
+        >
+          <div
+            style={{
+              background: theme.card,
+              borderRadius: 18,
+              boxShadow: theme.shadow,
+              padding: 16,
+              maxWidth: 420,
+              width: "95vw",
+              maxHeight: "75vh",
+              overflowY: "auto",
+              position: "relative",
+            }}
+          >
+            <h3 style={{ margin: 0, marginBottom: 12, fontSize: "1.09rem", color: theme.label, fontWeight: 600, textAlign: "center" }}>
+              Оберіть звання
+            </h3>
 
-      {/* Модалка оружия */}
-      {showAmmoModal && (
-        <div style={{ position: "fixed", zIndex: 9999, left: 0, top: 0, width: "100vw", height: "100vh", background: "rgba(0,0,0,0.24)", display: "flex", alignItems: "center", justifyContent: "center", padding: 12 }}>
-          <div style={{ background: theme.card, borderRadius: 18, boxShadow: theme.shadow, padding: 18, maxWidth: 420, width: "95vw", maxHeight: "75vh", overflowY: "auto", position: "relative" }}>
-            <h3 style={{ margin: 0, marginBottom: 12, fontSize: "1.09rem", color: theme.label, fontWeight: 600, textAlign: "center" }}>Оберіть типи зброї</h3>
+            <div style={{ display: "flex", gap: 10, marginBottom: 12 }}>
+              <input value={newRank} onChange={(e) => setNewRank(e.target.value)} placeholder="Додати звання" style={{ ...inputStyle(theme), marginBottom: 0, flex: 1 }} />
+              <button
+                onClick={() => {
+                  const v = newRank.trim();
+                  if (!v) return;
+                  const next = Array.from(new Set([v, ...ranksList]));
+                  setRanksList(next);
+                  localStorage.setItem("akviz_ranks_list", JSON.stringify(next));
+                  setNewRank("");
+                }}
+                style={{ ...buttonStyle(theme), background: theme.success, color: "#fff", minWidth: 90, margin: 0, flex: "0 0 auto" }}
+              >
+                Додати
+              </button>
+            </div>
 
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.6rem", marginBottom: 18 }}>
-              {ammoList.map((w) => (
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+              {ranksList.map((item) => (
                 <button
-                  key={w}
+                  key={item}
                   onClick={() => {
-                    setForm((f) => {
-                      const ammo = { ...f.ammo };
-                      if (ammo[w] !== undefined) delete ammo[w];
-                      else ammo[w] = "";
-                      saveAmmo(ammo);
-                      return { ...f, ammo };
-                    });
+                    setForm((f) => ({ ...f, rank: item }));
+                    localStorage.setItem("report_rank", item);
+                    setShowRankModal(false);
                   }}
-                  style={{ ...buttonStyle(theme), background: form.ammo[w] !== undefined ? theme.success : theme.secondary, color: form.ammo[w] !== undefined ? "#fff" : theme.label, fontWeight: form.ammo[w] !== undefined ? 600 : 500, minWidth: 0, fontSize: "0.97rem", padding: "0.48rem 0.2rem", margin: 0 }}
+                  style={{
+                    ...buttonStyle(theme),
+                    background: form.rank === item ? theme.success : theme.secondary,
+                    color: form.rank === item ? "#fff" : theme.label,
+                    fontWeight: form.rank === item ? 600 : 500,
+                    margin: 0,
+                  }}
                 >
-                  {w}
+                  {item}
                 </button>
               ))}
             </div>
 
-            <button style={{ ...buttonStyle(theme), width: "100%", background: theme.button, fontWeight: 600, margin: 0 }} onClick={() => setShowAmmoModal(false)}>
-              OK
-            </button>
+            <div style={{ display: "flex", gap: 10, marginTop: 14 }}>
+              <button
+                onClick={() => {
+                  setForm((f) => ({ ...f, rank: "" }));
+                  localStorage.setItem("report_rank", "");
+                  setShowRankModal(false);
+                }}
+                style={{ ...buttonStyle(theme), background: theme.danger, margin: 0 }}
+              >
+                Очистити
+              </button>
+              <button onClick={() => setShowRankModal(false)} style={{ ...buttonStyle(theme), background: theme.button, margin: 0 }}>
+                Закрити
+              </button>
+            </div>
 
-            <button style={{ position: "absolute", top: 8, right: 10, background: "none", border: "none", color: theme.danger, fontSize: 24, fontWeight: 800, cursor: "pointer" }} onClick={() => setShowAmmoModal(false)}>
+            <button
+              style={{ position: "absolute", top: 8, right: 10, background: "none", border: "none", color: theme.danger, fontSize: 24, fontWeight: 800, cursor: "pointer" }}
+              onClick={() => setShowRankModal(false)}
+              title="Закрити"
+            >
               ×
             </button>
           </div>
         </div>
       )}
 
-      {/* Модалка Підрозділу */}
+      {/* ——— Модалка выбора підрозділу ——— */}
       {showSubdivisionModal && (
         <div style={{ position: "fixed", zIndex: 10000, left: 0, top: 0, width: "100vw", height: "100vh", background: "rgba(0,0,0,0.24)", display: "flex", alignItems: "center", justifyContent: "center", padding: 12 }}>
           <div style={{ background: theme.card, borderRadius: 18, boxShadow: theme.shadow, padding: 16, maxWidth: 420, width: "95vw", maxHeight: "75vh", overflowY: "auto", position: "relative" }}>
@@ -1258,7 +1471,7 @@ export default function Home() {
         </div>
       )}
 
-      {/* Модалка позивного */}
+      {/* ——— Модалка позивного (префикс) ——— */}
       {showCallsignPrefixModal && (
         <div style={{ position: "fixed", zIndex: 10000, left: 0, top: 0, width: "100vw", height: "100vh", background: "rgba(0,0,0,0.24)", display: "flex", alignItems: "center", justifyContent: "center", padding: 12 }}>
           <div style={{ background: theme.card, borderRadius: 18, boxShadow: theme.shadow, padding: 16, maxWidth: 420, width: "95vw", maxHeight: "75vh", overflowY: "auto", position: "relative" }}>
@@ -1320,7 +1533,7 @@ export default function Home() {
         </div>
       )}
 
-      {/* Модалка области */}
+      {/* ——— Модалка области ——— */}
       {showRegionModal && (
         <div style={{ position: "fixed", zIndex: 10000, left: 0, top: 0, width: "100vw", height: "100vh", background: "rgba(0,0,0,0.24)", display: "flex", alignItems: "center", justifyContent: "center", padding: 12 }}>
           <div style={{ background: theme.card, borderRadius: 18, boxShadow: theme.shadow, padding: 16, maxWidth: 420, width: "95vw", maxHeight: "75vh", overflowY: "auto", position: "relative" }}>
@@ -1376,6 +1589,41 @@ export default function Home() {
             </div>
 
             <button style={{ position: "absolute", top: 8, right: 10, background: "none", border: "none", color: theme.danger, fontSize: 24, fontWeight: 800, cursor: "pointer" }} onClick={() => setShowRegionModal(false)}>
+              ×
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Модалка оружия (оставлена, если понадобится дальше) */}
+      {showAmmoModal && (
+        <div style={{ position: "fixed", zIndex: 9999, left: 0, top: 0, width: "100vw", height: "100vh", background: "rgba(0,0,0,0.24)", display: "flex", alignItems: "center", justifyContent: "center", padding: 12 }}>
+          <div style={{ background: theme.card, borderRadius: 18, boxShadow: theme.shadow, padding: 18, maxWidth: 420, width: "95vw", maxHeight: "75vh", overflowY: "auto", position: "relative" }}>
+            <h3 style={{ margin: 0, marginBottom: 12, fontSize: "1.09rem", color: theme.label, fontWeight: 600, textAlign: "center" }}>Оберіть типи зброї</h3>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.6rem", marginBottom: 18 }}>
+              {ammoList.map((w) => (
+                <button
+                  key={w}
+                  onClick={() => {
+                    setForm((f) => {
+                      const ammo = { ...f.ammo };
+                      if (ammo[w] !== undefined) delete ammo[w];
+                      else ammo[w] = "";
+                      saveAmmo(ammo);
+                      return { ...f, ammo };
+                    });
+                  }}
+                  style={{ ...buttonStyle(theme), background: form.ammo[w] !== undefined ? theme.success : theme.secondary, color: form.ammo[w] !== undefined ? "#fff" : theme.label, fontWeight: form.ammo[w] !== undefined ? 600 : 500, minWidth: 0, fontSize: "0.97rem", padding: "0.48rem 0.2rem", margin: 0 }}
+                >
+                  {w}
+                </button>
+              ))}
+            </div>
+
+            <button style={{ ...buttonStyle(theme), width: "100%", background: theme.button, fontWeight: 600, margin: 0 }} onClick={() => setShowAmmoModal(false)}>
+              OK
+            </button>
+            <button style={{ position: "absolute", top: 8, right: 10, background: "none", border: "none", color: theme.danger, fontSize: 24, fontWeight: 800, cursor: "pointer" }} onClick={() => setShowAmmoModal(false)}>
               ×
             </button>
           </div>
