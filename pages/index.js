@@ -62,7 +62,7 @@ export default function Home() {
   const [showSubdivisionModal, setShowSubdivisionModal] = useState(false);
 
   // ——— NEW: список позывных для левого поля ———
-  const callsignsList = ["МВГ", "СПГ", "КП", "ПЗРК", "РЛС"];
+  const callsignsList = ["МВГ", "ВГ"];
   const [showCallsignModal, setShowCallsignModal] = useState(false);
 
   // ——— Списки ———
