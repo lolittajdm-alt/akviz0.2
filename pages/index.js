@@ -676,21 +676,6 @@ export default function Home() {
       placeholder="Наприклад: м. Кривий Ріг"
       disabled={locks.location}
     />
-
-    <button
-      onClick={() => toggleLock("location")}
-      style={{
-        ...buttonStyle(theme),
-        background: locks.location ? theme.danger : theme.secondary,
-        color: locks.location ? "#fff" : theme.label,
-        minWidth: 44,
-        flex: "0 0 auto",
-        margin: 0
-      }}
-      title="Заблокувати/Редагувати НП"
-    >
-      {locks.location ? "🔒" : "✏️"}
-    </button>
   </div>
 
   {/* 2-я строка: Область (модалка) + лок справа */}
