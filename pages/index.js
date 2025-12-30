@@ -948,7 +948,7 @@ export default function Home() {
               fontSize: "1rem",
             }}
           >
-            {form.noIssue ? "Видати номер" : "Без видачі"}
+            {form.noIssue ? "Видати номер" : "б/н"}
           </button>
         </div>
       </div>
