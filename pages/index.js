@@ -1032,7 +1032,7 @@ export default function Home() {
       <div style={{ ...cardStyle(theme), padding: "1rem 0.7rem", display: "flex", flexDirection: "column" }}>
         <label style={{ ...labelStyle(theme), marginLeft: "0.3rem", marginBottom: "0.8rem", fontSize: "1.07rem" }}>Вияв</label>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: "0.65rem", width: "100%", alignItems: "stretch" }}>
-          {["Акустично", "Візуально", "Радіолокаційно", "Із застосуванням приладів спостереження"].map((m) => (
+          {["Акустично", "Візуально", "Із застосуванням приладів спостереження"].map((m) => (
             <button
               key={m}
               onClick={() => toggleDetection(m)}
