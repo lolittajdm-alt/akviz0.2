@@ -115,7 +115,7 @@ export default function Home() {
 
   const ranksList = ["cолд.", "cт.солд.", "мол.с-нт", "с-нт", "ст.с-нт", "гол.с-нт", "шт.с-нт", "м.с-нт", "мол.л-т", "л-т", "ст.л-т", "к-н", "м-р", "п.п-к", "п-к"];
 
-  const goalsList = ["БПЛА", "Постріли", "Виходи(ПЗРК,ЗРК)", "Вибух", "КР", "Гелікоптер", "Літак М.", "Літак В.", "Квадрокоптер", "Зонд", "Інше (деталі в описі)"];
+  const goalsList = ["БПЛА", "Постріли", "Виходи(ПЗРК,ЗРК)", "Вибух", "КР", "Гелікоптер", "Літак М.", "Літак В.", "Квадрокоптер", "Зонд", "Інше (в коментарі)"];
   const namesList = ["Shahed", "Гербера", "Невстановлений"];
 
   // ——— Список оружия ———
@@ -179,7 +179,7 @@ export default function Home() {
     targetNumber: "",
     noIssue: false,
     name: null,
-    quantity: 1,
+    quantity: "", // ✅ пусто по умолчанию
     azimuth: "",
     course: "",
     distance: "",
@@ -282,22 +282,29 @@ export default function Home() {
 
   const toggleGoal = (g) =>
     setForm((f) => {
-      const nextSelected = f.selectedGoals.includes(g) ? f.selectedGoals.filter((x) => x !== g) : [...f.selectedGoals, g];
-
-      // ✅ если выбираем "Вибух" — показываем уточнение
       const wasSelected = f.selectedGoals.includes(g);
+      const nextSelected = wasSelected ? f.selectedGoals.filter((x) => x !== g) : [...f.selectedGoals, g];
+
+      // ✅ если выбираем "Вибух" — показываем уточнение и ставим результат "вибух"
       if (g === "Вибух" && !wasSelected) {
         setShowExplosionModal(true);
       }
-      // ✅ если снимаем "Вибух" — чистим уточнение
-      const explosionPlace = g === "Вибух" && wasSelected ? "" : f.explosionPlace;
 
-      return { ...f, selectedGoals: nextSelected, explosionPlace };
+      // ✅ если снимаем "Вибух" — чистим уточнение и сбрасываем результат если он "вибух"
+      const nextExplosionPlace = g === "Вибух" && wasSelected ? "" : f.explosionPlace;
+      const nextResult = g === "Вибух" && !wasSelected ? "вибух" : g === "Вибух" && wasSelected && f.result === "вибух" ? null : f.result;
+
+      return { ...f, selectedGoals: nextSelected, explosionPlace: nextExplosionPlace, result: nextResult };
     });
 
   const selectSide = (s) => setForm((f) => ({ ...f, side: f.side === s ? null : s }));
   const selectName = (n) => setForm((f) => ({ ...f, name: n }));
-  const changeQuantity = (d) => setForm((f) => ({ ...f, quantity: Math.max(1, f.quantity + d) }));
+  const changeQuantity = (d) =>
+    setForm((f) => {
+      const cur = f.quantity === "" ? 0 : Number(String(f.quantity).replace(/\D/g, "")) || 0;
+      const next = cur + d;
+      return { ...f, quantity: next <= 0 ? "" : String(next) };
+    });
 
   // ——— Числовые поля ———
   const validateCourse = (v) => /^\d{1,3}$/.test(v) && +v >= 0 && +v <= 359;
@@ -416,6 +423,7 @@ export default function Home() {
       ammo,
       personnel,
       explosionPlace,
+      side,
     } = form;
 
     const fullCallsign = [callsignPrefix, callsignText].filter(Boolean).join(" ");
@@ -483,6 +491,11 @@ export default function Home() {
 
     const detectionPart = (detectionMethods || []).map(toLowerFirst);
 
+    const qtyNum = String(quantity || "").replace(/\D/g, "");
+    const qtyPart = qtyNum ? qtyNum : "";
+
+    const sidePart = side ? side : "";
+
     const goalParts = (selectedGoals || []).map((g) => {
       if (g === "БПЛА") {
         const nm = sanitizeName(name);
@@ -490,9 +503,10 @@ export default function Home() {
       }
       if (g === "Вибух") {
         const place = explosionPlace ? ` ${explosionPlace}` : "";
-        return `вибух ${quantity}${place}`;
+        return `вибух${qtyPart ? " " + qtyPart : ""}${place}${sidePart ? " " + sidePart : ""}`;
       }
-      return g;
+      // Инше (в коментарі) остаётся как вид цели
+      return `${g}${sidePart ? " " + sidePart : ""}`;
     });
 
     const descParts = [];
@@ -501,14 +515,14 @@ export default function Home() {
     if (course) descParts.push(`К-${course}`);
     descParts.push(...detectionPart);
 
-    // quantity + goals (кроме "Вибух" — там уже внутри)
     const hasExplosion = (selectedGoals || []).includes("Вибух");
-    if (!hasExplosion && goalParts.length) {
-      descParts.push(`${quantity} ${goalParts.join(", ")}`);
-    } else if (hasExplosion) {
-      // "вибух ..." уже в goalParts
-      descParts.push(...goalParts.filter(Boolean));
-    } else if (goalParts.length) {
+    if (!hasExplosion) {
+      if (goalParts.length) {
+        const goalsStr = goalParts.join(", ");
+        descParts.push(`${qtyPart ? qtyPart + " " : ""}${goalsStr}`.trim());
+      }
+    } else {
+      // вибух уже собран как нужно (с количеством/уточнением/стороной)
       descParts.push(...goalParts.filter(Boolean));
     }
 
@@ -776,7 +790,7 @@ export default function Home() {
                 overflow: "hidden",
                 wordBreak: "break-word",
                 whiteSpace: "normal",
-                ...(goal === "Інше (деталі в описі)" ? { gridColumn: "span 2" } : {}),
+                ...(goal === "Інше (в коментарі)" ? { gridColumn: "span 2" } : {}),
               }}
               title={goal}
             >
@@ -878,7 +892,11 @@ export default function Home() {
           <input
             type="text"
             value={form.quantity}
-            onChange={(e) => setForm((f) => ({ ...f, quantity: Math.max(1, +e.target.value.replace(/\D/g, "")) }))}
+            onChange={(e) => {
+              const v = e.target.value.replace(/\D/g, "");
+              setForm((f) => ({ ...f, quantity: v }));
+            }}
+            placeholder="0"
             inputMode="numeric"
             pattern="\d*"
             style={{ ...inputStyle(theme), textAlign: "center", flex: 1, marginBottom: 0, height: 44 }}
@@ -986,14 +1004,23 @@ export default function Home() {
         </div>
 
         <div style={{ display: "flex", gap: "0.6rem" }}>
-          <button onClick={() => { updateTime(); updateDate(); }} style={{ ...buttonStyle(theme), background: isDark ? theme.button : theme.success, color: "#fff", height: 44 }}>
+          <button
+            onClick={() => {
+              updateTime();
+              updateDate();
+            }}
+            style={{ ...buttonStyle(theme), background: isDark ? theme.button : theme.success, color: "#fff", height: 44 }}
+          >
             Щойно
           </button>
           <button
             onClick={() => {
               let [h, m] = (form.time || "00:00").split(":").map(Number);
               m++;
-              if (m > 59) { m = 0; h = (h + 1) % 24; }
+              if (m > 59) {
+                m = 0;
+                h = (h + 1) % 24;
+              }
               setForm((f) => ({ ...f, time: `${h.toString().padStart(2, "0")}:${m.toString().padStart(2, "0")}` }));
             }}
             style={{ ...buttonStyle(theme), background: isDark ? theme.button : theme.success, color: "#fff", height: 44 }}
@@ -1004,7 +1031,11 @@ export default function Home() {
             onClick={() => {
               let [h, m] = (form.time || "00:00").split(":").map(Number);
               m--;
-              if (m < 0) { m = 59; h = h - 1; if (h < 0) h = 23; }
+              if (m < 0) {
+                m = 59;
+                h = h - 1;
+                if (h < 0) h = 23;
+              }
               setForm((f) => ({ ...f, time: `${h.toString().padStart(2, "0")}:${m.toString().padStart(2, "0")}` }));
             }}
             style={{ ...buttonStyle(theme), background: isDark ? theme.button : theme.danger, color: "#fff", height: 44 }}
@@ -1042,7 +1073,7 @@ export default function Home() {
         <label style={labelStyle(theme)}>Результат</label>
 
         <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: "0.65rem" }}>
-          {["не застосовувались", "не знищено", "ЗНИЩЕНО", "вибух"].map((r) => (
+          {["не знищено", "ЗНИЩЕНО"].map((r) => (
             <button
               key={r}
               onClick={() => setForm((f) => ({ ...f, result: r }))}
@@ -1056,6 +1087,19 @@ export default function Home() {
               {r}
             </button>
           ))}
+
+          <button
+            onClick={() => setForm((f) => ({ ...f, result: "не застосовувались" }))}
+            style={{
+              ...buttonStyle(theme),
+              gridColumn: "span 2",
+              background: form.result === "не застосовувались" ? theme.success : theme.secondary,
+              color: form.result === "не застосовувались" ? "#fff" : theme.label,
+              fontWeight: form.result === "не застосовувались" ? 700 : 500,
+            }}
+          >
+            не застосовувались
+          </button>
         </div>
       </div>
 
@@ -1098,9 +1142,9 @@ export default function Home() {
         </div>
       )}
 
-      {/* Опис */}
+      {/* Коментар */}
       <div style={cardStyle(theme)}>
-        <label style={labelStyle(theme)}>Опис</label>
+        <label style={labelStyle(theme)}>Коментар</label>
         <textarea
           name="description"
           value={form.description}
