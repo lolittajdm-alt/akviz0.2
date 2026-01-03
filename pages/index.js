@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 const systemFont = `-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif`;
 
@@ -116,7 +116,6 @@ export default function Home() {
   const ranksList = ["cолд.", "cт.солд.", "мол.с-нт", "с-нт", "ст.с-нт", "гол.с-нт", "шт.с-нт", "м.с-нт", "мол.л-т", "л-т", "ст.л-т", "к-н", "м-р", "п.п-к", "п-к"];
 
   const goalsList = ["БПЛА", "Постріли", "Виходи(ПЗРК,ЗРК)", "Вибух", "КР", "Гелікоптер", "Літак М.", "Літак В.", "Квадрокоптер", "Зонд", "Інше (в коментарі)"];
-
   const namesList = ["Shahed-136", "Гербера", "Невстановлений"];
 
   // ——— Список оружия ———
@@ -169,7 +168,6 @@ export default function Home() {
     callsignText: "",
     location: "",
     region: "",
-
     weapons: [""],
 
     date: "",
@@ -195,12 +193,35 @@ export default function Home() {
     bk: [{ type: "", qty: "" }],
 
     description: "",
+
     additionalInfo: "",
     personnel: [{ rank: "", name: "" }],
   });
 
   const [showTopFields, setShowTopFields] = useState(true);
   const [errors, setErrors] = useState({});
+
+  // ✅ Повна доповідь
+  const [showFull, setShowFull] = useState(false);
+  const [showFullSettings, setShowFullSettings] = useState(false);
+
+  // ✅ Настройки повної доповіді
+  const defaultFullSettings = useMemo(
+    () => ({
+      fireWeapon: "КПВТ",
+      // тексты сохраняем как есть (без лишних абзацев)
+      block1Prefix:
+        "Номер обслуги 2 відділення 1 Зенітного ракетного взводу  \n2 зенітно-ракетної батареї \n2 зенітно-ракетного дивізіону в/ч А5101",
+      block1Suffix: "відкрив вогонь з",
+      block2:
+        "надавали\nцілевказівку та здійснювали\nобʼєктивний контроль\nномер обслуги 1 відділення 3 зенітного ракетного взводу 2 зенітної ракетної батареї 2 зенітного ракетного дивізіону військової\nчастини А5101 солдат Чабанюк Владислав Володимирович.",
+      block3:
+        "Номер обслуги 2 відділення 3 зенітного ракетного взводу 2 зенітної ракетної батареї 2 зенітного ракетного дивізіону в/ч А5101 молодший сержант ШЕВЧЕНКО Владислав Ігорович",
+    }),
+    []
+  );
+
+  const [fullSettings, setFullSettings] = useState(defaultFullSettings);
 
   // ——— Время/дата ———
   const updateTime = () => {
@@ -256,6 +277,14 @@ export default function Home() {
         if (Array.isArray(arr) && arr.length) setForm((f) => ({ ...f, bk: arr }));
       } catch {}
     }
+
+    const savedFull = localStorage.getItem("akviz_full_settings_v3");
+    if (savedFull) {
+      try {
+        const obj = JSON.parse(savedFull);
+        if (obj && typeof obj === "object") setFullSettings((s) => ({ ...s, ...obj }));
+      } catch {}
+    }
   }, []);
 
   useEffect(() => {
@@ -267,24 +296,7 @@ export default function Home() {
   const savePersonnel = (arr) => localStorage.setItem("akviz_personnel_v3", JSON.stringify(arr));
   const saveWeapons = (arr) => localStorage.setItem("report_weapons_v3", JSON.stringify(arr));
   const saveBk = (arr) => localStorage.setItem("akviz_bk_v3", JSON.stringify(arr));
-
-  // ✅ Обновить страницу с очисткой сохранённых значений
-  const resetAndReload = () => {
-    if (typeof window === "undefined") return;
-    // очищаем всё, что сохраняли
-    [
-      "show_top_fields",
-      "report_subdivision_v3",
-      "report_callsignPrefix_v3",
-      "report_callsignText_v3",
-      "report_location_v3",
-      "report_region_v3",
-      "report_weapons_v3",
-      "akviz_personnel_v3",
-      "akviz_bk_v3",
-    ].forEach((k) => localStorage.removeItem(k));
-    window.location.reload();
-  };
+  const saveFullSettings = (obj) => localStorage.setItem("akviz_full_settings_v3", JSON.stringify(obj));
 
   // ——— Хендлеры ———
   const handleChange = (e) => {
@@ -302,6 +314,8 @@ export default function Home() {
 
       let nextExplosionPlace = f.explosionPlace;
       let nextResult = f.result;
+
+      // если выключили "Вибух" — очистить уточнение и "вибух"
       if (isOn && g === "Вибух") {
         nextExplosionPlace = "";
         if (nextResult === "вибух") nextResult = null;
@@ -313,10 +327,13 @@ export default function Home() {
   const selectSide = (s) => setForm((f) => ({ ...f, side: f.side === s ? null : s }));
   const selectName = (n) => setForm((f) => ({ ...f, name: n }));
 
+  // ✅ количество: пусто по умолчанию, + / - корректно
   const changeQuantity = (d) =>
     setForm((f) => {
       const cur = String(f.quantity ?? "").trim();
-      if (cur === "") return d > 0 ? { ...f, quantity: "1" } : f;
+      if (cur === "") {
+        return d > 0 ? { ...f, quantity: "1" } : f;
+      }
       let num = Number(cur.replace(/\D/g, "")) || 0;
       num += d;
       if (num <= 0) return { ...f, quantity: "" };
@@ -325,10 +342,16 @@ export default function Home() {
 
   // ——— Числовые поля ———
   const validateCourse = (v) => /^\d{1,3}$/.test(v) && +v >= 0 && +v <= 359;
-  const onCourseChange = (e) => setForm((f) => ({ ...f, course: e.target.value.replace(/\D/g, "").slice(0, 3) }));
+  const onCourseChange = (e) => {
+    const value = e.target.value.replace(/\D/g, "").slice(0, 3);
+    setForm((f) => ({ ...f, course: value }));
+  };
 
   const validateAzimuth = (v) => /^\d{1,3}$/.test(v) && +v >= 0 && +v <= 359;
-  const onAzimuthChange = (e) => setForm((f) => ({ ...f, azimuth: e.target.value.replace(/\D/g, "").slice(0, 3) }));
+  const onAzimuthChange = (e) => {
+    const value = e.target.value.replace(/\D/g, "").slice(0, 3);
+    setForm((f) => ({ ...f, azimuth: value }));
+  };
 
   const validateDistance = (v) => /^\d+$/.test(v) && +v > 0 && +v < 100000;
   const onDistanceChange = (e) => {
@@ -380,25 +403,15 @@ export default function Home() {
       return { ...f, weapons: arr };
     });
   };
+
   // ✅ ЗБРОЯ: удалить поле
   const removeWeaponField = (idx) => {
     setForm((f) => {
-      const cur = [...(f.weapons || [])];
-      cur.splice(idx, 1);
-      const next = cur.length ? cur : [""];
+      const arr = [...(f.weapons || [])];
+      arr.splice(idx, 1);
+      const next = arr.length ? arr : [""];
       saveWeapons(next);
       return { ...f, weapons: next };
-    });
-  };
-
-  // ✅ О/С: удалить строку
-  const removePersonnelRow = (idx) => {
-    setForm((f) => {
-      const cur = [...(f.personnel || [])];
-      cur.splice(idx, 1);
-      const next = cur.length ? cur : [{ rank: "", name: "" }];
-      savePersonnel(next);
-      return { ...f, personnel: next };
     });
   };
 
@@ -410,28 +423,68 @@ export default function Home() {
       return { ...f, bk: arr };
     });
   };
+
   // ✅ РОЗХІД БК: удалить строку
   const removeBkField = (idx) => {
     setForm((f) => {
-      const cur = [...(f.bk || [])];
-      cur.splice(idx, 1);
-      const next = cur.length ? cur : [{ type: "", qty: "" }];
+      const arr = [...(f.bk || [])];
+      arr.splice(idx, 1);
+      const next = arr.length ? arr : [{ type: "", qty: "" }];
       saveBk(next);
       return { ...f, bk: next };
     });
   };
 
+  // ✅ О/С: добавить/удалить
+  const addPersonnel = () => {
+    setForm((f) => {
+      const arr = [...(f.personnel || []), { rank: "", name: "" }];
+      savePersonnel(arr);
+      return { ...f, personnel: arr };
+    });
+  };
+  const removePersonnel = (idx) => {
+    setForm((f) => {
+      const arr = [...(f.personnel || [])];
+      arr.splice(idx, 1);
+      const next = arr.length ? arr : [{ rank: "", name: "" }];
+      savePersonnel(next);
+      return { ...f, personnel: next };
+    });
+  };
+
+  // ✅ Обновить страницу и очистить значения
+  const resetAll = () => {
+    try {
+      // чистим только наши ключи
+      const keysToRemove = [
+        "show_top_fields",
+        "report_subdivision_v3",
+        "report_callsignPrefix_v3",
+        "report_callsignText_v3",
+        "report_location_v3",
+        "report_region_v3",
+        "report_weapons_v3",
+        "akviz_personnel_v3",
+        "akviz_bk_v3",
+        "akviz_full_settings_v3",
+      ];
+      keysToRemove.forEach((k) => localStorage.removeItem(k));
+    } catch {}
+    window.location.reload();
+  };
+
   // ——— Копирование и WhatsApp ———
-  const copyReport = () => {
-    const text = generateReportText().replace(/\n/g, "\r\n");
+  const copyText = (t) => {
+    const text = String(t || "").replace(/\n/g, "\r\n");
     navigator.clipboard.writeText(text);
     alert("Скопійовано!");
   };
-  const openWhatsApp = () => {
-    window.location.href = `whatsapp://send?text=${encodeURIComponent(generateReportText())}`;
+  const openWhatsAppText = (t) => {
+    window.location.href = `whatsapp://send?text=${encodeURIComponent(String(t || ""))}`;
   };
 
-  // ——— Генератор отчёта ———
+  // ——— Генератор основного отчёта ———
   const generateReportText = () => {
     const {
       subdivision,
@@ -471,12 +524,15 @@ export default function Home() {
 
     const sideLower = side ? String(side).toLowerCase() : "";
 
+    // ✅ "Shahed-136" -> "Shahed"
     const prettyName = name === "Shahed-136" ? "Shahed" : name;
 
+    // ✅ Вид цели (в одной строке "Опис")
     let goalPart = "";
-    if (selectedGoals.includes("Вибух")) {
-      const q = String(quantity || "").trim();
-      const qPart = q ? `${q} ` : "";
+    const q = String(quantity || "").trim();
+    const qPart = q ? `${q} ` : "";
+
+    if ((selectedGoals || []).includes("Вибух")) {
       const place = explosionPlace ? explosionPlace : "";
       goalPart = `вибух ${qPart}${place}`.trim();
     } else {
@@ -484,42 +540,44 @@ export default function Home() {
         if (g === "БПЛА" && prettyName) return `БПЛА ${prettyName}`;
         return g;
       });
-      const q = String(quantity || "").trim();
-      const qPart = q ? `${q} ` : "";
-      goalPart = `${qPart}${goalsForReport.filter(Boolean).join(", ")}`.trim();
+      goalPart = `${qPart}${goalsForReport.filter(Boolean).join(",")}`.trim();
     }
+
     if (goalPart && sideLower) goalPart = `${goalPart} ${sideLower}`.trim();
 
-    const det = (detectionMethods || []).map((x) => String(x || "").toLowerCase()).filter(Boolean).join("/");
+    // ✅ вияв (с маленькой), несколько — через запятую
+    const det = (detectionMethods || []).map((x) => String(x).toLowerCase()).join(",");
 
+    // ✅ после вияву добавляем слово без запятой
     let afterDet = "";
-    if (["ЗНИЩЕНО", "не знищено"].includes(result || "")) afterDet = "обстріляно";
-    else if ((result || "") === "не застосовувались") afterDet = "виявлено";
+    if (result === "ЗНИЩЕНО" || result === "не знищено") afterDet = "обстріляно";
+    else if (result === "не застосовувались") afterDet = "виявлено";
 
-    const paramParts = [];
-    if (azimuth) paramParts.push(`А-${azimuth}`);
-    if (distance) paramParts.push(`Д-${distance}`);
-    if (course) paramParts.push(`К-${course}`);
+    const detWithWord = det ? `${det}${afterDet ? ` ${afterDet}` : ""}` : "";
 
-    let opisLine = null;
-    {
-      const left = paramParts.length ? paramParts.join(",") : "";
-      const mid = det ? (left ? `${left},${det}` : det) : left;
-      const tailWords = [afterDet, goalPart].filter(Boolean).join(" ").trim();
-      const mid2 = tailWords ? `${mid}${mid ? " " : ""}${tailWords}` : mid;
-      const full = mid2 ? `Опис: ${mid2}${personnelString ? `,${personnelString}` : ""}` : null;
-      opisLine = full;
-    }
+    // ✅ параметры: без пробелов после запятых
+    const parts = [];
+    if (azimuth) parts.push(`А-${azimuth}`);
+    if (distance) parts.push(`Д-${distance}`);
+    if (course) parts.push(`К-${course}`);
+    if (detWithWord) parts.push(detWithWord);
+    if (goalPart) parts.push(goalPart);
 
+    const opisLine = parts.length ? `Опис:${parts.join(",")}${personnelString ? `,${personnelString}` : ""}` : `Опис:${personnelString || "-"}`;
+
+    // ✅ результат строка всегда есть (даже пустая)
     const resultLine = `Результат:${result ? ` ${result}` : ""}`;
 
+    // ✅ номер цели только номер (или б/н)
     const targetLineValue = noIssue ? "б/н" : targetNumber ? `${targetNumber}` : "";
     const targetLine = `№ цілі: ${targetLineValue}`;
 
+    // ✅ Коментар всегда есть, если пусто — "-"
     const commentLine = `Коментар: ${String(description || "").trim() ? String(description).trim() : "-"}`;
 
+    // ✅ Розхід БК: внизу, построчно
     const bkLines =
-      ["ЗНИЩЕНО", "не знищено"].includes(result || "")
+      result === "ЗНИЩЕНО" || result === "не знищено"
         ? (bk || [])
             .filter((x) => (x?.type || "").trim() && (x?.qty || "").trim())
             .map((x) => `${x.type.trim()} - ${String(x.qty).trim()}`)
@@ -542,6 +600,77 @@ export default function Home() {
     ]
       .filter((x) => x !== null && x !== undefined && String(x).trim() !== "")
       .join("\n");
+  };
+
+  // ——— Генератор повної доповіді ———
+  const generateFullReportText = () => {
+    const {
+      date,
+      time,
+      callsignPrefix,
+      callsignText,
+      selectedGoals,
+      side,
+      targetNumber,
+      noIssue,
+      name,
+      azimuth,
+      course,
+      height,
+      distance,
+      detectionMethods,
+      result,
+      bk,
+    } = form;
+
+    const prettyName = name === "Shahed-136" ? "Shahed" : name;
+
+    const detWords = (detectionMethods || []).map((x) => String(x).toLowerCase()).join(" ");
+    const sideLower = side ? String(side).toLowerCase() : "";
+
+    // цель №...
+    const targetPart = noIssue ? "б/н" : targetNumber ? `№${targetNumber}` : "";
+    const targetWrap = targetPart ? `(ціль ${targetPart})` : "";
+
+    // тип цели (пока ориентируемся на БПЛА, иначе просто "ціль")
+    let goalText = "ціль";
+    if ((selectedGoals || []).includes("БПЛА")) {
+      const who = sideLower === "ворожий" ? "противника" : sideLower === "свій" ? "своїх" : "невизначеної сторони";
+      goalText = `ударний БПЛА ${who}${prettyName ? ` типу «${prettyName}»` : ""}`;
+    }
+
+    const params = [
+      azimuth ? `Азимут:${azimuth}` : null,
+      course ? `курс: ${course}` : null,
+      height ? `висота ${height}м` : null,
+      distance ? `дистанція: ${distance}м` : null,
+    ]
+      .filter(Boolean)
+      .join(", ");
+
+    // итог по цели
+    const tail =
+      result === "ЗНИЩЕНО" ? "Ціль обстріляна знищена." : result === "не знищено" ? "Ціль обстріляна не знищена." : "Ціль обстріляна.";
+
+    // сумма бк
+    const totalBk = (bk || []).reduce((sum, x) => sum + (Number(String(x?.qty || "").replace(/\D/g, "")) || 0), 0);
+    const caliber =
+      (bk || []).some((x) => String(x?.type || "").includes("14,5")) ? "14.5x114мм" : (bk || []).length ? "БК" : "";
+    const bkLine = totalBk > 0 ? `Витрата БК: ${caliber ? `${caliber} - ` : ""}${totalBk} шт.` : `Витрата БК:`;
+
+    // шапка: как в примере (без пробела между датой и префиксом)
+    const header = `${time || ""} ${date || ""}${callsignPrefix || ""}${callsignText ? ` «${callsignText}»` : ""}`.trim();
+
+    const line2 = `в районі пів.зах. околиці н.п. Димер було виявлено${detWords ? ` ${detWords}` : ""} ${goalText} ${targetWrap}. ${params ? `${params}.` : ""}`.replace(/\s+/g, " ").trim();
+
+    // блок 1 — с настраиваемым орудием
+    const b1 = `${fullSettings.block1Prefix}\n${fullSettings.block1Suffix} ${fullSettings.fireWeapon}`.trim();
+
+    // блок 2, 3 — как в примере
+    const b2 = String(fullSettings.block2 || "").trim();
+    const b3 = String(fullSettings.block3 || "").trim();
+
+    return [header, line2, b1, b2, `${b3}. ${tail}`, bkLine].filter(Boolean).join("\n");
   };
 
   // ——— Темы ———
@@ -602,50 +731,10 @@ export default function Home() {
     </button>
   );
 
-  const selectStyle = (theme) => ({
-    width: "100%",
-    padding: "0.6rem",
-    borderRadius: "12px",
-    border: `1px solid ${theme.inputBorder}`,
-    backgroundColor: theme.inputBg,
-    fontSize: "1rem",
-    color: theme.inputText,
-    marginBottom: "0.6rem",
-    outline: "none",
-    transition: "background .2s, border .18s",
-  });
+  const canShowFullButton = form.result === "ЗНИЩЕНО" || form.result === "не знищено";
 
-  const xBtnStyle = (theme) => ({
-    width: 44,
-    minWidth: 44,
-    height: 44,
-    borderRadius: 12,
-    border: "none",
-    background: theme.danger,
-    color: "#fff",
-    fontWeight: 900,
-    fontSize: 22,
-    lineHeight: "44px",
-    textAlign: "center",
-    cursor: "pointer",
-    boxShadow: theme.shadow,
-  });
-
-  const smallIconBtn = (theme) => ({
-    width: 44,
-    height: 42,
-    borderRadius: 12,
-    border: "none",
-    background: theme.secondary,
-    color: theme.label,
-    cursor: "pointer",
-    boxShadow: theme.shadow,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    fontSize: 18,
-    fontWeight: 800,
-  });
+  const mainReport = useMemo(() => generateReportText(), [form, fullSettings]); // fullSettings тут не обязателен, но ок
+  const fullReport = useMemo(() => generateFullReportText(), [form, fullSettings]);
 
   return (
     <div
@@ -658,16 +747,59 @@ export default function Home() {
         boxSizing: "border-box",
       }}
     >
+      <style>{`
+        .xbtn{
+          position:absolute;
+          top:6px;
+          right:6px;
+          background:transparent;
+          border:none;
+          color:${theme.danger};
+          font-weight:900;
+          font-size:16px;
+          line-height:16px;
+          padding:6px;
+          cursor:pointer;
+          opacity:.9;
+          transform: scale(.95);
+          transition: transform .18s ease, opacity .18s ease;
+        }
+        .xbtn:active{
+          transform: scale(.85) rotate(12deg);
+          opacity:.7;
+        }
+        .fieldWrap{
+          position:relative;
+        }
+        select.nativeSelect{
+          -webkit-appearance: menulist;
+          appearance: menulist;
+        }
+      `}</style>
+
       {/* Шапка */}
       <div style={{ ...cardStyle(theme), display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <h1 style={{ margin: 0, fontSize: "1.35rem", color: theme.label, fontWeight: 600 }}>АкВіз 2.0</h1>
-
-        <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
-          {/* ✅ Обновить страницу (с очисткой сохранений) */}
-          <button onClick={resetAndReload} title="Оновити (очистити значення)" style={smallIconBtn(theme)} aria-label="Оновити сторінку">
+        <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+          {Switch}
+          <button
+            onClick={resetAll}
+            title="Оновити / очистити"
+            style={{
+              width: 42,
+              height: 42,
+              borderRadius: 12,
+              border: "none",
+              background: theme.secondary,
+              color: theme.label,
+              boxShadow: theme.shadow,
+              cursor: "pointer",
+              fontSize: 18,
+              fontWeight: 800,
+            }}
+          >
             ⟳
           </button>
-          {Switch}
         </div>
       </div>
 
@@ -681,22 +813,23 @@ export default function Home() {
       {/* Верхний блок */}
       {showTopFields && (
         <div style={cardStyle(theme)}>
-          {/* Підрозділ (native select) */}
+          {/* Підрозділ */}
           <div style={{ marginBottom: 16 }}>
             <label style={labelStyle(theme)}>Підрозділ</label>
             <select
+              className="nativeSelect"
               value={form.subdivision}
               onChange={(e) => {
                 const v = e.target.value;
                 setForm((f) => ({ ...f, subdivision: v }));
                 localStorage.setItem("report_subdivision_v3", v);
               }}
-              style={{ ...selectStyle(theme), marginBottom: 0 }}
+              style={{ ...inputStyle(theme) }}
             >
               <option value="">Оберіть підрозділ</option>
-              {subdivisionsList.map((item) => (
-                <option key={item} value={item}>
-                  {item}
+              {subdivisionsList.map((x) => (
+                <option key={x} value={x}>
+                  {x}
                 </option>
               ))}
             </select>
@@ -707,25 +840,26 @@ export default function Home() {
             <label style={labelStyle(theme)}>Особовий склад</label>
 
             {(form.personnel || []).map((person, idx) => (
-              <div key={idx} style={{ display: "flex", gap: "0.6rem", alignItems: "center", marginBottom: 10 }}>
-                {/* ✅ крестик слева */}
-                <button type="button" onClick={() => removePersonnelRow(idx)} style={xBtnStyle(theme)} title="Видалити">
-                  ×
-                </button>
+              <div key={idx} className="fieldWrap" style={{ display: "flex", gap: "0.6rem", alignItems: "center", marginBottom: 10 }}>
+                {form.personnel.length > 1 && (
+                  <button className="xbtn" onClick={() => removePersonnel(idx)} type="button" aria-label="Видалити">
+                    ×
+                  </button>
+                )}
 
                 <select
+                  className="nativeSelect"
                   value={person.rank}
                   onChange={(e) => {
                     const v = e.target.value;
                     setForm((f) => {
                       const arr = [...f.personnel];
-                      const current = arr[idx] || { rank: "", name: "" };
-                      arr[idx] = { ...current, rank: v };
+                      arr[idx] = { ...arr[idx], rank: v };
                       savePersonnel(arr);
                       return { ...f, personnel: arr };
                     });
                   }}
-                  style={{ ...selectStyle(theme), width: 140, minWidth: 140, maxWidth: 140, marginBottom: 0, height: 44 }}
+                  style={{ ...inputStyle(theme), marginBottom: 0, width: 120, minWidth: 120, maxWidth: 120 }}
                 >
                   <option value="">Звання</option>
                   {ranksList.map((r) => (
@@ -747,21 +881,12 @@ export default function Home() {
                     });
                   }}
                   placeholder="Залужний В.Ф."
-                  style={{ ...inputStyle(theme), marginBottom: 0, flex: 1, height: 44 }}
+                  style={{ ...inputStyle(theme), marginBottom: 0, flex: 1 }}
                 />
               </div>
             ))}
 
-            <button
-              onClick={() =>
-                setForm((f) => {
-                  const arr = [...f.personnel, { rank: "", name: "" }];
-                  savePersonnel(arr);
-                  return { ...f, personnel: arr };
-                })
-              }
-              style={{ ...buttonStyle(theme), background: theme.success, color: "#fff", margin: 0, width: "100%", fontWeight: 600 }}
-            >
+            <button onClick={addPersonnel} style={{ ...buttonStyle(theme), background: theme.success, color: "#fff", margin: 0, width: "100%", fontWeight: 600 }}>
               + Додати особовий склад
             </button>
           </div>
@@ -771,13 +896,14 @@ export default function Home() {
             <label style={labelStyle(theme)}>Позивний</label>
             <div style={{ display: "flex", gap: "0.6rem" }}>
               <select
+                className="nativeSelect"
                 value={form.callsignPrefix}
                 onChange={(e) => {
                   const v = e.target.value;
                   setForm((f) => ({ ...f, callsignPrefix: v }));
                   localStorage.setItem("report_callsignPrefix_v3", v);
                 }}
-                style={{ ...selectStyle(theme), width: 100, minWidth: 100, maxWidth: 100, marginBottom: 0, height: 44 }}
+                style={{ ...inputStyle(theme), marginBottom: 0, width: 90, minWidth: 90, maxWidth: 90 }}
               >
                 <option value="">МВГ</option>
                 {callsignPrefixList.map((p) => (
@@ -787,32 +913,33 @@ export default function Home() {
                 ))}
               </select>
 
-              <input name="callsignText" value={form.callsignText} onChange={handleChange} placeholder="Халк / Лис / ..." style={{ ...inputStyle(theme), marginBottom: 0, flex: 1, height: 44 }} />
+              <input name="callsignText" value={form.callsignText} onChange={handleChange} placeholder="Халк / Лис / ..." style={{ ...inputStyle(theme), marginBottom: 0, flex: 1 }} />
             </div>
           </div>
 
           {/* НП */}
           <div style={{ marginBottom: 12 }}>
             <label style={labelStyle(theme)}>Населений пункт</label>
-            <input name="location" value={form.location} onChange={handleChange} style={{ ...inputStyle(theme), marginBottom: 0, height: 44 }} placeholder="Наприклад м. Кривий Ріг" />
+            <input name="location" value={form.location} onChange={handleChange} style={{ ...inputStyle(theme), marginBottom: 0 }} placeholder="Наприклад м. Кривий Ріг" />
           </div>
 
           {/* Область */}
           <div style={{ marginBottom: 16 }}>
             <label style={labelStyle(theme)}>Область</label>
             <select
+              className="nativeSelect"
               value={form.region}
               onChange={(e) => {
                 const v = e.target.value;
                 setForm((f) => ({ ...f, region: v }));
                 localStorage.setItem("report_region_v3", v);
               }}
-              style={{ ...selectStyle(theme), marginBottom: 0 }}
+              style={{ ...inputStyle(theme), marginBottom: 0 }}
             >
               <option value="">Оберіть область</option>
-              {regionsList.map((item) => (
-                <option key={item} value={item}>
-                  {item}
+              {regionsList.map((x) => (
+                <option key={x} value={x}>
+                  {x}
                 </option>
               ))}
             </select>
@@ -823,13 +950,14 @@ export default function Home() {
             <label style={labelStyle(theme)}>Зброя</label>
 
             {(form.weapons || []).map((w, idx) => (
-              <div key={idx} style={{ display: "flex", gap: "0.6rem", alignItems: "center" }}>
-                {/* ✅ крестик слева */}
-                <button type="button" onClick={() => removeWeaponField(idx)} style={xBtnStyle(theme)} title="Видалити">
-                  ×
-                </button>
-
+              <div key={idx} className="fieldWrap" style={{ marginBottom: 10 }}>
+                {form.weapons.length > 1 && (
+                  <button className="xbtn" onClick={() => removeWeaponField(idx)} type="button" aria-label="Видалити">
+                    ×
+                  </button>
+                )}
                 <select
+                  className="nativeSelect"
                   value={w}
                   onChange={(e) => {
                     const v = e.target.value;
@@ -840,19 +968,17 @@ export default function Home() {
                       return { ...f, weapons: arr };
                     });
                   }}
-                  style={{ ...selectStyle(theme), marginBottom: 0, height: 44 }}
+                  style={{ ...inputStyle(theme), marginBottom: 0 }}
                 >
                   <option value="">{`Оберіть зброю ${idx + 1}`}</option>
-                  {ammoList.map((opt) => (
-                    <option key={opt} value={opt}>
-                      {opt}
+                  {ammoList.map((x) => (
+                    <option key={x} value={x}>
+                      {x}
                     </option>
                   ))}
                 </select>
               </div>
             ))}
-
-            <div style={{ height: 10 }} />
 
             <button type="button" onClick={addWeaponField} style={{ ...buttonStyle(theme), background: theme.success, color: "#fff", margin: 0, width: "100%", fontWeight: 600 }}>
               + Додати зброю
@@ -897,33 +1023,38 @@ export default function Home() {
             </button>
           ))}
         </div>
-      </div>
 
-      {/* ✅ Уточнення вибуху */}
-      {form.selectedGoals.includes("Вибух") && (
-        <div style={cardStyle(theme)}>
-          <label style={labelStyle(theme)}>Уточнення вибуху</label>
-          <select
-            value={form.explosionPlace}
-            onChange={(e) => {
-              const v = e.target.value;
-              setForm((f) => ({ ...f, explosionPlace: v, result: v ? "вибух" : f.result }));
-            }}
-            style={{ ...selectStyle(theme), marginBottom: 0 }}
-          >
-            <option value="">Оберіть</option>
-            <option value="на землі">на землі</option>
-            <option value="у повітрі">у повітрі</option>
-          </select>
-        </div>
-      )}
+        {/* ✅ Вибух: уточнение "на землі / у повітрі" */}
+        {form.selectedGoals.includes("Вибух") && (
+          <div style={{ marginTop: 12 }}>
+            <label style={labelStyle(theme)}>Уточнення</label>
+            <select
+              className="nativeSelect"
+              value={form.explosionPlace}
+              onChange={(e) => {
+                const v = e.target.value;
+                setForm((f) => ({ ...f, explosionPlace: v, result: v ? "вибух" : f.result }));
+              }}
+              style={{ ...inputStyle(theme), marginBottom: 0 }}
+            >
+              <option value="">Оберіть</option>
+              <option value="на землі">на землі</option>
+              <option value="у повітрі">у повітрі</option>
+            </select>
+          </div>
+        )}
+      </div>
 
       {/* Сторона */}
       <div style={cardStyle(theme)}>
         <label style={labelStyle(theme)}>Сторона</label>
         <div style={{ display: "flex", gap: "0.6rem" }}>
           {["Ворожий", "Свій", "Нейтральний"].map((s) => (
-            <button key={s} onClick={() => selectSide(s)} style={{ ...buttonStyle(theme), background: form.side === s ? theme.success : theme.secondary, color: form.side === s ? "#fff" : theme.label, fontWeight: form.side === s ? 600 : 500 }}>
+            <button
+              key={s}
+              onClick={() => selectSide(s)}
+              style={{ ...buttonStyle(theme), background: form.side === s ? theme.success : theme.secondary, color: form.side === s ? "#fff" : theme.label, fontWeight: form.side === s ? 600 : 500 }}
+            >
               {s}
             </button>
           ))}
@@ -935,7 +1066,16 @@ export default function Home() {
         <label style={labelStyle(theme)}>Номер цілі</label>
         <div style={{ display: "flex", gap: "0.6rem", alignItems: "center" }}>
           {!form.noIssue && (
-            <input type="text" name="targetNumber" value={form.targetNumber} onChange={onFieldNumeric("targetNumber", 9999)} placeholder="по цілі" inputMode="numeric" pattern="\d*" style={{ ...inputStyle(theme), textAlign: "center", flex: 1, marginBottom: 0, height: 44 }} />
+            <input
+              type="text"
+              name="targetNumber"
+              value={form.targetNumber}
+              onChange={onFieldNumeric("targetNumber", 9999)}
+              placeholder="по цілі"
+              inputMode="numeric"
+              pattern="\d*"
+              style={{ ...inputStyle(theme), textAlign: "center", flex: 1, marginBottom: 0, height: 44 }}
+            />
           )}
           <button
             onClick={() => setForm((f) => ({ ...f, noIssue: !f.noIssue, targetNumber: "" }))}
@@ -946,18 +1086,33 @@ export default function Home() {
         </div>
       </div>
 
-      {/* ✅ Назва (БПЛА) */}
+      {/* Назва (БПЛА) — визуально как остальные */}
       {form.selectedGoals.includes("БПЛА") && (
         <div style={{ ...cardStyle(theme), padding: "1rem 0.7rem" }}>
           <label style={{ ...labelStyle(theme), marginLeft: "0.3rem", marginBottom: "0.8rem", fontSize: "1.07rem" }}>Назва</label>
-          <select value={form.name || ""} onChange={(e) => selectName(e.target.value || null)} style={{ ...selectStyle(theme), marginBottom: 0 }}>
-            <option value="">Оберіть назву</option>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: "0.65rem" }}>
             {namesList.map((n) => (
-              <option key={n} value={n}>
+              <button
+                key={n}
+                onClick={() => selectName(n)}
+                style={{
+                  ...buttonStyle(theme),
+                  background: form.name === n ? theme.success : theme.secondary,
+                  color: form.name === n ? "#fff" : theme.label,
+                  fontWeight: form.name === n ? 700 : 500,
+                  padding: "0.62rem 0.6rem",
+                  borderRadius: "14px",
+                  boxShadow: form.name === n ? "0 2px 8px rgba(50,215,75,0.14)" : theme.shadow,
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                }}
+                title={n}
+              >
                 {n}
-              </option>
+              </button>
             ))}
-          </select>
+          </div>
         </div>
       )}
 
@@ -989,11 +1144,25 @@ export default function Home() {
       {/* Азимут / курс */}
       <div style={cardStyle(theme)}>
         <label style={labelStyle(theme)}>Азимут (°)</label>
-        <input type="text" inputMode="numeric" pattern="\d*" value={form.azimuth} onChange={onAzimuthChange} style={{ ...inputStyle(theme), border: form.azimuth.trim() === "" || !validateAzimuth(form.azimuth) ? `1px solid ${theme.danger}` : `1px solid ${theme.inputBorder}` }} />
+        <input
+          type="text"
+          inputMode="numeric"
+          pattern="\d*"
+          value={form.azimuth}
+          onChange={onAzimuthChange}
+          style={{ ...inputStyle(theme), border: form.azimuth.trim() === "" || !validateAzimuth(form.azimuth) ? `1px solid ${theme.danger}` : `1px solid ${theme.inputBorder}` }}
+        />
         {(form.azimuth.trim() === "" || !validateAzimuth(form.azimuth)) && <div style={{ color: theme.danger, fontSize: "0.82rem", marginBottom: "0.6rem" }}>Поле має бути заповненим!</div>}
 
         <label style={labelStyle(theme)}>Курс (°)</label>
-        <input type="text" inputMode="numeric" pattern="\d*" value={form.course} onChange={onCourseChange} style={{ ...inputStyle(theme), border: form.course.trim() === "" || !validateCourse(form.course) ? `1px solid ${theme.danger}` : `1px solid ${theme.inputBorder}` }} />
+        <input
+          type="text"
+          inputMode="numeric"
+          pattern="\d*"
+          value={form.course}
+          onChange={onCourseChange}
+          style={{ ...inputStyle(theme), border: form.course.trim() === "" || !validateCourse(form.course) ? `1px solid ${theme.danger}` : `1px solid ${theme.inputBorder}` }}
+        />
         {(form.course.trim() === "" || !validateCourse(form.course)) && <div style={{ color: theme.danger, fontSize: "0.82rem", marginTop: "0.35rem" }}>Поле має бути заповненим!</div>}
       </div>
 
@@ -1001,7 +1170,13 @@ export default function Home() {
       <div style={{ ...cardStyle(theme), padding: "1rem" }}>
         <div style={{ marginBottom: "1rem" }}>
           <label style={labelStyle(theme)}>Відстань, м*</label>
-          <input type="text" inputMode="numeric" value={form.distance} onChange={onDistanceChange} style={{ ...inputStyle(theme), border: form.distance.trim() === "" || !validateDistance(form.distance) ? `1px solid ${theme.danger}` : `1px solid ${theme.inputBorder}` }} />
+          <input
+            type="text"
+            inputMode="numeric"
+            value={form.distance}
+            onChange={onDistanceChange}
+            style={{ ...inputStyle(theme), border: form.distance.trim() === "" || !validateDistance(form.distance) ? `1px solid ${theme.danger}` : `1px solid ${theme.inputBorder}` }}
+          />
           {(form.distance.trim() === "" || !validateDistance(form.distance)) && <div style={{ color: theme.danger, fontSize: "0.82rem", marginTop: "0.2rem" }}>Поле має бути заповненим!</div>}
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: "0.4rem", marginTop: "0.45rem" }}>
             {["+100", "+1000", "+5000", "-100", "-1000", "-5000"].map((label) => (
@@ -1014,7 +1189,13 @@ export default function Home() {
 
         <div>
           <label style={labelStyle(theme)}>Висота, м*</label>
-          <input type="text" inputMode="numeric" value={form.height} onChange={onHeightChange} style={{ ...inputStyle(theme), border: form.height.trim() === "" || !validateHeight(form.height) ? `1px solid ${theme.danger}` : `1px solid ${theme.inputBorder}` }} />
+          <input
+            type="text"
+            inputMode="numeric"
+            value={form.height}
+            onChange={onHeightChange}
+            style={{ ...inputStyle(theme), border: form.height.trim() === "" || !validateHeight(form.height) ? `1px solid ${theme.danger}` : `1px solid ${theme.inputBorder}` }}
+          />
           {(form.height.trim() === "" || !validateHeight(form.height)) && <div style={{ color: theme.danger, fontSize: "0.82rem", marginTop: "0.2rem" }}>Поле має бути заповненим!</div>}
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.4rem", marginTop: "0.45rem" }}>
             {["+100", "+500", "-100", "-500"].map((label) => (
@@ -1042,14 +1223,23 @@ export default function Home() {
         </div>
 
         <div style={{ display: "flex", gap: "0.6rem" }}>
-          <button onClick={() => { updateTime(); updateDate(); }} style={{ ...buttonStyle(theme), background: isDark ? theme.button : theme.success, color: "#fff", height: 44 }}>
+          <button
+            onClick={() => {
+              updateTime();
+              updateDate();
+            }}
+            style={{ ...buttonStyle(theme), background: isDark ? theme.button : theme.success, color: "#fff", height: 44 }}
+          >
             Щойно
           </button>
           <button
             onClick={() => {
               let [h, m] = (form.time || "00:00").split(":").map(Number);
               m++;
-              if (m > 59) { m = 0; h = (h + 1) % 24; }
+              if (m > 59) {
+                m = 0;
+                h = (h + 1) % 24;
+              }
               setForm((f) => ({ ...f, time: `${h.toString().padStart(2, "0")}:${m.toString().padStart(2, "0")}` }));
             }}
             style={{ ...buttonStyle(theme), background: isDark ? theme.button : theme.success, color: "#fff", height: 44 }}
@@ -1060,7 +1250,11 @@ export default function Home() {
             onClick={() => {
               let [h, m] = (form.time || "00:00").split(":").map(Number);
               m--;
-              if (m < 0) { m = 59; h = h - 1; if (h < 0) h = 23; }
+              if (m < 0) {
+                m = 59;
+                h = h - 1;
+                if (h < 0) h = 23;
+              }
               setForm((f) => ({ ...f, time: `${h.toString().padStart(2, "0")}:${m.toString().padStart(2, "0")}` }));
             }}
             style={{ ...buttonStyle(theme), background: isDark ? theme.button : theme.danger, color: "#fff", height: 44 }}
@@ -1096,6 +1290,7 @@ export default function Home() {
       {/* Результат */}
       <div style={cardStyle(theme)}>
         <label style={labelStyle(theme)}>Результат</label>
+
         <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: "0.65rem" }}>
           {["ЗНИЩЕНО", "не знищено", "не застосовувались"].map((r) => (
             <button
@@ -1115,20 +1310,22 @@ export default function Home() {
         </div>
       </div>
 
-      {/* ✅ Розхід БК */}
+      {/* ✅ Розхід БК (только при ЗНИЩЕНО / не знищено) */}
       {["ЗНИЩЕНО", "не знищено"].includes(form.result || "") && (
         <div style={cardStyle(theme)}>
           <label style={labelStyle(theme)}>Розхід БК</label>
 
           <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 12 }}>
             {(form.bk || []).map((row, idx) => (
-              <div key={idx} style={{ display: "flex", gap: "0.6rem", alignItems: "center" }}>
-                {/* ✅ крестик слева */}
-                <button type="button" onClick={() => removeBkField(idx)} style={xBtnStyle(theme)} title="Видалити">
-                  ×
-                </button>
+              <div key={idx} className="fieldWrap" style={{ display: "flex", gap: "0.6rem", alignItems: "center" }}>
+                {form.bk.length > 1 && (
+                  <button className="xbtn" onClick={() => removeBkField(idx)} type="button" aria-label="Видалити">
+                    ×
+                  </button>
+                )}
 
                 <select
+                  className="nativeSelect"
                   value={row.type}
                   onChange={(e) => {
                     const v = e.target.value;
@@ -1140,7 +1337,7 @@ export default function Home() {
                       return { ...f, bk: arr };
                     });
                   }}
-                  style={{ ...selectStyle(theme), marginBottom: 0, flex: 1, height: 44 }}
+                  style={{ ...inputStyle(theme), marginBottom: 0, flex: 1 }}
                 >
                   <option value="">{`Оберіть набій ${idx + 1}`}</option>
                   {bkList.map((t) => (
@@ -1201,19 +1398,157 @@ export default function Home() {
         />
       </div>
 
-      {/* Кнопки */}
-      <div style={{ display: "flex", gap: "0.6rem", marginBottom: "2rem" }}>
-        <button onClick={copyReport} style={buttonStyle(theme)}>
+      {/* Кнопки (основные) */}
+      <div style={{ display: "flex", gap: "0.6rem", marginBottom: "0.6rem" }}>
+        <button onClick={() => copyText(mainReport)} style={buttonStyle(theme)}>
           Копіювати
         </button>
-        <button onClick={openWhatsApp} style={{ ...buttonStyle(theme), background: theme.success, color: "#fff" }}>
+        <button onClick={() => openWhatsAppText(mainReport)} style={{ ...buttonStyle(theme), background: theme.success, color: "#fff" }}>
           WhatsApp
         </button>
       </div>
 
-      {/* Отчёт */}
+      {/* ✅ Повна доповідь (кнопка) */}
+      {canShowFullButton && (
+        <div style={{ ...cardStyle(theme), marginBottom: "1.2rem" }}>
+          <button
+            onClick={() => {
+              setShowFull((v) => !v);
+              setShowFullSettings(false);
+            }}
+            style={{ ...buttonStyle(theme), width: "100%", margin: 0, fontWeight: 700, background: theme.secondary, color: theme.label }}
+          >
+            {showFull ? "Сховати повну доповідь" : "Повна доповідь"}
+          </button>
+
+          {/* ✅ кнопка Налаштування появляется только когда открыта повна */}
+          {showFull && (
+            <button
+              onClick={() => setShowFullSettings((v) => !v)}
+              style={{ ...buttonStyle(theme), width: "100%", marginTop: 10, fontWeight: 700, background: theme.button, color: "#fff" }}
+            >
+              Налаштування
+            </button>
+          )}
+
+          {/* ✅ блок налаштувань */}
+          {showFull && showFullSettings && (
+            <div style={{ marginTop: 12 }}>
+              <label style={labelStyle(theme)}>Зброя (відкрив вогонь з)</label>
+              <input
+                value={fullSettings.fireWeapon}
+                onChange={(e) => {
+                  const v = e.target.value;
+                  setFullSettings((s) => {
+                    const next = { ...s, fireWeapon: v };
+                    saveFullSettings(next);
+                    return next;
+                  });
+                }}
+                placeholder="КПВТ"
+                style={{ ...inputStyle(theme) }}
+              />
+
+              <label style={labelStyle(theme)}>Блок 1 (початок)</label>
+              <textarea
+                value={fullSettings.block1Prefix}
+                onChange={(e) => {
+                  const v = e.target.value;
+                  setFullSettings((s) => {
+                    const next = { ...s, block1Prefix: v };
+                    saveFullSettings(next);
+                    return next;
+                  });
+                }}
+                rows={4}
+                style={{
+                  width: "100%",
+                  padding: "0.6rem",
+                  borderRadius: "12px",
+                  border: `1px solid ${theme.inputBorder}`,
+                  backgroundColor: theme.textareaBg,
+                  fontSize: "1rem",
+                  color: theme.textareaText,
+                  resize: "vertical",
+                  outline: "none",
+                  marginBottom: "0.6rem",
+                }}
+              />
+
+              <label style={labelStyle(theme)}>Блок 2</label>
+              <textarea
+                value={fullSettings.block2}
+                onChange={(e) => {
+                  const v = e.target.value;
+                  setFullSettings((s) => {
+                    const next = { ...s, block2: v };
+                    saveFullSettings(next);
+                    return next;
+                  });
+                }}
+                rows={6}
+                style={{
+                  width: "100%",
+                  padding: "0.6rem",
+                  borderRadius: "12px",
+                  border: `1px solid ${theme.inputBorder}`,
+                  backgroundColor: theme.textareaBg,
+                  fontSize: "1rem",
+                  color: theme.textareaText,
+                  resize: "vertical",
+                  outline: "none",
+                  marginBottom: "0.6rem",
+                }}
+              />
+
+              <label style={labelStyle(theme)}>Блок 3</label>
+              <textarea
+                value={fullSettings.block3}
+                onChange={(e) => {
+                  const v = e.target.value;
+                  setFullSettings((s) => {
+                    const next = { ...s, block3: v };
+                    saveFullSettings(next);
+                    return next;
+                  });
+                }}
+                rows={4}
+                style={{
+                  width: "100%",
+                  padding: "0.6rem",
+                  borderRadius: "12px",
+                  border: `1px solid ${theme.inputBorder}`,
+                  backgroundColor: theme.textareaBg,
+                  fontSize: "1rem",
+                  color: theme.textareaText,
+                  resize: "vertical",
+                  outline: "none",
+                }}
+              />
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ✅ Повна доповідь (показываем перед основной) */}
+      {canShowFullButton && showFull && (
+        <div style={cardStyle(theme)}>
+          <pre style={{ whiteSpace: "pre-wrap", fontSize: "1rem", color: theme.label, margin: 0, background: "none" }}>{fullReport}</pre>
+
+          <div style={{ display: "flex", gap: "0.6rem", marginTop: 12 }}>
+            <button onClick={() => copyText(fullReport)} style={buttonStyle(theme)}>
+              Копіювати
+            </button>
+            <button onClick={() => openWhatsAppText(fullReport)} style={{ ...buttonStyle(theme), background: theme.success, color: "#fff" }}>
+              WhatsApp
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Отчёт (основной) */}
       <div style={cardStyle(theme)}>
-        <pre style={{ whiteSpace: "pre-wrap", fontSize: "1rem", color: theme.label, margin: 0, background: "none" }}>{generateReportText()}</pre>
+        <pre style={{ whiteSpace: "pre-wrap", fontSize: "1rem", color: theme.label, margin: 0, background: "none" }}>{mainReport}</pre>
       </div>
     </div>
   );
