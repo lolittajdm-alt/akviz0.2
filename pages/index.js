@@ -209,7 +209,6 @@ export default function Home() {
   const defaultFullSettings = useMemo(
     () => ({
       fireWeapon: "КПВТ",
-      // тексты сохраняем как есть (без лишних абзацев)
       block1Prefix:
         "Номер обслуги 2 відділення 1 Зенітного ракетного взводу  \n2 зенітно-ракетної батареї \n2 зенітно-ракетного дивізіону в/ч А5101",
       block1Suffix: "відкрив вогонь з",
@@ -220,7 +219,6 @@ export default function Home() {
     }),
     []
   );
-
   const [fullSettings, setFullSettings] = useState(defaultFullSettings);
 
   // ——— Время/дата ———
@@ -315,7 +313,6 @@ export default function Home() {
       let nextExplosionPlace = f.explosionPlace;
       let nextResult = f.result;
 
-      // если выключили "Вибух" — очистить уточнение и "вибух"
       if (isOn && g === "Вибух") {
         nextExplosionPlace = "";
         if (nextResult === "вибух") nextResult = null;
@@ -331,9 +328,7 @@ export default function Home() {
   const changeQuantity = (d) =>
     setForm((f) => {
       const cur = String(f.quantity ?? "").trim();
-      if (cur === "") {
-        return d > 0 ? { ...f, quantity: "1" } : f;
-      }
+      if (cur === "") return d > 0 ? { ...f, quantity: "1" } : f;
       let num = Number(cur.replace(/\D/g, "")) || 0;
       num += d;
       if (num <= 0) return { ...f, quantity: "" };
@@ -395,17 +390,15 @@ export default function Home() {
       detectionMethods: f.detectionMethods.includes(m) ? f.detectionMethods.filter((x) => x !== m) : [...f.detectionMethods, m],
     }));
 
-  // ✅ ЗБРОЯ: добавить поле
-  const addWeaponField = () => {
+  // ✅ ЗБРОЯ: добавить/удалить
+  const addWeaponField = () =>
     setForm((f) => {
       const arr = [...(f.weapons || []), ""];
       saveWeapons(arr);
       return { ...f, weapons: arr };
     });
-  };
 
-  // ✅ ЗБРОЯ: удалить поле
-  const removeWeaponField = (idx) => {
+  const removeWeaponField = (idx) =>
     setForm((f) => {
       const arr = [...(f.weapons || [])];
       arr.splice(idx, 1);
@@ -413,19 +406,16 @@ export default function Home() {
       saveWeapons(next);
       return { ...f, weapons: next };
     });
-  };
 
-  // ✅ РОЗХІД БК: добавить строку
-  const addBkField = () => {
+  // ✅ РОЗХІД БК: добавить/удалить
+  const addBkField = () =>
     setForm((f) => {
       const arr = [...(f.bk || []), { type: "", qty: "" }];
       saveBk(arr);
       return { ...f, bk: arr };
     });
-  };
 
-  // ✅ РОЗХІД БК: удалить строку
-  const removeBkField = (idx) => {
+  const removeBkField = (idx) =>
     setForm((f) => {
       const arr = [...(f.bk || [])];
       arr.splice(idx, 1);
@@ -433,17 +423,16 @@ export default function Home() {
       saveBk(next);
       return { ...f, bk: next };
     });
-  };
 
   // ✅ О/С: добавить/удалить
-  const addPersonnel = () => {
+  const addPersonnel = () =>
     setForm((f) => {
       const arr = [...(f.personnel || []), { rank: "", name: "" }];
       savePersonnel(arr);
       return { ...f, personnel: arr };
     });
-  };
-  const removePersonnel = (idx) => {
+
+  const removePersonnel = (idx) =>
     setForm((f) => {
       const arr = [...(f.personnel || [])];
       arr.splice(idx, 1);
@@ -451,27 +440,51 @@ export default function Home() {
       savePersonnel(next);
       return { ...f, personnel: next };
     });
-  };
 
-  // ✅ Обновить страницу и очистить значения
-  const resetAll = () => {
-    try {
-      // чистим только наши ключи
-      const keysToRemove = [
-        "show_top_fields",
-        "report_subdivision_v3",
-        "report_callsignPrefix_v3",
-        "report_callsignText_v3",
-        "report_location_v3",
-        "report_region_v3",
-        "report_weapons_v3",
-        "akviz_personnel_v3",
-        "akviz_bk_v3",
-        "akviz_full_settings_v3",
-      ];
-      keysToRemove.forEach((k) => localStorage.removeItem(k));
-    } catch {}
-    window.location.reload();
+  // ✅ Обновить значения (ТОЛЬКО нужные поля)
+  const resetFieldsOnly = () => {
+    const now = new Date();
+    const newTime = now.toLocaleTimeString("uk-UA", { hour: "2-digit", minute: "2-digit" });
+    const newDate = now.toLocaleDateString("uk-UA", { day: "2-digit", month: "2-digit", year: "numeric" });
+
+    // расход тоже чистим + localStorage для bk
+    const clearedBk = [{ type: "", qty: "" }];
+    saveBk(clearedBk);
+
+    setShowFull(false);
+    setShowFullSettings(false);
+
+    setForm((f) => ({
+      ...f,
+      // цель
+      selectedGoals: [],
+      side: null,
+      name: null,
+      explosionPlace: "",
+
+      // номер
+      targetNumber: "",
+      noIssue: false,
+
+      // количество/параметры
+      quantity: "",
+      azimuth: "",
+      course: "",
+      distance: "",
+      height: "",
+
+      // дата/час
+      time: newTime,
+      date: newDate,
+
+      // вияв/результат
+      detectionMethods: [],
+      result: null,
+
+      // расход/комментарий
+      bk: clearedBk,
+      description: "",
+    }));
   };
 
   // ——— Копирование и WhatsApp ———
@@ -524,10 +537,8 @@ export default function Home() {
 
     const sideLower = side ? String(side).toLowerCase() : "";
 
-    // ✅ "Shahed-136" -> "Shahed"
     const prettyName = name === "Shahed-136" ? "Shahed" : name;
 
-    // ✅ Вид цели (в одной строке "Опис")
     let goalPart = "";
     const q = String(quantity || "").trim();
     const qPart = q ? `${q} ` : "";
@@ -555,7 +566,6 @@ export default function Home() {
 
     const detWithWord = det ? `${det}${afterDet ? ` ${afterDet}` : ""}` : "";
 
-    // ✅ параметры: без пробелов после запятых
     const parts = [];
     if (azimuth) parts.push(`А-${azimuth}`);
     if (distance) parts.push(`Д-${distance}`);
@@ -565,17 +575,13 @@ export default function Home() {
 
     const opisLine = parts.length ? `Опис:${parts.join(",")}${personnelString ? `,${personnelString}` : ""}` : `Опис:${personnelString || "-"}`;
 
-    // ✅ результат строка всегда есть (даже пустая)
     const resultLine = `Результат:${result ? ` ${result}` : ""}`;
 
-    // ✅ номер цели только номер (или б/н)
     const targetLineValue = noIssue ? "б/н" : targetNumber ? `${targetNumber}` : "";
     const targetLine = `№ цілі: ${targetLineValue}`;
 
-    // ✅ Коментар всегда есть, если пусто — "-"
     const commentLine = `Коментар: ${String(description || "").trim() ? String(description).trim() : "-"}`;
 
-    // ✅ Розхід БК: внизу, построчно
     const bkLines =
       result === "ЗНИЩЕНО" || result === "не знищено"
         ? (bk || [])
@@ -604,69 +610,37 @@ export default function Home() {
 
   // ——— Генератор повної доповіді ———
   const generateFullReportText = () => {
-    const {
-      date,
-      time,
-      callsignPrefix,
-      callsignText,
-      selectedGoals,
-      side,
-      targetNumber,
-      noIssue,
-      name,
-      azimuth,
-      course,
-      height,
-      distance,
-      detectionMethods,
-      result,
-      bk,
-    } = form;
+    const { date, time, callsignPrefix, callsignText, selectedGoals, side, targetNumber, noIssue, name, azimuth, course, height, distance, detectionMethods, result, bk } = form;
 
     const prettyName = name === "Shahed-136" ? "Shahed" : name;
 
     const detWords = (detectionMethods || []).map((x) => String(x).toLowerCase()).join(" ");
     const sideLower = side ? String(side).toLowerCase() : "";
 
-    // цель №...
     const targetPart = noIssue ? "б/н" : targetNumber ? `№${targetNumber}` : "";
     const targetWrap = targetPart ? `(ціль ${targetPart})` : "";
 
-    // тип цели (пока ориентируемся на БПЛА, иначе просто "ціль")
     let goalText = "ціль";
     if ((selectedGoals || []).includes("БПЛА")) {
       const who = sideLower === "ворожий" ? "противника" : sideLower === "свій" ? "своїх" : "невизначеної сторони";
       goalText = `ударний БПЛА ${who}${prettyName ? ` типу «${prettyName}»` : ""}`;
     }
 
-    const params = [
-      azimuth ? `Азимут:${azimuth}` : null,
-      course ? `курс: ${course}` : null,
-      height ? `висота ${height}м` : null,
-      distance ? `дистанція: ${distance}м` : null,
-    ]
+    const params = [azimuth ? `Азимут:${azimuth}` : null, course ? `курс: ${course}` : null, height ? `висота ${height}м` : null, distance ? `дистанція: ${distance}м` : null]
       .filter(Boolean)
       .join(", ");
 
-    // итог по цели
     const tail =
       result === "ЗНИЩЕНО" ? "Ціль обстріляна знищена." : result === "не знищено" ? "Ціль обстріляна не знищена." : "Ціль обстріляна.";
 
-    // сумма бк
     const totalBk = (bk || []).reduce((sum, x) => sum + (Number(String(x?.qty || "").replace(/\D/g, "")) || 0), 0);
-    const caliber =
-      (bk || []).some((x) => String(x?.type || "").includes("14,5")) ? "14.5x114мм" : (bk || []).length ? "БК" : "";
+    const caliber = (bk || []).some((x) => String(x?.type || "").includes("14,5")) ? "14.5x114мм" : (bk || []).length ? "БК" : "";
     const bkLine = totalBk > 0 ? `Витрата БК: ${caliber ? `${caliber} - ` : ""}${totalBk} шт.` : `Витрата БК:`;
 
-    // шапка: как в примере (без пробела между датой и префиксом)
     const header = `${time || ""} ${date || ""}${callsignPrefix || ""}${callsignText ? ` «${callsignText}»` : ""}`.trim();
-
     const line2 = `в районі пів.зах. околиці н.п. Димер було виявлено${detWords ? ` ${detWords}` : ""} ${goalText} ${targetWrap}. ${params ? `${params}.` : ""}`.replace(/\s+/g, " ").trim();
 
-    // блок 1 — с настраиваемым орудием
     const b1 = `${fullSettings.block1Prefix}\n${fullSettings.block1Suffix} ${fullSettings.fireWeapon}`.trim();
-
-    // блок 2, 3 — как в примере
     const b2 = String(fullSettings.block2 || "").trim();
     const b3 = String(fullSettings.block3 || "").trim();
 
@@ -733,7 +707,7 @@ export default function Home() {
 
   const canShowFullButton = form.result === "ЗНИЩЕНО" || form.result === "не знищено";
 
-  const mainReport = useMemo(() => generateReportText(), [form, fullSettings]); // fullSettings тут не обязателен, но ок
+  const mainReport = useMemo(() => generateReportText(), [form, fullSettings]);
   const fullReport = useMemo(() => generateFullReportText(), [form, fullSettings]);
 
   return (
@@ -748,10 +722,12 @@ export default function Home() {
       }}
     >
       <style>{`
+        /* крестик: теперь не перекрывает стрелку select */
         .xbtn{
           position:absolute;
-          top:6px;
-          right:6px;
+          top:50%;
+          right:40px;         /* <-- сдвиг влево от стрелки */
+          transform: translateY(-50%) scale(.95);
           background:transparent;
           border:none;
           color:${theme.danger};
@@ -761,11 +737,10 @@ export default function Home() {
           padding:6px;
           cursor:pointer;
           opacity:.9;
-          transform: scale(.95);
           transition: transform .18s ease, opacity .18s ease;
         }
         .xbtn:active{
-          transform: scale(.85) rotate(12deg);
+          transform: translateY(-50%) scale(.85) rotate(12deg);
           opacity:.7;
         }
         .fieldWrap{
@@ -783,8 +758,8 @@ export default function Home() {
         <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
           {Switch}
           <button
-            onClick={resetAll}
-            title="Оновити / очистити"
+            onClick={resetFieldsOnly}
+            title="Оновити значення (ціль/параметри/час/вияв/результат/розхід/коментар)"
             style={{
               width: 42,
               height: 42,
@@ -1086,7 +1061,7 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Назва (БПЛА) — визуально как остальные */}
+      {/* Назва (БПЛА) */}
       {form.selectedGoals.includes("БПЛА") && (
         <div style={{ ...cardStyle(theme), padding: "1rem 0.7rem" }}>
           <label style={{ ...labelStyle(theme), marginLeft: "0.3rem", marginBottom: "0.8rem", fontSize: "1.07rem" }}>Назва</label>
@@ -1310,7 +1285,7 @@ export default function Home() {
         </div>
       </div>
 
-      {/* ✅ Розхід БК (только при ЗНИЩЕНО / не знищено) */}
+      {/* ✅ Розхід БК */}
       {["ЗНИЩЕНО", "не знищено"].includes(form.result || "") && (
         <div style={cardStyle(theme)}>
           <label style={labelStyle(theme)}>Розхід БК</label>
@@ -1421,17 +1396,12 @@ export default function Home() {
             {showFull ? "Сховати повну доповідь" : "Повна доповідь"}
           </button>
 
-          {/* ✅ кнопка Налаштування появляется только когда открыта повна */}
           {showFull && (
-            <button
-              onClick={() => setShowFullSettings((v) => !v)}
-              style={{ ...buttonStyle(theme), width: "100%", marginTop: 10, fontWeight: 700, background: theme.button, color: "#fff" }}
-            >
+            <button onClick={() => setShowFullSettings((v) => !v)} style={{ ...buttonStyle(theme), width: "100%", marginTop: 10, fontWeight: 700, background: theme.button, color: "#fff" }}>
               Налаштування
             </button>
           )}
 
-          {/* ✅ блок налаштувань */}
           {showFull && showFullSettings && (
             <div style={{ marginTop: 12 }}>
               <label style={labelStyle(theme)}>Зброя (відкрив вогонь з)</label>
@@ -1530,7 +1500,7 @@ export default function Home() {
         </div>
       )}
 
-      {/* ✅ Повна доповідь (показываем перед основной) */}
+      {/* ✅ Повна доповідь (перед основной) */}
       {canShowFullButton && showFull && (
         <div style={cardStyle(theme)}>
           <pre style={{ whiteSpace: "pre-wrap", fontSize: "1rem", color: theme.label, margin: 0, background: "none" }}>{fullReport}</pre>
