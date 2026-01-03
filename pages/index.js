@@ -269,6 +269,36 @@ export default function Home() {
   const [showBkPickModal, setShowBkPickModal] = useState(false);
   const [activeBkIndex, setActiveBkIndex] = useState(0);
 
+  // ===== Повна доповідь =====
+  const [showFullReport, setShowFullReport] = useState(false);
+  const [showFullReportSettings, setShowFullReportSettings] = useState(false);
+
+  const [fullReportSettings, setFullReportSettings] = useState(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("full_report_settings_v1");
+      if (saved) {
+        try {
+          return JSON.parse(saved);
+        } catch {}
+      }
+    }
+    return {
+      fireWeapon: "КПВТ",
+      paragraph1:
+        "Номер обслуги 2 відділення 1 Зенітного ракетного взводу 2 зенітно-ракетної батареї 2 зенітно-ракетного дивізіону в/ч А5101 молодший сержант Шипоша Анатолій Васильович відкрив вогонь з",
+      paragraph2:
+        "номер обслуги 1 відділення 3 зенітного ракетного взводу 2 зенітної ракетної батареї 2 зенітного ракетного дивізіону військової частини А5101 солдат Чабанюк Владислав Володимирович.",
+      paragraph3:
+        "Номер обслуги 2 відділення 3 зенітного ракетного взводу 2 зенітної ракетної батареї 2 зенітного ракетного дивізіону в/ч А5101 молодший сержант ШЕВЧЕНКО Владислав Ігорович"
+    };
+  });
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("full_report_settings_v1", JSON.stringify(fullReportSettings));
+    }
+  }, [fullReportSettings]);
+
   // ——— Время/дата ———
   const updateTime = () => {
     const now = new Date();
@@ -375,7 +405,6 @@ export default function Home() {
     });
 
   const selectSide = (s) => setForm((f) => ({ ...f, side: f.side === s ? null : s }));
-
   const selectName = (n) => setForm((f) => ({ ...f, name: n }));
 
   // ✅ количество: пусто по умолчанию, + / - корректно
@@ -541,20 +570,22 @@ export default function Home() {
     const fullCallsign = [callsignPrefix, callsignText].filter(Boolean).join(" ");
     const weaponsString = (weapons || []).filter(Boolean).join(", ");
 
+    // ✅ О/С: звание + ФИО, а между людьми только запятая, без пробела
     const personnelString = (personnel || [])
       .filter((p) => (p.rank || "").trim() || (p.name || "").trim())
       .map((p) => `${(p.rank || "").trim()} ${(p.name || "").trim()}`.trim())
       .filter(Boolean)
       .join(",");
 
+    // ✅ сторона в докладе — с маленькой
     const sideLower = side ? String(side).toLowerCase() : "";
 
-    // ✅ "Shahed-136" -> "Shahed"
+    // ✅ Shahed-136 -> Shahed
     const prettyName = name === "Shahed-136" ? "Shahed" : name;
 
-    // ✅ Вид цели в строке "Опис"
+    // ✅ вид цели (в "Опис")
     let goalPart = "";
-    if (selectedGoals.includes("Вибух")) {
+    if ((selectedGoals || []).includes("Вибух")) {
       const q = String(quantity || "").trim();
       const qPart = q ? `${q} ` : "";
       const place = explosionPlace ? explosionPlace : "";
@@ -573,31 +604,44 @@ export default function Home() {
       goalPart = `${goalPart} ${sideLower}`.trim();
     }
 
-    // ✅ детекция: значения с маленькой буквы (без "Вияв:")
-    const detLower = (detectionMethods || []).map((x) => String(x || "").toLowerCase()).filter(Boolean).join("/");
+    // ✅ вияв: с маленькой, только значения
+    const det = (detectionMethods || [])
+      .map((x) => String(x || "").toLowerCase())
+      .filter(Boolean)
+      .join("/");
 
-    // ✅ после вияву БЕЗ запятой добавляем слово:
-    // - если ЗНИЩЕНО/не знищено => "обстріляно"
-    // - если не застосовувались => "виявлено"
-    const needsShot = ["ЗНИЩЕНО", "не знищено"].includes(result || "");
-    const needsFound = (result || "") === "не застосовувались";
-    const detPart = detLower ? `${detLower}${needsShot ? " обстріляно" : needsFound ? " виявлено" : ""}` : "";
+    // ✅ после вияву: если ЗНИЩЕНО/не знищено => "обстріляно"; если не застосовувались => "виявлено"
+    const afterDet =
+      ["ЗНИЩЕНО", "не знищено"].includes(result || "")
+        ? "обстріляно"
+        : result === "не застосовувались"
+        ? "виявлено"
+        : "";
 
     // ✅ параметры: без пробелов после запятых
     const parts = [];
     if (azimuth) parts.push(`А-${azimuth}`);
     if (distance) parts.push(`Д-${distance}`);
     if (course) parts.push(`К-${course}`);
-    if (detPart) parts.push(detPart);
+
+    // детекцию и слова после неё добавляем без запятой между ними
+    if (det) {
+      parts.push(afterDet ? `${det}${afterDet}` : det);
+    } else if (afterDet) {
+      parts.push(afterDet);
+    }
+
     if (goalPart) parts.push(goalPart);
 
-    const opisLine = parts.length ? `Опис: ${parts.join(",")}${personnelString ? `,${personnelString}` : ""}` : null;
+    const opisLine = parts.length
+      ? `Опис: ${parts.join(",")}${personnelString ? `,${personnelString}` : ""}`
+      : `Опис:${personnelString ? `${personnelString}` : ""}`;
 
-    // ✅ результат строка всегда есть (даже если пусто)
+    // ✅ результат строка всегда есть
     const resultLine = `Результат:${result ? ` ${result}` : ""}`;
 
     // ✅ номер цели только номер (или б/н)
-    const targetLineValue = noIssue ? "б/н" : targetNumber ? `${targetNumber}` : "";
+    const targetLineValue = noIssue ? "б/н" : (targetNumber ? `${targetNumber}` : "");
     const targetLine = `№ цілі: ${targetLineValue}`;
 
     // ✅ Коментар всегда есть, если пусто — "-"
@@ -628,6 +672,36 @@ export default function Home() {
     ]
       .filter((x) => x !== null && x !== undefined && String(x).trim() !== "")
       .join("\n");
+  };
+
+  // ——— Повна доповідь (генератор) ———
+  const generateFullReportText = () => {
+    const { date, time, targetNumber, azimuth, course, height, distance, result, bk, name } = form;
+
+    const prettyName = name === "Shahed-136" ? "Shahed" : (name || "Shahed");
+
+    // суммарная витрата БК (по всем выбранным видам)
+    const totalBk = (bk || []).reduce((sum, b) => {
+      const q = Number(b?.qty);
+      return sum + (isNaN(q) ? 0 : q);
+    }, 0);
+
+    const tail =
+      result === "ЗНИЩЕНО"
+        ? "Ціль обстріляна знищена."
+        : result === "не знищено"
+        ? "Ціль обстріляна не знищена."
+        : "";
+
+    // строго как в примере (без лишних абзацев)
+    return `${time} ${date}МВГ «Спис»
+в районі пів.зах. околиці н.п. Димер було виявлено візуально із застосуванням приладів спостереження ударний БПЛА противника типу «${prettyName}» (ціль №${targetNumber}). Азимут:${azimuth}, курс: ${course}, висота ${height}м,дистанція: ${distance}м. 
+${fullReportSettings.paragraph1} ${fullReportSettings.fireWeapon}, надавали
+цілевказівку та здійснювали
+обʼєктивний контроль 
+${fullReportSettings.paragraph2}
+${fullReportSettings.paragraph3}. ${tail}
+Витрата БК: 14.5x114мм - ${totalBk} шт.`;
   };
 
   // ——— Темы ———
@@ -1207,11 +1281,31 @@ export default function Home() {
       </div>
 
       {/* Кнопки */}
-      <div style={{ display: "flex", gap: "0.6rem", marginBottom: "2rem" }}>
-        <button onClick={copyReport} style={buttonStyle(theme)}>Копіювати</button>
-        <button onClick={openWhatsApp} style={{ ...buttonStyle(theme), background: theme.success, color: "#fff" }}>
-          WhatsApp
-        </button>
+      <div style={{ display: "flex", flexDirection: "column", gap: "0.6rem", marginBottom: "2rem" }}>
+        <div style={{ display: "flex", gap: "0.6rem" }}>
+          <button onClick={copyReport} style={buttonStyle(theme)}>Копіювати</button>
+          <button onClick={openWhatsApp} style={{ ...buttonStyle(theme), background: theme.success, color: "#fff" }}>
+            WhatsApp
+          </button>
+        </div>
+
+        {["ЗНИЩЕНО", "не знищено"].includes(form.result || "") && (
+          <>
+            <button
+              onClick={() => setShowFullReport((v) => !v)}
+              style={{ ...buttonStyle(theme), width: "100%", fontWeight: 700 }}
+            >
+              Повна доповідь
+            </button>
+
+            <button
+              onClick={() => setShowFullReportSettings((v) => !v)}
+              style={{ ...buttonStyle(theme), background: theme.secondary, color: theme.label }}
+            >
+              Налаштування
+            </button>
+          </>
+        )}
       </div>
 
       {/* Отчёт */}
@@ -1220,6 +1314,83 @@ export default function Home() {
           {generateReportText()}
         </pre>
       </div>
+
+      {/* Повна доповідь (вывод) */}
+      {showFullReport && ["ЗНИЩЕНО", "не знищено"].includes(form.result || "") && (
+        <div style={cardStyle(theme)}>
+          <pre style={{ whiteSpace: "pre-wrap", fontSize: "1rem", color: theme.label, margin: 0, background: "none" }}>
+            {generateFullReportText()}
+          </pre>
+        </div>
+      )}
+
+      {/* Налаштування повної доповіді */}
+      {showFullReportSettings && ["ЗНИЩЕНО", "не знищено"].includes(form.result || "") && (
+        <div style={cardStyle(theme)}>
+          <label style={labelStyle(theme)}>Зброя (відкрив вогонь з)</label>
+          <input
+            value={fullReportSettings.fireWeapon}
+            onChange={(e) => setFullReportSettings((f) => ({ ...f, fireWeapon: e.target.value }))}
+            style={inputStyle(theme)}
+          />
+
+          <label style={labelStyle(theme)}>Блок 1</label>
+          <textarea
+            value={fullReportSettings.paragraph1}
+            onChange={(e) => setFullReportSettings((f) => ({ ...f, paragraph1: e.target.value }))}
+            rows={3}
+            style={{
+              width: "100%",
+              padding: "0.6rem",
+              borderRadius: "12px",
+              border: `1px solid ${theme.inputBorder}`,
+              backgroundColor: theme.textareaBg,
+              fontSize: "1rem",
+              color: theme.textareaText,
+              resize: "none",
+              outline: "none",
+              marginBottom: "0.6rem"
+            }}
+          />
+
+          <label style={labelStyle(theme)}>Блок 2</label>
+          <textarea
+            value={fullReportSettings.paragraph2}
+            onChange={(e) => setFullReportSettings((f) => ({ ...f, paragraph2: e.target.value }))}
+            rows={3}
+            style={{
+              width: "100%",
+              padding: "0.6rem",
+              borderRadius: "12px",
+              border: `1px solid ${theme.inputBorder}`,
+              backgroundColor: theme.textareaBg,
+              fontSize: "1rem",
+              color: theme.textareaText,
+              resize: "none",
+              outline: "none",
+              marginBottom: "0.6rem"
+            }}
+          />
+
+          <label style={labelStyle(theme)}>Блок 3</label>
+          <textarea
+            value={fullReportSettings.paragraph3}
+            onChange={(e) => setFullReportSettings((f) => ({ ...f, paragraph3: e.target.value }))}
+            rows={3}
+            style={{
+              width: "100%",
+              padding: "0.6rem",
+              borderRadius: "12px",
+              border: `1px solid ${theme.inputBorder}`,
+              backgroundColor: theme.textareaBg,
+              fontSize: "1rem",
+              color: theme.textareaText,
+              resize: "none",
+              outline: "none"
+            }}
+          />
+        </div>
+      )}
 
       {/* =================== МОДАЛКИ =================== */}
 
