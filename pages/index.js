@@ -1060,36 +1060,43 @@ export default function Home() {
       </div>
 
       {/* Назва (БПЛА) */}
-      {form.selectedGoals.includes("БПЛА") && (
-        <div style={{ ...cardStyle(theme), padding: "1rem 0.7rem" }}>
-          <label style={{ ...labelStyle(theme), marginLeft: "0.3rem", marginBottom: "0.8rem", fontSize: "1.07rem" }}>Назва</label>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: "0.65rem" }}>
-            {namesList.map((n) => (
-              <button
-                key={n}
-                onClick={() => selectName(n)}
-                style={{
-                  background: form.name === n ? theme.button : theme.secondary,
-                  color: form.name === n ? "#fff" : theme.label,
-                  fontWeight: form.name === n ? 600 : 500,
-                  border: "none",
-                  borderRadius: "14px",
-                  boxShadow: form.name === n ? "0 2px 8px rgba(10,132,255,0.14)" : theme.shadow,
-                  padding: "0.62rem 0.7rem",
-                  cursor: "pointer",
-                  minWidth: 0,
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                  whiteSpace: "nowrap"
-                }}
-                title={n}
-              >
-                {n}
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
+{form.selectedGoals.includes("БПЛА") && (
+  <div style={{ ...cardStyle(theme), padding: "1rem 0.7rem" }}>
+    <label style={{ ...labelStyle(theme), marginLeft: "0.3rem", marginBottom: "0.8rem", fontSize: "1.07rem" }}>
+      Назва
+    </label>
+
+    <div style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: "0.65rem" }}>
+      {namesList.map((n) => (
+        <button
+          key={n}
+          onClick={() => selectName(n)}
+          style={{
+            ...buttonStyle(theme),
+            background: form.name === n ? theme.success : theme.secondary,
+            color: form.name === n ? "#fff" : theme.label,
+            fontWeight: form.name === n ? 600 : 500,
+            borderRadius: "14px",
+            padding: "0.62rem 0.7rem",
+            minWidth: 0,
+            width: "100%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            textAlign: "center",
+            lineHeight: 1.15,
+            overflow: "hidden",
+            wordBreak: "break-word",
+            whiteSpace: "normal"
+          }}
+          title={n}
+        >
+          {n}
+        </button>
+      ))}
+    </div>
+  </div>
+)}
 
       {/* Кількість */}
       <div style={cardStyle(theme)}>
