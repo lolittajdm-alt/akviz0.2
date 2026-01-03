@@ -199,7 +199,10 @@ export default function Home() {
   ];
 
   // ✅ Список боєприпасів (Розхід)
-  const bkList = ["Набій 14,5х114 мм (ЗПУ, КПВТ) Б-32", "Набій 14,5х114 мм (ЗПУ, КПВТ) БЗТ"];
+  const bkList = [
+    "Набій 14,5х114 мм (ЗПУ, КПВТ) Б-32",
+    "Набій 14,5х114 мм (ЗПУ, КПВТ) БЗТ"
+  ];
 
   // ——— Состояния формы ———
   const [form, setForm] = useState({
@@ -570,23 +573,27 @@ export default function Home() {
       goalPart = `${goalPart} ${sideLower}`.trim();
     }
 
-    // ✅ детекция: только значения, без "Вияв:"
-    const det = (detectionMethods || []).join("/");
+    // ✅ детекция: значения с маленькой буквы (без "Вияв:")
+    const detLower = (detectionMethods || []).map((x) => String(x || "").toLowerCase()).filter(Boolean).join("/");
 
-    // ✅ если знищено / не знищено → добавляем "обстріляно"
-    const isShot = result === "ЗНИЩЕНО" || result === "не знищено";
+    // ✅ после вияву БЕЗ запятой добавляем слово:
+    // - если ЗНИЩЕНО/не знищено => "обстріляно"
+    // - если не застосовувались => "виявлено"
+    const needsShot = ["ЗНИЩЕНО", "не знищено"].includes(result || "");
+    const needsFound = (result || "") === "не застосовувались";
+    const detPart = detLower ? `${detLower}${needsShot ? " обстріляно" : needsFound ? " виявлено" : ""}` : "";
 
-    // ✅ параметры: без пробелов после запятых + после вияву БЕЗ запятой
+    // ✅ параметры: без пробелов после запятых
     const parts = [];
     if (azimuth) parts.push(`А-${azimuth}`);
     if (distance) parts.push(`Д-${distance}`);
     if (course) parts.push(`К-${course}`);
-    if (det) parts.push(isShot ? `${det} обстріляно` : det);
+    if (detPart) parts.push(detPart);
     if (goalPart) parts.push(goalPart);
 
     const opisLine = parts.length ? `Опис: ${parts.join(",")}${personnelString ? `,${personnelString}` : ""}` : null;
 
-    // ✅ результат строка всегда есть
+    // ✅ результат строка всегда есть (даже если пусто)
     const resultLine = `Результат:${result ? ` ${result}` : ""}`;
 
     // ✅ номер цели только номер (или б/н)
@@ -1201,9 +1208,7 @@ export default function Home() {
 
       {/* Кнопки */}
       <div style={{ display: "flex", gap: "0.6rem", marginBottom: "2rem" }}>
-        <button onClick={copyReport} style={buttonStyle(theme)}>
-          Копіювати
-        </button>
+        <button onClick={copyReport} style={buttonStyle(theme)}>Копіювати</button>
         <button onClick={openWhatsApp} style={{ ...buttonStyle(theme), background: theme.success, color: "#fff" }}>
           WhatsApp
         </button>
@@ -1211,7 +1216,9 @@ export default function Home() {
 
       {/* Отчёт */}
       <div style={cardStyle(theme)}>
-        <pre style={{ whiteSpace: "pre-wrap", fontSize: "1rem", color: theme.label, margin: 0, background: "none" }}>{generateReportText()}</pre>
+        <pre style={{ whiteSpace: "pre-wrap", fontSize: "1rem", color: theme.label, margin: 0, background: "none" }}>
+          {generateReportText()}
+        </pre>
       </div>
 
       {/* =================== МОДАЛКИ =================== */}
@@ -1461,7 +1468,9 @@ function ModalShell({ theme, title, children, onClose }) {
           position: "relative"
         }}
       >
-        <h3 style={{ margin: 0, marginBottom: 12, fontSize: "1.09rem", color: theme.label, fontWeight: 600, textAlign: "center" }}>{title}</h3>
+        <h3 style={{ margin: 0, marginBottom: 12, fontSize: "1.09rem", color: theme.label, fontWeight: 600, textAlign: "center" }}>
+          {title}
+        </h3>
 
         {children}
 
