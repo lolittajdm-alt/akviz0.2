@@ -672,7 +672,7 @@ export default function Home() {
     const caliber = (bk || []).some((x) => String(x?.type || "").includes("14,5")) ? "14.5x114мм" : (bk || []).length ? "БК" : "";
     const bkLine = totalBk > 0 ? `Витрата БК: ${caliber ? `${caliber} - ` : ""}${totalBk} шт.` : `Витрата БК:`;
 
-    const header = `${time || ""} ${date || ""}${callsignPrefix || ""}${callsignText ? ` «${callsignText}»` : ""}`.trim();
+    const header = `${time || ""} ${date || ""} ${callsignPrefix || ""}${callsignText ? ` «${callsignText}»` : ""}`.trim();
     const line2 = `в районі пів.зах. околиці н.п. Димер було виявлено${detWords ? ` ${detWords}` : ""} ${goalText} ${targetWrap}. ${params ? `${params}.` : ""}`.replace(/\s+/g, " ").trim();
 
     const b1 = `${fullSettings.block1Prefix}\n${fullSettings.block1Suffix} ${fullSettings.fireWeapon}`.trim();
