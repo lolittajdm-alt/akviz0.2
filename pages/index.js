@@ -480,7 +480,12 @@ export default function Home() {
   const resetFieldsOnly = () => {
     const now = new Date();
     const newTime = now.toLocaleTimeString("uk-UA", { hour: "2-digit", minute: "2-digit" });
-    const newDate = now.toLocaleDateString("uk-UA", { day: "2-digit", month: "2-digit", year: "
+    const newDate = now.toLocaleDateString("uk-UA", { day: "2-digit", month: "2-digit", year: "numeric" });
+
+    // расход тоже чистим + localStorage для bk
+    const clearedBk = [{ type: "", qty: "" }];
+    saveBk(clearedBk);
+
     setShowFull(false);
     setShowFullSettings(false);
 
