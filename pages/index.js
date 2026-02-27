@@ -1613,7 +1613,7 @@ const removePosition = (idx) =>
       )}
 
       {/* ✅ Повна доповідь (перед основной) */}
-      {canShowFullButton && showFull && (
+      canShowFullButton && showFull && (
         <div style={cardStyle(theme)}>
           <pre style={{ whiteSpace: "pre-wrap", fontSize: "1rem", color: theme.label, margin: 0, background: "none" }}>{fullReport}</pre>
 
@@ -1626,7 +1626,7 @@ const removePosition = (idx) =>
             </button>
           </div>
         </div>
-      )}
+      )
 
       {/* Отчёт (основной) */}
       <div style={cardStyle(theme)}>
