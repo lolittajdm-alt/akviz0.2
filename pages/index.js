@@ -1688,3 +1688,14 @@ function buttonStyle(theme) {
     transition: "background .2s, color .18s, box-shadow .2s",
   };
 }
+
+<!-- Pager Chat -->
+<script>
+  window.PagerChatSettings = {
+    websiteId: "4032e4c4-78b0-4ab1-aff0-522e3dab04c3",
+    baseUrl: "https://pager.co.ua/"
+  };
+</script>
+
+<script src="https://pager.co.ua/chat/widget.js"></script>
+<!-- /Pager Chat -->
