@@ -122,10 +122,10 @@ export default function Home() {
   const ammoList = [
     "зі стрілецької зброї 5.45/5.56",
     "зі стрілецької зброї 7.62",
+    "зі ПКМБ 7.62х54",
     "із ВКК Browning M2 12.7",
     "із ВКК CANiK M2 12.7",
     "із НСВ Утьос 12.7",
-    "із ПКМБ 7.62х54", 
     "із ВКК ДШК 12.7",
     "із ВКК КПВТ 14.5",
     "із ЗКУ Viktor MR-2 14.5",
@@ -199,7 +199,6 @@ export default function Home() {
 
   // ——— Состояния формы ———
   const [form, setForm] = useState({
-    positions: [""],
     subdivision: "",
     callsignPrefix: "",
     callsignText: "",
@@ -277,15 +276,6 @@ export default function Home() {
   }, []);
 
   // ——— localStorage init ———
-  const savedPositions = localStorage.getItem("akviz_positions_v1");
-if (savedPositions) {
-  try {
-    const arr = JSON.parse(savedPositions);
-    if (Array.isArray(arr) && arr.length) {
-      setForm((f) => ({ ...f, positions: arr }));
-    }
-  } catch {}
-}
   useEffect(() => {
     if (typeof window === "undefined") return;
 
@@ -337,24 +327,6 @@ if (savedPositions) {
   }, [showTopFields]);
 
   // ——— Helpers localStorage ———
-const savePositions = (arr) =>
-  localStorage.setItem("akviz_positions_v1", JSON.stringify(arr));
-
-const addPosition = () =>
-  setForm((f) => {
-    const arr = [...f.positions, ""];
-    savePositions(arr);
-    return { ...f, positions: arr };
-  });
-
-const removePosition = (idx) =>
-  setForm((f) => {
-    const arr = [...f.positions];
-    arr.splice(idx, 1);
-    const next = arr.length ? arr : [""];
-    savePositions(next);
-    return { ...f, positions: next };
-  });
   const savePersonnel = (arr) => localStorage.setItem("akviz_personnel_v3", JSON.stringify(arr));
   const saveWeapons = (arr) => localStorage.setItem("report_weapons_v3", JSON.stringify(arr));
   const saveBk = (arr) => localStorage.setItem("akviz_bk_v3", JSON.stringify(arr));
@@ -1025,55 +997,6 @@ const removePosition = (idx) =>
           </div>
         </div>
       )}
-      
-      {/* Позиція */}
-<div style={{ marginBottom: 16 }}>
-  <label style={labelStyle(theme)}>Позиція</label>
-
-  {(form.positions || []).map((pos, idx) => (
-    <div key={idx} className="fieldWrap" style={{ marginBottom: 10 }}>
-      {form.positions.length > 1 && (
-        <button
-          className="xbtn"
-          onClick={() => removePosition(idx)}
-          type="button"
-          aria-label="Видалити"
-        >
-          ×
-        </button>
-      )}
-
-      <input
-        value={pos}
-        onChange={(e) => {
-          const v = e.target.value;
-          setForm((f) => {
-            const arr = [...f.positions];
-            arr[idx] = v;
-            savePositions(arr);
-            return { ...f, positions: arr };
-          });
-        }}
-        placeholder={`Позиція ${idx + 1}`}
-        style={{ ...inputStyle(theme), marginBottom: 0 }}
-      />
-    </div>
-  ))}
-
-  <button
-    onClick={addPosition}
-    style={{
-      ...buttonStyle(theme),
-      background: theme.success,
-      color: "#fff",
-      width: "100%",
-      fontWeight: 600,
-      margin: 0,
-    }}
-  >
-    + Додати позицію
-  </button>
-</div>
 
       {/* Ціль */}
       <div style={{ ...cardStyle(theme), padding: "1rem 0.7rem", display: "flex", flexDirection: "column" }}>
@@ -1614,7 +1537,7 @@ const removePosition = (idx) =>
       )}
 
       {/* ✅ Повна доповідь (перед основной) */}
-      canShowFullButton && showFull && (
+      {canShowFullButton && showFull && (
         <div style={cardStyle(theme)}>
           <pre style={{ whiteSpace: "pre-wrap", fontSize: "1rem", color: theme.label, margin: 0, background: "none" }}>{fullReport}</pre>
 
@@ -1627,7 +1550,7 @@ const removePosition = (idx) =>
             </button>
           </div>
         </div>
-      )
+      )}
 
       {/* Отчёт (основной) */}
       <div style={cardStyle(theme)}>
@@ -1689,14 +1612,3 @@ function buttonStyle(theme) {
     transition: "background .2s, color .18s, box-shadow .2s",
   };
 }
-
-<!-- Pager Chat -->
-<script>
-  window.PagerChatSettings = {
-    websiteId: "4032e4c4-78b0-4ab1-aff0-522e3dab04c3",
-    baseUrl: "https://pager.co.ua/"
-  };
-</script>
-
-<script src="https://pager.co.ua/chat/widget.js"></script>
-<!-- /Pager Chat -->
